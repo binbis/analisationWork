@@ -23,7 +23,21 @@ namespace CSLight
 
 			// Зчитуємо вміст з буферу обміну
 			string clipText = Clipboard.GetText();
-			
+			//перевірка на вміст кавичок
+			if (clipText.Contains('"')){
+				//- кавички
+				clipText = clipText.Replace("\"", "").Trim();
+			}
+			//перевірка на вміст крапок
+			if (clipText.Contains('.')) {
+				//- крапки
+				clipText = clipText.Replace(".", "").Trim();
+			}
+			//перевірка на вміст ком
+			if (clipText.Contains(',')) {
+				//- коми
+				clipText = clipText.Replace(",", "").Trim();
+			}
 			//перевірка дліни
 			if (clipText.Length != 18) {
 				//- пробіли
@@ -35,12 +49,7 @@ namespace CSLight
 				//- пробіли
 				clipText = clipText.Trim();
 			}
-			//перевірка на вміст кавичок
-			if (clipText.Contains('"'))
-			{
-				//- кавички
-				clipText = clipText.Replace("\"", "").Trim();
-			}
+			
 			// приведення до одного регістру
 			clipText = clipText.ToUpper();
 			
