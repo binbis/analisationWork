@@ -1,0 +1,51 @@
+/**
+24,06,2024_v1 
+*/
+using System;
+using System.Windows.Forms;
+namespace CSLight
+{
+    internal class Program
+    {
+        [STAThread]
+        static void Main(string[] args)
+        {
+			opt.mouse.MoveSpeed = opt.key.KeySpeed = opt.key.TextSpeed = 10;
+			//копіюємо код
+			keys.send("Ctrl+C");
+			
+			// Оголошуємо STAThread для використання Clipboard
+			Application.EnableVisualStyles();
+			Application.SetCompatibleTextRenderingDefault(false);
+
+			// Зчитуємо вміст з буферу обміну
+			string clipText = Clipboard.GetText();
+			
+			//перевірка дліни
+			if (clipText.Length != 18) {
+				//- пробіли
+				clipText = clipText.Trim();
+				// Розділяємо рядок на частини за допомогою пробілів
+				string[] clipTextParts = clipText.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+				// Об'єднуємо частини назад в рядок, додаючи по одному пробілу між частинами
+				clipText = string.Join(" ", clipTextParts);
+				//- пробіли
+				clipText = clipText.Trim();
+			}
+			//перевірка на вміст кавичок
+			if (clipText.Contains('"'))
+			{
+				//- кавички
+				clipText = clipText.Replace("\"", "").Trim();
+			}
+			// приведення до одного регістру
+			clipText = clipText.ToUpper();
+			
+			Clipboard.SetText(clipText);
+			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1").Activate();
+			var e = w.Elm["web:COMBOBOX", "Пошук", "@id=search-container-input"].Find(2).MouseClick();
+			keys.send("Ctrl+A Ctrl+V Enter");
+			
+		}
+	}
+}
