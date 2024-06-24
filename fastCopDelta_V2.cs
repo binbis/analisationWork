@@ -64,9 +64,13 @@ namespace CSLight
 				// Формуємо результат
                 clipText = searchString + afterSearchString.Substring(0, index + searchString.Length + 2) + numbersPart;
 			}
+			// Переписує буфер обміну
 			Clipboard.SetText(clipText);
+			// Знаходить та активує вікно якщо воно звернуте 
 			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1").Activate();
+			// Знаходить пошуковий рядок
 			var e = w.Elm["web:COMBOBOX", "Пошук", "@id=search-container-input"].Find(2).MouseClick();
+			// вставляє з буферу обміну 
 			keys.send("Ctrl+A Ctrl+V Enter");
 			
 		}
