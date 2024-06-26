@@ -1,13 +1,14 @@
 /**
-24,06,2024_v2 
+24,06,2024_v2.1 
 0. відкрий дельту в окремому вікні, не міняй вкладку, (можеш звернути це вікно)
 1. виділяєш текст де є координати mgrs
 2. скрипт копіює їх, прибирає та виправляє їх,
 3. відкриває дельту(де б вона не була та який розмір вікна б не мала) 
 4. вставяє оброблені координати до пошуку та натискає кнопку пошуку
 */
-using System;
+//using System;
 using System.Windows.Forms;
+//using System.Text.RegularExpressions;
 namespace CSLight
 {
     internal class Program
@@ -18,52 +19,26 @@ namespace CSLight
 			opt.mouse.MoveSpeed = opt.key.KeySpeed = opt.key.TextSpeed = 10;
 			//копіюємо код
 			keys.send("Ctrl+C");
-			string searchString = "37U";
-			string letters = "CR";
-			string pattern = @"37U.{12}";
-			string result = string.Empty;
-			string resultWclipText = string.Empty;
+			
 			// Зчитуємо вміст з буферу обміну
 			string clipText = Clipboard.GetText();
-			// Видаляємо все окрім цифр та букв, переводим до одного регістру
-            clipText = Regex.Replace(clipText, @"[^a-zA-Z0-9]", "").ToUpper();
+			//string patternFirstEnglish = @"[a-zA-Z]"; // шаблон (3) 1 англ буква
+			string patternFirstEnglishBefore = @".{0,2}[a-zA-Z]"; // шаблон (1) 1 англ + 2 символи попереду 
+			string patternFirstEnglishAfter = @"[a-zA-Z].{0,15}"; // шаблон (2) 1 англ + 15 символів після (з запасом)
+			string firstEnglishBefore = string.Empty;
+			string firstEnglishAfter = string.Empty;
 			
-            // Знаходимо підрядок за допомогою регулярного виразу
-            Match match = Regex.Match(clipText, pattern);
-            if (match.Success)
-            {
-                clipText = match.Value;
-            }
-			// Знаходимо індекс підрядка "37U"
-			int index = clipText.IndexOf(searchString);
-			if (index != -1)
-			{
-				//Залишаємо сам "37U" та все після нього
-				//clipText = clipText.Substring(index);
-				
-				// Витягуємо частину після "37U"
-                string afterSearchString = clipText.Substring(index + searchString.Length);
-				
-                // Перевіряємо, чи є після "37U" дві літери
-                if (!Regex.IsMatch(afterSearchString, @"^[A-Z]{2}"))
-                {
-                    // Якщо немає, додаємо "CR"
-                    afterSearchString = afterSearchString.Insert(index + searchString.Length, " " + letters + " ");
-                }
-				else if (afterSearchString.StartsWith(letters))
-				{
-					// Якщо "CR" вже присутній, додаємо пробіли перед і після нього
-					afterSearchString = afterSearchString.Replace(letters, " " + letters + " ");
-				}
-				// Знаходимо частину з цифрами після двох літер
-                string numbersPart = afterSearchString.Substring(index + searchString.Length + 2);
-                // Знаходимо середину цифр
-                int middleIndex = numbersPart.Length / 2;
-                // Вставляємо пробіл посередині
-                numbersPart = numbersPart.Insert(middleIndex, " ");
-				// Формуємо результат
-                clipText = searchString + afterSearchString.Substring(0, index + searchString.Length + 2) + numbersPart;
-			}
+			// Видаляємо все окрім цифр та англ букв, переводим в один регістр
+			clipText = clipText.ToUpper();
+			// заміняємо сміття на пробіли
+			clipText = Regex.Replace(clipText, @"[^a-zA-Z0-9]", " ");
+            		// виявляємо 1 шаблон
+			firstEnglishBefore = PatternExtract(clipText,patternFirstEnglishBefore);
+			// виявляємо 2 шаблон
+			firstEnglishAfter = PatternExtract(clipText,patternFirstEnglishAfter);
+			// Формуємо результат та прибераємо дублі після конкатенації 
+            		clipText = RemoveDuplicates(firstEnglishBefore + firstEnglishAfter);
+			
 			// Переписує буфер обміну
 			Clipboard.SetText(clipText);
 			// Знаходить та активує вікно якщо воно звернуте 
@@ -72,7 +47,28 @@ namespace CSLight
 			var e = w.Elm["web:COMBOBOX", "Пошук", "@id=search-container-input"].Find(2).MouseClick();
 			// вставляє з буферу обміну 
 			keys.send("Ctrl+A Ctrl+V Enter");
-			
+		}
+		// Функція для видалення дублікатів зі строки
+		static string RemoveDuplicates(string input) {
+			string result = "";
+			foreach (char c in input)
+			{
+				if (char.IsLetter(c) && result.IndexOf(c) != -1)
+				{
+					continue; // Пропускаємо англійські букви, які вже є в результаті
+				}
+				result += c;
+			}
+			return result;
+		}
+		// отримаємо вміст шаблону з рядку
+		static string PatternExtract(string copyText, string pattern) {
+			Match match = Regex.Match(copyText, pattern);
+	            	if (match.Success)
+	            	{
+	                		return match.Value;
+	            	}
+			 return string.Empty; // or return null, or any default value you prefer
 		}
 	}
 }
