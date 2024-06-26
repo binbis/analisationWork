@@ -6,9 +6,7 @@
 3. відкриває дельту(де б вона не була та який розмір вікна б не мала) 
 4. вставяє оброблені координати до пошуку та натискає кнопку пошуку
 */
-//using System;
 using System.Windows.Forms;
-//using System.Text.RegularExpressions;
 namespace CSLight
 {
     internal class Program
@@ -18,11 +16,10 @@ namespace CSLight
         {
 			opt.mouse.MoveSpeed = opt.key.KeySpeed = opt.key.TextSpeed = 10;
 			//копіюємо код
-			keys.send("Ctrl+C");
-			
+			keys.send("Ctrl+C");			
 			// Зчитуємо вміст з буферу обміну
 			string clipText = Clipboard.GetText();
-			//string patternFirstEnglish = @"[a-zA-Z]"; // шаблон (3) 1 англ буква
+		
 			string patternFirstEnglishBefore = @".{0,2}[a-zA-Z]"; // шаблон (1) 1 англ + 2 символи попереду 
 			string patternFirstEnglishAfter = @"[a-zA-Z].{0,15}"; // шаблон (2) 1 англ + 15 символів після (з запасом)
 			string firstEnglishBefore = string.Empty;
