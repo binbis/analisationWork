@@ -21,9 +21,7 @@ namespace CSLight
 			keys.send("Ctrl+C");
 			
 			// Зчитуємо вміст з буферу обміну
-			//string clipText = Clipboard.GetText();
-			string clipText = "Дата/час події: 28.06.24 21:20 Координати: 37U CR 21146 71695 Засіб: А1СМ ФУРІЯ Назва екіпажу: степАн № вильоту: 1 Ціль: АТ - ротація - зупинка за корами";
-			
+			string clipText = Clipboard.GetText();
 			//string patternFirstEnglish = @"[a-zA-Z]"; // шаблон (3) 1 англ буква
 			string patternFirstEnglishBefore = @".{0,2}[a-zA-Z]"; // шаблон (1) 1 англ + 2 символи попереду 
 			string patternFirstEnglishAfter = @"[a-zA-Z].{0,12}"; // шаблон (2) 1 англ + 15 символів після (з запасом)
