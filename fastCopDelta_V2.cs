@@ -22,6 +22,7 @@ namespace CSLight
 			
 			// Зчитуємо вміст з буферу обміну
 			string clipText = Clipboard.GetText();
+			
 			//string patternFirstEnglish = @"[a-zA-Z]"; // шаблон (3) 1 англ буква
 			string patternFirstEnglishBefore = @".{0,2}[a-zA-Z]"; // шаблон (1) 1 англ + 2 символи попереду 
 			string patternFirstEnglishAfter = @"[a-zA-Z].{0,12}"; // шаблон (2) 1 англ + 15 символів після (з запасом)
@@ -31,7 +32,7 @@ namespace CSLight
 			//зводимо все до оного регістру
 			clipText = clipText.ToUpper();
 			// перевірка, в тебе відразу норм кори? якщо ні...
-			if (clipText.Length != 18) {
+			if (clipText.Length > 18) {
 				// Видаляємо все окрім цифр та англ букв, переводим в один регістр
 				clipText = Regex.Replace(clipText, @"[^a-zA-Z0-9]", "");
 				// виявляємо 1 шаблон
@@ -73,7 +74,7 @@ namespace CSLight
             }
 			 return string.Empty; // or return null, or any default value you prefer
 		}
-				//додаємо пробіли
+		//додаємо пробіли
 		static string InsertSpaces(string input)
 		{
 			/*
