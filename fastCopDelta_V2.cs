@@ -1,5 +1,5 @@
 /**
-24,06,2024_v2.2b1 
+24,06,2024_v2.2b2 
 0. відкрий дельту в окремому вікні, не міняй вкладку, (можеш звернути це вікно)
 1. виділяєш текст де є координати mgrs
 2. скрипт копіює їх, прибирає та виправляє їх,
@@ -29,10 +29,10 @@ namespace CSLight
 			string firstEnglishBefore = string.Empty;
 			string firstEnglishAfter = string.Empty;
 			
-			//зводимо все до оного регістру
-			clipText = clipText.ToUpper();
 			// перевірка, в тебе відразу норм кори? якщо ні...
-			if (clipText.Length > 18) {
+			if (clipText.Length != 18 && clipText.Length > 19) {
+				//зводимо все до оного регістру
+				clipText = clipText.ToUpper();
 				// Видаляємо все окрім цифр та англ букв, переводим в один регістр
 				clipText = Regex.Replace(clipText, @"[^a-zA-Z0-9]", "");
 				// виявляємо 1 шаблон
