@@ -1,5 +1,5 @@
 /**
-24,06,2024_v2.2b2 
+24,06,2024_v2.2a
 0. відкрий дельту в окремому вікні, не міняй вкладку, (можеш звернути це вікно)
 1. виділяєш текст де є координати mgrs
 2. скрипт копіює їх, прибирає та виправляє їх,
@@ -17,11 +17,15 @@ namespace CSLight
         static void Main(string[] args)
         {
 			opt.mouse.MoveSpeed = opt.key.KeySpeed = opt.key.TextSpeed = 10;
+			//чистим буфер
+			Clipboard.Clear();
 			//копіюємо код
 			keys.send("Ctrl+C");
 			
 			// Зчитуємо вміст з буферу обміну
 			string clipText = Clipboard.GetText();
+			//чистим буфер
+			Clipboard.Clear();
 			
 			//string patternFirstEnglish = @"[a-zA-Z]"; // шаблон (3) 1 англ буква
 			string patternFirstEnglishBefore = @".{0,2}[a-zA-Z]"; // шаблон (1) 1 англ + 2 символи попереду 
@@ -29,9 +33,8 @@ namespace CSLight
 			string firstEnglishBefore = string.Empty;
 			string firstEnglishAfter = string.Empty;
 			
-			// перевірка, в тебе відразу норм кори? якщо ні...
-			if (clipText.Length != 18 && clipText.Length > 19) {
-				//зводимо все до оного регістру
+			if (clipText.Length > 20) {
+				// приводимо до онго регістру
 				clipText = clipText.ToUpper();
 				// Видаляємо все окрім цифр та англ букв, переводим в один регістр
 				clipText = Regex.Replace(clipText, @"[^a-zA-Z0-9]", "");
@@ -39,7 +42,18 @@ namespace CSLight
 				firstEnglishBefore = PatternExtract(clipText,patternFirstEnglishBefore);
 				// виявляємо 2 шаблон
 				firstEnglishAfter = PatternExtract(clipText,patternFirstEnglishAfter);
-				// Формуємо результат та прибераємо дублі після конкатенації 
+				// Формуємо результат: прибераємо дублі після конкатенації + додаємо пробіли 
+				clipText = InsertSpaces(RemoveDuplicates(firstEnglishBefore + firstEnglishAfter));
+			}
+			if(clipText.Length <= 18) {
+				// Видаляємо все окрім цифр та англ букв, прибераємо пробіли(якщо є) попереду та позаду, переводим в один регістр
+				clipText = Regex.Replace(clipText, @"[^a-zA-Z0-9]", "").Trim().ToUpper();
+				clipText = "***" + clipText + "***";
+				// виявляємо 1 шаблон
+				firstEnglishBefore = PatternExtract(clipText,patternFirstEnglishBefore);
+				// виявляємо 2 шаблон
+				firstEnglishAfter = PatternExtract(clipText,patternFirstEnglishAfter);
+				// Формуємо результат: прибераємо дублі після конкатенації + додаємо пробіли 
 				clipText = InsertSpaces(RemoveDuplicates(firstEnglishBefore + firstEnglishAfter));
 			}
 			
