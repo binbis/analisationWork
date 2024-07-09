@@ -46,9 +46,10 @@ namespace CSLight
 				clipText = InsertSpaces(RemoveDuplicates(firstEnglishBefore + firstEnglishAfter));
 			}
 			if(clipText.Length <= 18) {
+				//код працює з +18 символів, цей рядок для підстраховки
+				clipText = "***" + clipText + "***";
 				// Видаляємо все окрім цифр та англ букв, переводим в один регістр
 				clipText = Regex.Replace(clipText, @"[^a-zA-Z0-9]", "").Trim().ToUpper();
-				clipText = "***" + clipText + "***";
 				// виявляємо 1 шаблон
 				firstEnglishBefore = PatternExtract(clipText,patternFirstEnglishBefore);
 				// виявляємо 2 шаблон
