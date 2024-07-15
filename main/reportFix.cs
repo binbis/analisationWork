@@ -37,20 +37,21 @@ namespace CSLight
 			foreach (string line in lines)
 			{
 				string output = line;
+				// обробка роординат
+				if (line.Contains("Коорд"))
+				{
+					output = fixCoords(output);
+				}
+				
+				// Використовуємо регулярний вираз для заміни 2+ пробілів на 1 пробіл
+				output = Regex.Replace(line, @"\s+", " ").Trim();
+				
 				// Якщо рядок містить ":", додати пробіл після цього символу
 				if (output.Contains(":"))
 				{
 					output = output.Replace(":", ": ");
 				}
-				// Використовуємо регулярний вираз для заміни 2+ пробілів на 1 пробіл
-				output = Regex.Replace(line, @"\s+", " ").Trim();
 				
-				// обробка роординат
-				if (line.Contains("Координа"))
-				{
-					output = fixCoords(output);
-				}
-
 				// Додаємо оброблений рядок до нового масиву, якщо він не порожній
 				if (!string.IsNullOrWhiteSpace(output))
 				{
