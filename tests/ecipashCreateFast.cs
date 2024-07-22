@@ -46,23 +46,29 @@ class Program
         {
             Console.WriteLine("Батьківська папка вже існує.");
         }
+		/**
+			пробував повторити дію декілька разів
+			буду проходити по масиву у створювати папки
+		*/ 
+		for (int i = 0; i < 4; i++) {
+			// Вказати ім'я вкладеної папки
+			string childFolderName = "ChildFolderName" + i;
 
-        // Вказати ім'я вкладеної папки
-        string childFolderName = "ChildFolderName";
+			// Створити повний шлях до вкладеної папки
+			string childFolderPath = Path.Combine(parentFolderPath, childFolderName);
 
-        // Створити повний шлях до вкладеної папки
-        string childFolderPath = Path.Combine(parentFolderPath, childFolderName);
-
-        // Перевірити, чи існує вкладена папка
-        if (!Directory.Exists(childFolderPath))
-        {
-            // Створити нову вкладену папку
-            Directory.CreateDirectory(childFolderPath);
-            Console.WriteLine("Вкладена папка створена успішно.");
-        }
-        else
-        {
-            Console.WriteLine("Вкладена папка вже існує.");
-        }
+			// Перевірити, чи існує вкладена папка
+			if (!Directory.Exists(childFolderPath))
+			{
+				// Створити нову вкладену папку
+				Directory.CreateDirectory(childFolderPath);
+				Console.WriteLine("Вкладена папка створена успішно.");
+			}
+			else
+			{
+				Console.WriteLine("Вкладена папка вже існує.");
+			}	
+		}
+        
     }
 }
