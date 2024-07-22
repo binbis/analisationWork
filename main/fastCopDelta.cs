@@ -1,5 +1,5 @@
 /**
-05,07,2024_v2.2a
+22,07,2024_v3.0
 0. відкрий дельту в окремій вкладці та вікні, (!не міняй вкладку!), можеш звернути це вікно
 1. виділяєш текст де є координати mgrs
 2. жмеш hotkey
@@ -7,7 +7,7 @@
 4. вставяє оброблені координати до пошуку та натискає кнопку пошуку
 
 ХОЧУ:
-*. ще не придумав як нормально заміняти укр-ру букри на англ. можливо потрібно змінити концет
+(*) виправлення букв присутнє
 * щоб не переносився курсор
 */
 //using System;
@@ -28,38 +28,24 @@ namespace CSLight
 			
 			// Зчитуємо вміст з буферу обміну
 			string clipText = Clipboard.GetText();
+			// для профілактики
+			clipText = "rtrt" + clipText + "rtrt";
 			//чистим буфер
 			Clipboard.Clear();
-			
-			//string patternFirstEnglish = @"[a-zA-Z]"; // шаблон (3) 1 англ буква
-			string patternFirstEnglishBefore = @".{0,2}[a-zA-Z]"; // шаблон (1) 1 англ + 2 символи попереду 
-			string patternFirstEnglishAfter = @"[a-zA-Z].{0,12}"; // шаблон (2) 1 англ + 15 символів після (з запасом)
-			string firstEnglishBefore = string.Empty;
-			string firstEnglishAfter = string.Empty;
-			
-			if (clipText.Length > 20) {
-				// приводимо до онго регістру
+			//банальна переввірка
+			if (clipText.Length!=0) {
 				clipText = clipText.ToUpper();
-				// Видаляємо все окрім цифр та англ букв, переводим в один регістр
-				clipText = Regex.Replace(clipText, @"[^a-zA-Z0-9]", "");
-				// виявляємо 1 шаблон
-				firstEnglishBefore = PatternExtract(clipText,patternFirstEnglishBefore);
-				// виявляємо 2 шаблон
-				firstEnglishAfter = PatternExtract(clipText,patternFirstEnglishAfter);
-				// Формуємо результат: прибераємо дублі після конкатенації + додаємо пробіли 
-				clipText = InsertSpaces(RemoveDuplicates(firstEnglishBefore + firstEnglishAfter));
+				clipText = Regex.Replace(clipText, "[^a-zA-Zа-яА-Я0-9]", "");
 			}
-			if(clipText.Length <= 18) {
-				//код працює з +18 символів, цей рядок для підстраховки
-				clipText = "***" + clipText + "***";
-				// Видаляємо все окрім цифр та англ букв, прибераємо пробіли(якщо є) попереду та позаду, переводим в один регістр
-				clipText = Regex.Replace(clipText, @"[^a-zA-Z0-9]", "").Trim().ToUpper();
-				// виявляємо 1 шаблон
-				firstEnglishBefore = PatternExtract(clipText,patternFirstEnglishBefore);
-				// виявляємо 2 шаблон
-				firstEnglishAfter = PatternExtract(clipText,patternFirstEnglishAfter);
-				// Формуємо результат: прибераємо дублі після конкатенації + додаємо пробіли 
-				clipText = InsertSpaces(RemoveDuplicates(firstEnglishBefore + firstEnglishAfter));
+			// взяти послідовність з 10 чисел та 5 символів перед нею
+			string pattern = @"(.{5})(\d{10})";
+			Match match = Regex.Match(clipText, pattern);
+			
+			// банальна перевірка
+			if (match.Success)
+			{
+				// додаємо пробіли в текст та заміняємо невірну букви
+				clipText = Transliterate(InsertSpaces(match.Groups[1].Value + match.Groups[2].Value));
 			}
 			
 			// Переписує буфер обміну
@@ -70,28 +56,6 @@ namespace CSLight
 			var e = w.Elm["web:COMBOBOX", "Пошук", "@id=search-container-input"].Find(2).MouseClick();
 			// вставляє з буферу обміну 
 			keys.send("Ctrl+A Ctrl+V Enter");
-		}
-		// Функція для видалення дублікатів зі строки
-		static string RemoveDuplicates(string input) {
-			string result = "";
-			foreach (char c in input)
-			{
-				if (char.IsLetter(c) && result.IndexOf(c) != -1)
-				{
-					continue; // Пропускаємо англійські букви, які вже є в результаті
-				}
-				result += c;
-			}
-			return result;
-		}
-		// отримаємо вміст шаблону з рядку
-		static string PatternExtract(string copyText, string pattern) {
-			Match match = Regex.Match(copyText, pattern);
-            if (match.Success)
-            {
-                return match.Value;
-            }
-			 return string.Empty; // or return null, or any default value you prefer
 		}
 		//додаємо пробіли
 		static string InsertSpaces(string input)
@@ -108,6 +72,29 @@ namespace CSLight
 			input = input.Insert(input.Length - 14, " ");
 
 			return input;
+		}
+		static string Transliterate(string text)
+		{
+			Dictionary<char, string> translitMap = new Dictionary<char, string>
+			{
+				{'Р', "P"}, {'С', "C"}, {'Т', "T"} 
+			};
+
+			StringBuilder result = new StringBuilder();
+
+			foreach (char c in text)
+			{
+				if (translitMap.ContainsKey(c))
+				{
+					result.Append(translitMap[c]);
+				}
+				else
+				{
+					result.Append(c);
+				}
+			}
+
+			return result.ToString();
 		}
 	}
 }
