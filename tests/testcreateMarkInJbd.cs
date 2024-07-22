@@ -1,5 +1,5 @@
 /* 16,07,2024_v1
-* 
+* в тестовому режимі
 */
 
 using System.Windows.Forms;
