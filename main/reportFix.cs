@@ -1,5 +1,5 @@
 /*
-09,07,2024_v1b
+22,07,2024_v1.5
 1. виділяєш весь звіт(текст)
 2. жмеш "ALT+Shift+L"
 3. вставляєш оброблений звіт
@@ -9,9 +9,9 @@
 
 ХОЧУ 
 (*) всі пробіли замінити на 1
-(*) обробку координат
+* обробку координат - все ще не працює
 (*) після ":" після неї, якщо є, обов'язково повинен бути пробіл 
-* додавати потчну дату, якщо вона відсутня
+* перевірка на присутність дати якщо немає додати
 */
 using System.Windows.Forms;
 namespace CSLight
@@ -39,7 +39,7 @@ namespace CSLight
 			{
 				string output = line;
 				// обробка роординат
-				if (line.Contains("ордина"))
+				if (output.Contains("ордина"))
 				{
 					output = fixCoords(output);
 					Console.WriteLine("sucsess");
@@ -69,59 +69,59 @@ namespace CSLight
 			// додає в буфер обміну оброблений текст
 			Clipboard.SetText(outputOurText);
 		}
-		// 
+		// виправлення координат
 		static string fixCoords(string clipText) {
 			string clipTextRet = clipText;
-			string patternFirstEnglishBefore = @".{0,2}[a-zA-Z]"; // шаблон (1) 1 англ + 2 символи попереду 
-			string patternFirstEnglishAfter = @"[a-zA-Z].{0,12}"; // шаблон (2) 1 англ + 15 символів після (з запасом)
-			string firstEnglishBefore = string.Empty;
-			string firstEnglishAfter = string.Empty;
+			if (clipText.Length!=0) {
+				clipTextRet = clipTextRet.ToUpper();
+				clipTextRet = Regex.Replace(clipTextRet, "[^a-zA-Zа-яА-Я0-9]", "");
+			}
 			
-			//код працює з +18 символів, цей рядок для підстраховки
-			//clipTextRet = "***" + clipTextRet + "***";
-			// Видаляємо все окрім цифр та англ букв, переводим в один регістр
-			clipTextRet = Regex.Replace(clipTextRet, @"[^a-zA-Z0-9]", "").Trim().ToUpper();
-			// виявляємо 1 шаблон
-			firstEnglishBefore = PatternExtract(clipTextRet,patternFirstEnglishBefore);
-			// виявляємо 2 шаблон
-			firstEnglishAfter = PatternExtract(clipTextRet,patternFirstEnglishAfter);
-			// Формуємо результат: прибераємо дублі після конкатенації + додаємо пробіли 
-			clipTextRet = "Координати: " + InsertSpaces(RemoveDuplicates(firstEnglishBefore + firstEnglishAfter));
+			string pattern = @"(.{5})(\d{10})";
+        
+			Match match = Regex.Match(clipTextRet, pattern);
 			
+			if (match.Success)
+			{
+				clipTextRet = "Координати: " + Transliterate(InsertSpaces(match.Groups[1].Value + match.Groups[2].Value));
+			}
 			return clipTextRet;
 		}
-		// Функція для видалення дублікатів зі строки
-		static string RemoveDuplicates(string input) {
-			string result = "";
-			foreach (char c in input)
-			{
-				if (char.IsLetter(c) && result.IndexOf(c) != -1)
-				{
-					continue; // Пропускаємо англійські букви, які вже є в результаті
-				}
-				result += c;
-			}
-			return result;
-		}
-		// отримаємо вміст шаблону з рядку
-		static string PatternExtract(string copyText, string pattern) {
-			Match match = Regex.Match(copyText, pattern);
-            if (match.Success)
-            {
-                return match.Value;
-            }
-			return string.Empty; // or return null, or any default value you prefer
-		}
-		//додаємо пробіли
+		// додаємо пробіли
 		static string InsertSpaces(string input)
 		{
-			string inputRep = input;
-			// Insert spaces at the specified positions
-			inputRep = inputRep.Insert(inputRep.Length - 5, " ");
-			inputRep = inputRep.Insert(inputRep.Length - 11, " ");
-			inputRep = inputRep.Insert(inputRep.Length - 14, " ");
+			input = input.Insert(input.Length - 5, " ");
+			input = input.Insert(input.Length - 11, " ");
+			input = input.Insert(input.Length - 14, " ");
 
-			return inputRep;
+			return input;
+		}
+		// заміняє букви кирилиці на латиницю
+		static string Transliterate(string text)
+		{
+			Dictionary<char, string> translitMap = new Dictionary<char, string>
+			{
+				{'Р', "P"}, {'С', "C"}, {'Т', "T"},
+				{'Е', "E"}, {'М', "M"}, {'В', "B"},
+				{'А', "A"}, {'О', "O"}, {'Н', "H"},
+				{'К', "K"}, {'Х', "X"}
+			};
+
+			StringBuilder result = new StringBuilder();
+
+			foreach (char c in text)
+			{
+				if (translitMap.ContainsKey(c))
+				{
+					result.Append(translitMap[c]);
+				}
+				else
+				{
+					result.Append(c);
+				}
+			}
+
+			return result.ToString();
 		}
 	}
 }

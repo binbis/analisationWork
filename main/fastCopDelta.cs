@@ -57,27 +57,25 @@ namespace CSLight
 			// вставляє з буферу обміну 
 			keys.send("Ctrl+A Ctrl+V Enter");
 		}
-		//додаємо пробіли
+		// додаємо пробіли
 		static string InsertSpaces(string input)
 		{
-			/*
-			if (input.Length < 15)
-			{
-				return input; // If the input length is less than 15, no need to insert spaces
-			}
-			*/
-			// Insert spaces at the specified positions
 			input = input.Insert(input.Length - 5, " ");
 			input = input.Insert(input.Length - 11, " ");
 			input = input.Insert(input.Length - 14, " ");
 
 			return input;
 		}
+		// заміняє букви кирилиці на латиницю
 		static string Transliterate(string text)
 		{
+			// кирил на лат
 			Dictionary<char, string> translitMap = new Dictionary<char, string>
 			{
-				{'Р', "P"}, {'С', "C"}, {'Т', "T"} 
+				{'Р', "P"}, {'С', "C"}, {'Т', "T"},
+				{'Е', "E"}, {'М', "M"}, {'В', "B"},
+				{'А', "A"}, {'О', "O"}, {'Н', "H"},
+				{'К', "K"}, {'Х', "X"}
 			};
 
 			StringBuilder result = new StringBuilder();
