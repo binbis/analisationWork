@@ -38,15 +38,15 @@ namespace CSLight
 			foreach (string line in lines)
 			{
 				string output = line;
+				
+				// Використовуємо регулярний вираз для заміни 2+ пробілів на 1 пробіл
+				output = Regex.Replace(line, @"\s+", " ").Trim();
 				// обробка роординат
 				if (output.Contains("ордина"))
 				{
 					output = fixCoords(output);
-					Console.WriteLine("sucsess");
+					//Console.WriteLine("sucsess");
 				}
-				
-				// Використовуємо регулярний вираз для заміни 2+ пробілів на 1 пробіл
-				output = Regex.Replace(line, @"\s+", " ").Trim();
 				
 				// Якщо рядок містить ":", додати пробіл після цього символу
 				if (output.Contains(":"))
