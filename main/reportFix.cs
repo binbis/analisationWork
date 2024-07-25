@@ -9,7 +9,7 @@
 
 ХОЧУ 
 (*) всі пробіли замінити на 1
-* обробку координат - все ще не працює
+не прац (*) обробку координат - все ще не працює
 (*) після ":" після неї, якщо є, обов'язково повинен бути пробіл 
 * перевірка на присутність дати якщо немає додати
 */
@@ -42,10 +42,9 @@ namespace CSLight
 				// Використовуємо регулярний вираз для заміни 2+ пробілів на 1 пробіл
 				output = Regex.Replace(line, @"\s+", " ").Trim();
 				// обробка роординат
-				if (output.Contains("ордина"))
+				if (output.Contains("Координа"))
 				{
-					output = fixCoords(output);
-					//Console.WriteLine("sucsess");
+					fixCoords(output);
 				}
 				
 				// Якщо рядок містить ":", додати пробіл після цього символу
@@ -71,21 +70,20 @@ namespace CSLight
 		}
 		// виправлення координат
 		static string fixCoords(string clipText) {
-			string clipTextRet = clipText;
-			if (clipText.Length!=0) {
-				clipTextRet = clipTextRet.ToUpper();
-				clipTextRet = Regex.Replace(clipTextRet, "[^a-zA-Zа-яА-Я0-9]", "");
-			}
+			
+			string clipTextOutput = clipText.ToUpper();
+			clipTextOutput = Regex.Replace(clipText, "[^a-zA-Zа-яА-Я0-9]", "");
 			
 			string pattern = @"(.{5})(\d{10})";
         
-			Match match = Regex.Match(clipTextRet, pattern);
-			
+			Match match = Regex.Match(clipTextOutput, pattern);
+			Console.WriteLine("sucsess");
 			if (match.Success)
 			{
-				clipTextRet = "Координати: " + Transliterate(InsertSpaces(match.Groups[1].Value + match.Groups[2].Value));
+				clipTextOutput = "Координати: " + Transliterate(InsertSpaces(match.Groups[1].Value + match.Groups[2].Value));
+				
 			}
-			return clipTextRet;
+			return clipTextOutput = clipText;
 		}
 		// додаємо пробіли
 		static string InsertSpaces(string input)
