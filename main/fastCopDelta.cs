@@ -22,16 +22,16 @@ namespace CSLight
         {
 			opt.mouse.MoveSpeed = opt.key.KeySpeed = opt.key.TextSpeed = 10;
 			//чистим буфер
-			Clipboard.Clear();
+			clipboard.clear();
 			//копіюємо код
 			keys.send("Ctrl+C");
 			
 			// Зчитуємо вміст з буферу обміну
-			string clipText = Clipboard.GetText();
+			string clipText = clipboard.copy();
 			// для профілактики
 			clipText = "rtrt" + clipText + "rtrt";
 			//чистим буфер
-			Clipboard.Clear();
+			clipboard.clear();
 			//банальна переввірка
 			if (clipText.Length!=0) {
 				clipText = clipText.ToUpper();
@@ -47,7 +47,7 @@ namespace CSLight
 				// додаємо пробіли в текст та заміняємо невірну букви
 				clipText = Transliterate(InsertSpaces(match.Groups[1].Value + match.Groups[2].Value));
 			}
-			
+			Clipboard.SetText(clipText);
 			// Знаходить та активує вікно якщо воно звернуте 
 			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1").Activate();
 			// Знаходить пошуковий рядок
