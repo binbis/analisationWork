@@ -67,10 +67,10 @@ namespace CSLight {
 			// Перетворюємо рядок дати у DateTime
 			DateTime originalDate = DateTime.ParseExact(date, "dd.MM.yyyy", CultureInfo.InvariantCulture);
 			// Додаємо 14 днів
-			DateTime newDate = originalDate.AddDays(14);
+			DateTime newDate = originalDate.AddDays(60);
 			// Перетворюємо нову дату назад у рядок
 			//string newDateString = newDate.ToString("dd.MM.yyyy");
-			string newDateString = newDate.ToString("dd.MM");
+			string newDateString = newDate.ToString("dd.MM.yyyy");
 			return newDateString;
 		}
 	}

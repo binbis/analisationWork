@@ -48,15 +48,13 @@ namespace CSLight
 				clipText = Transliterate(InsertSpaces(match.Groups[1].Value + match.Groups[2].Value));
 			}
 			
-			// Переписує буфер обміну
-			Clipboard.SetText(clipText);
 			// Знаходить та активує вікно якщо воно звернуте 
 			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1").Activate();
 			// Знаходить пошуковий рядок
 			var e = w.Elm["web:COMBOBOX", "Пошук"].Find(2);
+			// жмем пишем
 			e.PostClick(1);
-			// вставляє з буферу обміну 
-			keys.send("Ctrl+A Ctrl+V Enter");
+			e.SendKeys("Ctrl+A", "!" + clipText, "Enter");
 		}
 		// додаємо пробіли
 		static string InsertSpaces(string input)
