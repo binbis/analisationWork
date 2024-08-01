@@ -22,10 +22,12 @@ class Program
 		
         // Використання регулярних виразів для отримання потрібних частин рядка
         string datePattern = @"(\d{2}\.\d{2}\.\d{4})";
-        string crewPattern = @"Екіпаж — ([^ТВ]*)";
+        //string crewPattern = @"Екіпаж — ([^Т]*)";
+		string crewPattern = @"Екіпаж — ([^Т]*)";
         string pointPattern = @"Точка вильоту — ([^З]*)";
-        string teamPattern = @"Склад: — (.+)";
-
+		string teamPattern = @"Склад: — (.+)";
+		//string teamPattern = @"Склад:(?:\s*— (?:командир\s*)?(\S+ \(\S+\)))*";
+		
         // Знаходження частин рядка за допомогою регулярних виразів
         string date = Regex.Match(initialString, datePattern).Groups[1].Value.Trim();
         string crew = Regex.Match(initialString, crewPattern).Groups[1].Value.Trim();
@@ -33,7 +35,7 @@ class Program
 
         // Отримання всіх членів команди
         string team = Regex.Match(initialString, teamPattern).Groups[1].Value.Trim();
-        string[] teamMembers = team.Split(new string[] { " — " }, StringSplitOptions.RemoveEmptyEntries);
+		string[] teamMembers = Regex.Split(team, @" — (?!командир)").Select(member => member.Replace("командир ", "")).ToArray();
         string formattedTeam = string.Join(", ", teamMembers);
 
         // Формування кінцевого рядка
