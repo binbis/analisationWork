@@ -1,9 +1,10 @@
-/* 03,08,2024_v1.4
+/* 04,08,2024_v1.5
 * в тестовому режимі
 - міна, залежно від статусу заповнюється та оновлюється(назва, дата\час, боєздатність, коментар)
 - укриття, залежно від заповнення, заповнюється та оновлюється "без ід"(назва,  дата\час, ідентифікатор, коментар)[якщо виявлено, бере комент, ураження-знищення бере статус, ]
-- техніка 
+- техніка, ніби як працює, теба тестувати в бою
 
+- Бліндаж
 - Т. вильоту дронів
 - Скупчення ОС
 ще є така помилка для массива (вона фантомна)
@@ -13,8 +14,7 @@ Index was outside the bounds of the array. це от тут parts[]
 namespace CSLight {
 	class Program {
 		static void Main() {
-			
-			opt.mouse.MoveSpeed = opt.key.KeySpeed = 30;
+			opt.key.KeySpeed = 30;
 			opt.key.TextSpeed = 20;
 			//виділяємо весь рядок
 			keys.send("Shift+Space*2");
@@ -29,7 +29,7 @@ namespace CSLight {
 			// Присвоюємо змінним відповідні значення
 			string dateJbd = parts[0]; // 27.07.2024
 			string timeJbd = parts[1]; //00:40
-			string commentJbd = parts[2]; //коментар (для ідентифікації скоріш за все)
+			string commentJbd = parts[2].Replace("\n"," "); //коментар (для ідентифікації скоріш за все)
 			string crewTeamJbd = parts[4]; // R-18-1 (Мавка)
 			string whatDidJbd = parts[5]; // Мінування (можливо його видалю)
 			string targetClassJbd = parts[7]; // Міна/Вантажівка/Військ. баггі/Скупчення ОС/Укриття
@@ -37,42 +37,61 @@ namespace CSLight {
 			// Встановлено/Уражено/Промах/Авар. скид/Повторно уражено
 			string establishedJbd = parts[24];
 			//Console.WriteLine(establishedJbd);
+			//Console.WriteLine(targetClassJbd);
 			//звести дату до формату дельти
 			string dateDeltaFormat = dateJbd.Replace('.','/');
-			// массив техніки
-			string[] machineryArray = {
-				"ББМ / МТ-ЛБ","Авто","Вантажівка","Танк","Гармата",
-				"Мотоцикл","Військ. баггі"
-			};
 			// для мін
 			string targetMinePTM = "Міна";
 			// уриття типу район зосередження
 			string areaConcentration = "Укриття";
-			//Console.WriteLine(targetClassJbd);
-			// якщо ти міна
+			// массив техніки
+			string[] machineryArray = {
+				"ББМ / МТ-ЛБ","Авто","Вантажівка","Танк","Гармата",
+				"Мотоцикл","Військ. баггі","Гаубиця"
+			};
+			//. якщо ти техніка
+			for (int i = 0; i < machineryArray.Length; i++) {
+				if (targetClassJbd.Contains(machineryArray[i])) {
+					deltaLayerWindow(machineryArray[i], commentJbd);
+					deltaMarkName(machineryArray[i], dateJbd, establishedJbd, commentJbd);
+					deltaDateLTimeWindow(dateDeltaFormat, timeJbd);
+					deltaNumberOfnumberWindow();
+					deltaCombatCapabilityWindow(machineryArray[i], establishedJbd, commentJbd);
+					deltaIdentificationWindow(machineryArray[i], establishedJbd);
+					deltaReliabilityWindow();
+					deltaFlyeye();
+					deltaIdPurchaseText(idTargetJbd);
+					deltaCommentContents(machineryArray[i], dateJbd, timeJbd, crewTeamJbd, establishedJbd, targetClassJbd, commentJbd);
+				}
+			}
+			//..
+			//. якщо ти міна
 			if (targetClassJbd.Contains(targetMinePTM)) {
-				deltaLayerWindow(targetMinePTM);
-				deltaMarkName(targetMinePTM, dateJbd,establishedJbd);
+				deltaLayerWindow(targetMinePTM, commentJbd);
+				deltaMarkName(targetMinePTM, dateJbd,establishedJbd,commentJbd);
 				deltaDateLTimeWindow(dateDeltaFormat, timeJbd);
 				deltaNumberOfnumberWindow();
-				deltaCombatCapabilityWindow(establishedJbd);
+				deltaCombatCapabilityWindow(targetMinePTM, establishedJbd, commentJbd);
 				deltaIdentificationWindow(targetMinePTM, establishedJbd);
 				deltaReliabilityWindow();
 				deltaFlyeye();
 				deltaIdPurchaseText(idTargetJbd);
 				deltaCommentContents(targetMinePTM, dateJbd, timeJbd, crewTeamJbd, establishedJbd, targetClassJbd, commentJbd);
-			// якщо ти укриття
+			//..
+			//. якщо ти укриття
 			} else if (targetClassJbd.Contains(areaConcentration)) {
-				deltaLayerWindow(areaConcentration);
-				deltaMarkName(areaConcentration, dateJbd, establishedJbd);
-				deltaDateLTimeWindow(dateDeltaFormat,timeJbd);
+				deltaLayerWindow(areaConcentration,commentJbd);
+				deltaMarkName(areaConcentration, dateJbd, establishedJbd, commentJbd);
+				deltaDateLTimeWindow(dateDeltaFormat, timeJbd);
 				deltaIdentificationWindow(areaConcentration, establishedJbd);
 				deltaReliabilityWindow();
 				deltaFlyeye();
 				deltaCommentContents(areaConcentration, dateJbd, timeJbd, crewTeamJbd, establishedJbd, targetClassJbd, commentJbd);
-			} else  {
-				Console.WriteLine("нічого спільного не зміг знайти");
+				//..
+			}else {
+				//Console.WriteLine("нічого спільного не зміг знайти");
 			}
+			
 			// Знаходить та активує вікно якщо воно звернуте 
 			//var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1").Activate();
 		}
@@ -87,7 +106,7 @@ namespace CSLight {
 			return newDateString;
 		}
 		// поле шар
-		static void deltaLayerWindow(string whoAreYou) {
+		static void deltaLayerWindow(string whoAreYou, string commentJbd) {
 			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1").Activate();
 			// поле шар
 			var layerWindow = w.Elm["web:GROUPING", prop: "@data-testid=select-layer"].Find(3);
@@ -100,29 +119,65 @@ namespace CSLight {
 				layerWindow.SendKeys("Ctrl+A","!11","Enter");
 			} else if (whoAreYou.Contains("Укриття")) {
 				layerWindow.SendKeys("Ctrl+A","!01","Enter");
-			} 
+			} else {
+				if (commentJbd.Contains("в рус")) {
+					layerWindow.SendKeys("Ctrl+A","!06","Enter");
+				}else {
+					layerWindow.SendKeys("Ctrl+A","!04","Enter");
+				}
+			}
 			//layerWindow.SendKeys("Ctrl+A","!000","Enter");
 		}
 		// поле назва
-		static void deltaMarkName(string whoAreYou, string dateJbd, string establishedJbd){
+		static void deltaMarkName(string whoAreYou, string dateJbd, string establishedJbd, string commentJbd){
 			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1");
 			// поле назва
 			string markName = string.Empty;
+			if (establishedJbd.Contains("Знищ")) {
+				if (whoAreYou.Contains("Укриття")) {
+					markName = whoAreYou + " ОС (знищ.)";
+				} else {
+					markName = whoAreYou + " (знищ.)";
+				}
+			}else if (establishedJbd.Contains("Ураж")) {
+				if (whoAreYou.Contains("Укриття")) {
+					markName = whoAreYou + " ОС (ураж.)";
+				} else {
+					markName = whoAreYou + " (ураж.)";
+				}
+			}else {
+				if (whoAreYou.Contains("Укриття")) {
+					markName = whoAreYou + " ОС ";
+				}else {
+					markName = whoAreYou;
+				}
+			}
+			
+			if (commentJbd.Contains("в рус") || commentJbd.Contains("рух")) {
+				markName = whoAreYou + " (в русі)";
+			}else if (commentJbd.Contains("схов")) {
+				markName = whoAreYou + " (схов.)";
+			}else if (commentJbd.Contains("знищ")) {
+				if (whoAreYou.Contains("Укриття")) {
+					markName = whoAreYou + " ОС (знищ.)";
+				} else {
+					markName = whoAreYou + " (знищ.)";
+				}
+			}else if (commentJbd.Contains("ураж")) {
+				if (whoAreYou.Contains("Укриття")) {
+					markName = whoAreYou + " ОС (ураж.)";
+				} else {
+					markName = whoAreYou + " (ураж.)";
+				}
+			}
+			
 			if (whoAreYou.Contains("Міна")) {
 				if (establishedJbd.Contains("Авар. скид") || establishedJbd.Contains("Розміновано")) {
 					markName = "ПТМ-3 (" + dateJbd + ")";
 				}else {
 					markName = "ПТМ-3 до ("+ datePlasFourteen(dateJbd)+")";
 				}
-			} else if (whoAreYou.Contains("Укриття")) {
-				if (establishedJbd.Contains("Знищено")) {
-					markName = "Укриття ОС (знищ.)";
-				}else if (establishedJbd.Contains("Виявлено")) {
-					markName = "Укриття ОС";
-				}else {
-					markName = "Укриття ОС (ураж.)";
-				}
-			};
+			}
 			var nameOfMarkWindow = w.Elm["web:TEXT", prop: new("@data-testid=T")].Find(3);
 			nameOfMarkWindow.PostClick(2);
 			wait.ms(100);
@@ -137,7 +192,7 @@ namespace CSLight {
 			dateDeltaWindow.SendKeys("Ctrl+A","!"+ dateDeltaFormat);
 			wait.ms(100);
 			var timeDeltaWindow = w.Elm["web:TEXT", prop: "@data-testid=W-time-input"].Find(1);
-			timeDeltaWindow.SendKeys("!"+timeJbd, "Enter*2");
+			timeDeltaWindow.SendKeys("Ctrl+A", "!"+timeJbd, "Enter*2");
 			wait.ms(100);
 		}
 		// поле кількість
@@ -150,21 +205,37 @@ namespace CSLight {
 			numberOfnumberWindow.SendKeys("Ctrl+A", "!1");
 		}
 		// поле боєздатність
-		static void deltaCombatCapabilityWindow(string establishedJbd){
+		static void deltaCombatCapabilityWindow(string whoAreYou, string establishedJbd, string commentJbd) {
 			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1");
 			// поле боєздатність
 			string fullaim = string.Empty;
-			if (establishedJbd.Contains("Авар. скид") || establishedJbd.Contains("Розміновано")) {
-				fullaim = "небо";
-			}else if (establishedJbd.Contains("Встановлено")) {
-				fullaim = "повніс";
-			}else {
+			if (whoAreYou.Contains("Міна")) {
+				if (establishedJbd.Contains("Авар. скид") || establishedJbd.Contains("Розміновано")) {
+					fullaim = "небо";
+				} else if (establishedJbd.Contains("Встановлено")) {
+					fullaim = "повніс";
+				} else {
+					fullaim = "част";
+				}
+			}
+			if (establishedJbd.Contains("Ураж")) {
 				fullaim = "част";
 			}
+			if (establishedJbd.Contains("Знищ")) {
+				fullaim = "небо";
+			}
+			if (establishedJbd.Contains("Виявлено")) {
+				if (commentJbd.Contains("Ураж")) {
+					fullaim = "част";
+				}
+				if (commentJbd.Contains("Знищ")) {
+					fullaim = "небо";
+				}else { fullaim = "повніс"; }
+			}
 			var combatCapabilityWindow = w.Elm["web:GROUPING", prop: "@data-testid=operational-condition-select"].Find(3);
-			combatCapabilityWindow.PostClickD(1);
+			combatCapabilityWindow.PostClick(2);
 			wait.ms(100);
-			combatCapabilityWindow.SendKeys("","!"+fullaim, "Enter");
+			combatCapabilityWindow.SendKeys("Ctrl+A","!"+fullaim, "Enter");
 		}
 		// ідетнифікація
 		static void deltaIdentificationWindow(string whoAreYou, string establishedJbd){
@@ -202,11 +273,14 @@ namespace CSLight {
 			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1");
 			// тип джерела
 			string flyeye = "повітр";
-			var typeOfSourceWindow = w.Elm["web:GROUPING", prop: "@data-testid=AD", flags: EFFlags.HiddenToo].Find(1);
-			typeOfSourceWindow.PostClickD(2);
+			var typeOfSourceWindow = w.Elm["web:GROUPING", prop: "@data-testid=AD"].Find(100);
+			typeOfSourceWindow.ScrollTo();
 			wait.ms(500);
-			typeOfSourceWindow.SendKeys("Ctrl+A", "!"+flyeye, "Enter");
+			typeOfSourceWindow.Select();
 			wait.ms(100);
+			typeOfSourceWindow.PostClick(2);
+			wait.ms(100);
+			typeOfSourceWindow.SendKeys("Ctrl+A", "!"+flyeye, "Enter");
 		}
 		// завйваження штабу ід
 		static void deltaIdPurchaseText(string idTargetJbd){
@@ -223,22 +297,21 @@ namespace CSLight {
 			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1");
 			string commentContents = dateJbd + " " + timeJbd + " - ";
 			// коментар
+			if (crewTeamJbd.Contains("FPV")) {
+				commentContents += establishedJbd.ToLower() + " за допомогою " + crewTeamJbd;
+			} else if (establishedJbd.Contains("Виявлено")) {
+				commentContents += commentJbd + ", спостерігали з " + crewTeamJbd;
+			} else if (establishedJbd.Contains("Підтверджено")) {
+				commentContents += "дорозвідка, спостерігали з " + crewTeamJbd;
+			} else {
+				commentContents += establishedJbd.ToLower() + " за допомогою ударного коптера " + crewTeamJbd;
+			};
+			
 			if (whoAreYou.Contains("Міна")) {
 				if (establishedJbd.Contains("Авар. скид")) {
 					commentContents += "аварійно сикнуто з ударного коптера " + crewTeamJbd;
 				} else if(establishedJbd.Contains("Розміновано")) {
 					commentContents += "розміновано спостерігали з " + crewTeamJbd;
-				} else {
-					commentContents += "встановлена за допомогою ударного коптера " + crewTeamJbd;
-				}
-			} else {
-				if (crewTeamJbd.Contains("FPV")) {
-					commentContents += establishedJbd.ToLower() + " за допомогою " + crewTeamJbd;
-				}
-				if (establishedJbd.Contains("Виявлено")) {
-					commentContents += commentJbd + ", спостерігали з " + crewTeamJbd;
-				}else {
-					commentContents += establishedJbd.ToLower() + " за допомогою ударного коптера " + crewTeamJbd;
 				}
 			}
 			
