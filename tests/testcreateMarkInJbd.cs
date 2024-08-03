@@ -6,6 +6,7 @@
 ще є така помилка для массива 
 Index was outside the bounds of the array. це от тут parts[]
 */
+
 namespace CSLight {
 	class Program {
 		static void Main() {
@@ -59,7 +60,7 @@ namespace CSLight {
 				Console.WriteLine("нічого спільного не зміг знайти");
 			}
 			// Знаходить та активує вікно якщо воно звернуте 
-			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1").Activate();
+			//var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1").Activate();
 			
 			
 
@@ -77,7 +78,7 @@ namespace CSLight {
 		}
 		// поле шар
 		static void deltaLayerWindow() {
-			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1");
+			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1").Activate();
 			// поле шар
 			var layerWindow = w.Elm["web:GROUPING", prop: "@data-testid=select-layer"].Find(3);
 			layerWindow.Select();
@@ -154,8 +155,8 @@ namespace CSLight {
 			// тип джерела
 			string flyeye = "повітр";
 			var typeOfSourceWindow = w.Elm["web:GROUPING", prop: "@data-testid=AD", flags: EFFlags.HiddenToo].Find(1);
-			typeOfSourceWindow.PostClick(2);
-			wait.ms(100);
+			typeOfSourceWindow.PostClickD(2);
+			wait.ms(500);
 			typeOfSourceWindow.SendKeys("Ctrl+A", "!"+flyeye, "Enter");
 			wait.ms(100);
 		}
