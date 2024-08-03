@@ -33,6 +33,7 @@ namespace CSLight {
 			string idTargetJbd = parts[9]; // Міна 270724043
 			// Встановлено/Уражено/Промах/Авар. скид/Повторно уражено
 			string establishedJbd = parts[24];
+			//Console.WriteLine(establishedJbd);
 			//приводжу дату до формату дельти
 			string dateDeltaFormat = dateJbd.Replace('.','/');
 			/*
@@ -47,15 +48,15 @@ namespace CSLight {
 			//Console.WriteLine(targetClassJbd);
 			if (targetClassJbd.Contains(targetMinePTM)) {
 				deltaLayerWindow();
-				deltaMarkName(dateJbd);
+				deltaMarkName(dateJbd,establishedJbd);
 				deltaDateLTimeWindow(dateDeltaFormat,timeJbd);
 				deltaNumberOfnumberWindow();
-				deltaCombatCapabilityWindow();
+				deltaCombatCapabilityWindow(establishedJbd);
 				deltaIdentificationWindow();
 				deltaReliabilityWindow();
 				deltaFlyeye();
 				deltaIdPurchaseText(idTargetJbd);
-				deltaCommentContents(dateJbd,timeJbd,crewTeamJbd);
+				deltaCommentContents(dateJbd,timeJbd,crewTeamJbd,establishedJbd);
 			} else {
 				Console.WriteLine("нічого спільного не зміг знайти");
 			}
@@ -85,13 +86,19 @@ namespace CSLight {
 			wait.ms(100);
 			layerWindow.PostClickD(2);
 			wait.ms(100);
-			layerWindow.SendKeys("Ctrl+A","!11","Enter");
+			//layerWindow.SendKeys("Ctrl+A","!11","Enter");
+			layerWindow.SendKeys("Ctrl+A","!000","Enter");
 		}
 		// поле назва
-		static void deltaMarkName(string dateJbd){
+		static void deltaMarkName(string dateJbd, string establishedJbd){
 			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1");
 			// поле назва
-			string markName = "ПТМ-3 до ("+ datePlasFourteen(dateJbd)+")";
+			string markName = "ПТМ-3 ";
+			if (establishedJbd.Contains("Авар. скид") || establishedJbd.Contains("Розміновано")) {
+				markName += "(" + dateJbd + ")";
+			}else {
+				markName += "до ("+ datePlasFourteen(dateJbd)+")";
+			}
 			var nameOfMarkWindow = w.Elm["web:TEXT", prop: new("@data-testid=T")].Find(3);
 			nameOfMarkWindow.PostClick(2);
 			wait.ms(100);
@@ -120,10 +127,17 @@ namespace CSLight {
 			numberOfnumberWindow.SendKeys("Ctrl+A", "!1");
 		}
 		// поле боєздатність
-		static void deltaCombatCapabilityWindow(){
+		static void deltaCombatCapabilityWindow(string establishedJbd){
 			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1");
 			// поле боєздатність
-			string fullaim = "Повні";
+			string fullaim = string.Empty;
+			if (establishedJbd.Contains("Авар. скид") || establishedJbd.Contains("Розміновано")) {
+				fullaim = "небо";
+			}else if (establishedJbd.Contains("Встановлено")) {
+				fullaim = "повніс";
+			}else {
+				fullaim = "част";
+			}
 			var combatCapabilityWindow = w.Elm["web:GROUPING", prop: "@data-testid=operational-condition-select"].Find(3);
 			combatCapabilityWindow.PostClickD(1);
 			wait.ms(100);
@@ -171,10 +185,17 @@ namespace CSLight {
 			idPurchaseWindow.SendKeys("Ctrl+A", "!"+idPurchaseText, "Enter");
 		}
 		// коментар
-		static void deltaCommentContents(string dateJbd, string timeJbd, string crewTeamJbd){
+		static void deltaCommentContents(string dateJbd, string timeJbd, string crewTeamJbd, string establishedJbd){
 			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1");
+			string commentContents = dateJbd + " " + timeJbd;
 			// коментар
-			string commentContents = dateJbd + " " + timeJbd + " - встановлена за допомогою ударного коптера " + crewTeamJbd;
+			if (establishedJbd.Contains("Авар. скид")) {
+				commentContents += " - аварійно сикнуто з ударного коптера " + crewTeamJbd;
+			} else if(establishedJbd.Contains("Розміновано")) {
+				commentContents += " - розміновано спостерігали з " + crewTeamJbd;
+			} else {
+				commentContents += " - встановлена за допомогою ударного коптера " + crewTeamJbd;
+			}
 			var commentWindow = w.Elm["web:TEXT", prop: "@data-testid=comment-editing__textarea"].Find(1);
 			commentWindow.PostClick();
 			commentWindow.SendKeys("Ctrl+A", "!"+commentContents);
