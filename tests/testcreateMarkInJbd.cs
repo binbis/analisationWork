@@ -191,9 +191,12 @@ namespace CSLight {
 			// поле дата / час
 			var dateDeltaWindow = w.Elm["web:TEXT", prop: "@data-testid=W"].Find(3);
 			dateDeltaWindow.PostClick(2);
+			wait.ms(100);
 			dateDeltaWindow.SendKeys("Ctrl+A","!"+ dateDeltaFormat);
 			wait.ms(100);
 			var timeDeltaWindow = w.Elm["web:TEXT", prop: "@data-testid=W-time-input"].Find(1);
+			timeDeltaWindow.PostClick(2);
+			wait.ms(200);
 			timeDeltaWindow.SendKeys("Ctrl+A", "!"+timeJbd, "Enter*2");
 			wait.ms(100);
 		}
