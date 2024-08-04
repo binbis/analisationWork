@@ -91,6 +91,7 @@ namespace CSLight {
 				deltaReliabilityWindow();
 				deltaFlyeye();
 				deltaCommentContents(areaConcentration, dateJbd, timeJbd, crewTeamJbd, establishedJbd, targetClassJbd, commentJbd);
+				deltaAdditionalFields(idTargetJbd);
 				//..
 			}else {
 				//Console.WriteLine("нічого спільного не зміг знайти");
@@ -292,11 +293,10 @@ namespace CSLight {
 		static void deltaIdPurchaseText(string idTargetJbd){
 			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1");
 			// завйваження штабу ід
-			string idPurchaseText = idTargetJbd;
 			var idPurchaseWindow = w.Elm["web:TEXT", prop: "@data-testid=G", flags: EFFlags.HiddenToo].Find(1);
 			idPurchaseWindow.PostClick();
 			wait.ms(100);
-			idPurchaseWindow.SendKeys("Ctrl+A", "!"+idPurchaseText, "Enter");
+			idPurchaseWindow.SendKeys("Ctrl+A", "!"+idTargetJbd, "Enter");
 		}
 		// коментар
 		static void deltaCommentContents(string whoAreYou, string dateJbd, string timeJbd, string crewTeamJbd, string establishedJbd, string targetClassJbd, string commentJbd){
@@ -331,6 +331,20 @@ namespace CSLight {
 			commentAsseptButton.ScrollTo();
 			wait.ms(200);
 			commentAsseptButton.PostClick(2);
+		}
+		static void deltaAdditionalFields(string idTargetJbd) {
+			// додаткові поля
+			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1");
+			var additionalFields = w.Elm["web:GROUPING", "Додаткові поля", "@title=Додаткові поля"].Find(1);
+			additionalFields.PostClick(1);
+			wait.ms(200);
+			//примітки штабу
+			var notesWindow = w.Elm["web:TEXT", prop: "@data-testid=string-field__input"].Find(1);
+			notesWindow.ScrollTo();
+			wait.ms(200);
+			notesWindow.PostClick(1);
+			wait.ms(200);
+			notesWindow.SendKeys("Ctrl+A", "!"+idTargetJbd, "Enter");
 		}
 	}
 }
