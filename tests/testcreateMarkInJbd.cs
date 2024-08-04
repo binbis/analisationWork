@@ -4,9 +4,12 @@
 - укриття, залежно від заповнення, заповнюється та оновлюється "без ід"(назва,  дата\час, ідентифікатор, коментар)[якщо виявлено, бере комент, ураження-знищення бере статус, ]
 - техніка, ніби як працює, теба тестувати в бою
 
+- САУ
+- Антена
 - Бліндаж
 - Т. вильоту дронів
 - Скупчення ОС
+- Вор. розвід. крило / Вор. FPV-крило
 ще є така помилка для массива (вона фантомна)
 Index was outside the bounds of the array. це от тут parts[]
 */
@@ -30,7 +33,7 @@ namespace CSLight {
 			string dateJbd = parts[0]; // 27.07.2024
 			string timeJbd = parts[1]; //00:40
 			string commentJbd = parts[2].Replace("\n"," "); //коментар (для ідентифікації скоріш за все)
-			string crewTeamJbd = parts[4]; // R-18-1 (Мавка)
+			string crewTeamJbd = parts[4].Replace("\n\t"," "); // R-18-1 (Мавка)
 			string whatDidJbd = parts[5]; // Мінування (можливо його видалю)
 			string targetClassJbd = parts[7]; // Міна/Вантажівка/Військ. баггі/Скупчення ОС/Укриття
 			string idTargetJbd = parts[9]; // Міна 270724043
@@ -40,14 +43,15 @@ namespace CSLight {
 			//Console.WriteLine(targetClassJbd);
 			//звести дату до формату дельти
 			string dateDeltaFormat = dateJbd.Replace('.','/');
-			// для мін
+			// для мін на 11 шар
 			string targetMinePTM = "Міна";
-			// уриття типу район зосередження
+			// уриття типу район зосередження на 01 нар
 			string areaConcentration = "Укриття";
-			// массив техніки
+			// массив техніки на 04 або 06 шари
 			string[] machineryArray = {
 				"ББМ / МТ-ЛБ","Авто","Вантажівка","Танк","Гармата",
-				"Мотоцикл","Військ. баггі","Гаубиця"
+				"Мотоцикл","Військ. баггі","Гаубиця","РСЗВ","БТР",
+				"БМП",
 			};
 			//. якщо ти техніка
 			for (int i = 0; i < machineryArray.Length; i++) {
@@ -120,7 +124,7 @@ namespace CSLight {
 			} else if (whoAreYou.Contains("Укриття")) {
 				layerWindow.SendKeys("Ctrl+A","!01","Enter");
 			} else {
-				if (commentJbd.Contains("в рус")) {
+				if (commentJbd.Contains("в рус") || commentJbd.Contains("рух")) {
 					layerWindow.SendKeys("Ctrl+A","!06","Enter");
 				}else {
 					layerWindow.SendKeys("Ctrl+A","!04","Enter");
@@ -133,17 +137,23 @@ namespace CSLight {
 			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1");
 			// поле назва
 			string markName = string.Empty;
-			if (establishedJbd.Contains("Знищ")) {
+			if (establishedJbd.Contains("Знищ") || establishedJbd.Contains("знищ")) {
 				if (whoAreYou.Contains("Укриття")) {
 					markName = whoAreYou + " ОС (знищ.)";
 				} else {
 					markName = whoAreYou + " (знищ.)";
 				}
-			}else if (establishedJbd.Contains("Ураж")) {
+			}else if (establishedJbd.Contains("Ураж") || establishedJbd.Contains("ураж")) {
 				if (whoAreYou.Contains("Укриття")) {
 					markName = whoAreYou + " ОС (ураж.)";
 				} else {
 					markName = whoAreYou + " (ураж.)";
+				}
+			}else if (whoAreYou.Contains("Міна")) {
+				if (establishedJbd.Contains("Авар. скид") || establishedJbd.Contains("Розміновано")) {
+					markName = "ПТМ-3 (" + dateJbd + ")";
+				}else {
+					markName = "ПТМ-3 до ("+ datePlasFourteen(dateJbd)+")";
 				}
 			}else {
 				if (whoAreYou.Contains("Укриття")) {
@@ -168,14 +178,6 @@ namespace CSLight {
 					markName = whoAreYou + " ОС (ураж.)";
 				} else {
 					markName = whoAreYou + " (ураж.)";
-				}
-			}
-			
-			if (whoAreYou.Contains("Міна")) {
-				if (establishedJbd.Contains("Авар. скид") || establishedJbd.Contains("Розміновано")) {
-					markName = "ПТМ-3 (" + dateJbd + ")";
-				}else {
-					markName = "ПТМ-3 до ("+ datePlasFourteen(dateJbd)+")";
 				}
 			}
 			var nameOfMarkWindow = w.Elm["web:TEXT", prop: new("@data-testid=T")].Find(3);
@@ -217,20 +219,21 @@ namespace CSLight {
 				} else {
 					fullaim = "част";
 				}
-			}
-			if (establishedJbd.Contains("Ураж")) {
+			}else if (establishedJbd.Contains("Ураж")) {
 				fullaim = "част";
-			}
-			if (establishedJbd.Contains("Знищ")) {
+			}else if (establishedJbd.Contains("Знищ")) {
 				fullaim = "небо";
-			}
-			if (establishedJbd.Contains("Виявлено")) {
-				if (commentJbd.Contains("Ураж")) {
+			}else if (establishedJbd.Contains("Виявлено")) {
+				if (commentJbd.Contains("Ураж") || commentJbd.Contains("ураж")) {
 					fullaim = "част";
 				}
-				if (commentJbd.Contains("Знищ")) {
+				if (commentJbd.Contains("Знищ") || commentJbd.Contains("знищ")) {
 					fullaim = "небо";
-				}else { fullaim = "повніс"; }
+				}else {
+					fullaim = "повніс";
+				}
+			}else {
+				fullaim = "повніс";
 			}
 			var combatCapabilityWindow = w.Elm["web:GROUPING", prop: "@data-testid=operational-condition-select"].Find(3);
 			combatCapabilityWindow.PostClick(2);
@@ -303,16 +306,16 @@ namespace CSLight {
 				commentContents += commentJbd + ", спостерігали з " + crewTeamJbd;
 			} else if (establishedJbd.Contains("Підтверджено")) {
 				commentContents += "дорозвідка, спостерігали з " + crewTeamJbd;
+			}else if (whoAreYou.Contains("Міна")) {
+				if (establishedJbd.Contains("Авар. скид") || establishedJbd.Contains("Подавлено")) {
+					commentContents += "аварійно сикнуто з ударного коптера " + crewTeamJbd;
+				} else if (establishedJbd.Contains("Розміновано")) {
+					commentContents += "розміновано спостерігали з " + crewTeamJbd;
+				} else {
+					commentContents += establishedJbd.ToLower() + " за допомогою ударного коптера " + crewTeamJbd;
+				}
 			} else {
 				commentContents += establishedJbd.ToLower() + " за допомогою ударного коптера " + crewTeamJbd;
-			};
-			
-			if (whoAreYou.Contains("Міна")) {
-				if (establishedJbd.Contains("Авар. скид")) {
-					commentContents += "аварійно сикнуто з ударного коптера " + crewTeamJbd;
-				} else if(establishedJbd.Contains("Розміновано")) {
-					commentContents += "розміновано спостерігали з " + crewTeamJbd;
-				}
 			}
 			
 			var commentWindow = w.Elm["web:TEXT", prop: "@data-testid=comment-editing__textarea"].Find(1);
