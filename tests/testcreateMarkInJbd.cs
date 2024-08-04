@@ -47,6 +47,8 @@ namespace CSLight {
 			string targetMinePTM = "Міна";
 			// уриття типу район зосередження на 01 нар
 			string areaConcentration = "Укриття";
+			// Самохі́дна артилері́йська устано́вка
+			string selfPropelledArt = "САУ";
 			// массив техніки на 04 або 06 шари
 			string[] machineryArray = {
 				"ББМ / МТ-ЛБ","Авто","Вантажівка","Танк","Гармата",
@@ -67,6 +69,19 @@ namespace CSLight {
 					deltaIdPurchaseText(idTargetJbd);
 					deltaCommentContents(machineryArray[i], dateJbd, timeJbd, crewTeamJbd, establishedJbd, targetClassJbd, commentJbd);
 				}
+			}
+			//..
+			//. якщо ти САУ
+			if (targetClassJbd.Contains(selfPropelledArt)) {
+				deltaLayerWindow(selfPropelledArt, commentJbd);
+				deltaMarkName(selfPropelledArt, dateJbd, establishedJbd, commentJbd);
+				deltaDateLTimeWindow(dateDeltaFormat, timeJbd);
+				deltaNumberOfnumberWindow();
+				deltaIdentificationWindow(selfPropelledArt, establishedJbd);
+				deltaReliabilityWindow();
+				deltaFlyeye();
+				deltaIdPurchaseText(idTargetJbd);
+				deltaCommentContents(selfPropelledArt, dateJbd, timeJbd, crewTeamJbd, establishedJbd, targetClassJbd, commentJbd);
 			}
 			//..
 			//. якщо ти міна
@@ -323,6 +338,7 @@ namespace CSLight {
 			
 			var commentWindow = w.Elm["web:TEXT", prop: "@data-testid=comment-editing__textarea"].Find(1);
 			commentWindow.PostClick();
+			wait.ms(200);
 			commentWindow.SendKeys("Ctrl+A", "!"+commentContents);
 			
 			// кнопка коментаря
