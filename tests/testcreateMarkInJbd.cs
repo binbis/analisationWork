@@ -2,11 +2,12 @@
 * в тестовому режимі
 - міна, залежно від статусу заповнюється та оновлюється(назва, дата\час, боєздатність, коментар)
 - укриття, залежно від заповнення, заповнюється та оновлюється "без ід"(назва,  дата\час, ідентифікатор, коментар)[якщо виявлено, бере комент, ураження-знищення бере статус, ]
-- техніка, ніби як працює, теба тестувати в бою
-- САУ, ніби як працює, теба тестувати в бою
-- Антена, ніби як працює, теба тестувати в бою
+- техніка, окремий масив зі таким самим інтерфейсом
+- САУ, довелось зробити окремо, бо немає боєздатності
+- Антена, запихнув як техніка, бо інтерфейс співпадає
+- Бліндаж, наземне-підземне-укриття, це все туди
 
-- Бліндаж
+
 - Т. вильоту дронів
 - Скупчення ОС
 - Вор. розвід. крило / Вор. FPV-крило
@@ -49,6 +50,8 @@ namespace CSLight {
 			string areaConcentration = "Укриття";
 			// Самохі́дна артилері́йська устано́вка
 			string selfPropelledArt = "САУ";
+			//
+			string dugout = "Бліндаж";
 			// массив техніки на 04 або 06 шари
 			string[] machineryArray = {
 				"ББМ / МТ-ЛБ","Авто","Вантажівка","Танк","Гармата",
@@ -107,7 +110,16 @@ namespace CSLight {
 				deltaFlyeye();
 				deltaCommentContents(areaConcentration, dateJbd, timeJbd, crewTeamJbd, establishedJbd, targetClassJbd, commentJbd);
 				deltaAdditionalFields(idTargetJbd);
-				//..
+			//..
+			//. якщо ти бліндаж
+			}else if (targetClassJbd.Contains(dugout)) {
+				deltaLayerWindow(dugout,commentJbd);
+				deltaMarkName(dugout, dateJbd, establishedJbd, commentJbd);
+				deltaDateLTimeWindow(dateDeltaFormat, timeJbd);
+				deltaIdentificationWindow(dugout, establishedJbd);
+				deltaCommentContents(dugout, dateJbd, timeJbd, crewTeamJbd, establishedJbd, targetClassJbd, commentJbd);
+				deltaAdditionalFields(idTargetJbd);
+			//..	
 			}else {
 				//Console.WriteLine("нічого спільного не зміг знайти");
 			}
@@ -141,6 +153,8 @@ namespace CSLight {
 				layerWindow.SendKeys("Ctrl+A","!01","Enter");
 			} else if (whoAreYou.Contains("Антена")) {
 				layerWindow.SendKeys("Ctrl+A","!02","Enter");
+			} else if (whoAreYou.Contains("Бліндаж")) {
+				layerWindow.SendKeys("Ctrl+A","!07","Enter");
 			}else {
 				if (commentJbd.Contains("в рус") || commentJbd.Contains("рух")) {
 					layerWindow.SendKeys("Ctrl+A","!06","Enter");
@@ -357,7 +371,7 @@ namespace CSLight {
 			additionalFields.PostClick(1);
 			wait.ms(200);
 			//примітки штабу
-			var notesWindow = w.Elm["web:TEXT", prop: "@data-testid=string-field__input"].Find(1);
+			var notesWindow = w.Elm["web:TEXT", prop: new("@data-testid=string-field__input", "@name=Назва типу")].Find(1);
 			notesWindow.ScrollTo();
 			wait.ms(200);
 			notesWindow.PostClick(1);
