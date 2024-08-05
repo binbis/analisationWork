@@ -258,9 +258,9 @@ namespace CSLight {
 				} else {
 					fullaim = "част";
 				}
-			}else if (establishedJbd.Contains("Ураж")) {
+			}else if (establishedJbd.Contains("Ураж") || establishedJbd.Contains("ураж")) {
 				fullaim = "част";
-			}else if (establishedJbd.Contains("Знищ")) {
+			}else if (establishedJbd.Contains("Знищ") || establishedJbd.Contains("знищ")) {
 				fullaim = "небо";
 			}else if (establishedJbd.Contains("Виявлено")) {
 				if (commentJbd.Contains("Ураж") || commentJbd.Contains("ураж")) {
