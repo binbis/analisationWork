@@ -26,10 +26,8 @@ namespace CSLight {
 			keys.send("Ctrl+C");
 			// зчитуємо буфер обміну
 			string clipboardData = clipboard.copy();
-			
 			// Розділяємо рядок на частини
 			string[] parts = clipboardData.Split('\t');
-			
 			// Присвоюємо змінним відповідні значення
 			string dateJbd = parts[0]; // 27.07.2024
 			string timeJbd = parts[1]; //00:40
@@ -44,14 +42,8 @@ namespace CSLight {
 			//Console.WriteLine(targetClassJbd);
 			//звести дату до формату дельти
 			string dateDeltaFormat = dateJbd.Replace('.','/');
-			// для мін на 11 шар
-			string targetMinePTM = "Міна";
-			// уриття типу район зосередження на 01 нар
-			string areaConcentration = "Укриття";
-			// Самохі́дна артилері́йська устано́вка
-			string selfPropelledArt = "САУ";
-			//
-			string dugout = "Бліндаж";
+			// міна, уриття - типу район зосередження, Самохі́дна артилері́йська устано́вка
+			string targetMinePTM = "Міна", areaConcentration = "Укриття", selfPropelledArt = "САУ", dugout = "Бліндаж";
 			// массив техніки на 04 або 06 шари
 			string[] machineryArray = {
 				"ББМ / МТ-ЛБ","Авто","Вантажівка","Танк","Гармата",
@@ -123,9 +115,6 @@ namespace CSLight {
 			}else {
 				//Console.WriteLine("нічого спільного не зміг знайти");
 			}
-			
-			// Знаходить та активує вікно якщо воно звернуте 
-			//var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1").Activate();
 		}
 		static string datePlasFourteen(string date) {
 			// Перетворюємо рядок дати у DateTime
