@@ -1,4 +1,4 @@
-/* 05,08,2024_v1.6a
+/* 05,08,2024_v1.6b
 * в тестовому режимі
 - міна, залежно від статусу заповнюється та оновлюється(назва, дата\час, боєздатність, коментар)
 - укриття, залежно від заповнення, заповнюється та оновлюється "без ід"(назва,  дата\час, ідентифікатор, коментар)[якщо виявлено, бере комент, ураження-знищення бере статус, ]
@@ -7,8 +7,8 @@
 - Антена, запихнув як техніка, бо інтерфейс співпадає
 - Бліндаж, наземне-підземне-укриття, це все туди
 - Т. вильоту дронів
-
 - Скупчення ОС
+
 - Вор. розвід. крило / Вор. FPV-крило
 ще є така помилка для массива (вона фантомна)
 Index was outside the bounds of the array. це от тут parts[]
@@ -42,7 +42,8 @@ namespace CSLight {
 			//звести дату до формату дельти
 			string dateDeltaFormat = dateJbd.Replace('.','/');
 			// міна, уриття - типу район зосередження, Самохі́дна артилері́йська устано́вка
-			string targetMinePTM = "Міна", areaConcentration = "Укриття", selfPropelledArt = "САУ", dugout = "Бліндаж";
+			string targetMinePTM = "Міна", areaConcentration = "Укриття", dugout = "Бліндаж";
+			string[] infantry = { "САУ", "Скупчення ОС" };
 			string flightOfDrones = "Т. вильоту дронів";
 			// массив техніки на 04 або 06 шари
 			string[] machineryArray = {
@@ -66,18 +67,21 @@ namespace CSLight {
 				}
 			}
 			//..
-			//. якщо ти САУ
-			if (targetClassJbd.Contains(selfPropelledArt)) {
-				deltaLayerWindow(selfPropelledArt, commentJbd);
-				deltaMarkName(selfPropelledArt, dateJbd, establishedJbd, commentJbd);
-				deltaDateLTimeWindow(dateDeltaFormat, timeJbd);
-				deltaNumberOfnumberWindow();
-				deltaIdentificationWindow(selfPropelledArt, establishedJbd);
-				deltaReliabilityWindow();
-				deltaFlyeye();
-				deltaIdPurchaseText(idTargetJbd);
-				deltaCommentContents(selfPropelledArt, dateJbd, timeJbd, crewTeamJbd, establishedJbd, targetClassJbd, commentJbd);
+			//. якщо ти САУ або піхота
+			for (int i = 0; i < infantry.Length; i++) {
+					if (targetClassJbd.Contains(infantry[i])) {
+					deltaLayerWindow(infantry[i], commentJbd);
+					deltaMarkName(infantry[i], dateJbd, establishedJbd, commentJbd);
+					deltaDateLTimeWindow(dateDeltaFormat, timeJbd);
+					deltaNumberOfnumberWindow();
+					deltaIdentificationWindow(infantry[i], establishedJbd);
+					deltaReliabilityWindow();
+					deltaFlyeye();
+					deltaIdPurchaseText(idTargetJbd);
+					deltaCommentContents(infantry[i], dateJbd, timeJbd, crewTeamJbd, establishedJbd, targetClassJbd, commentJbd);
+				}
 			}
+			
 			//..
 			//. якщо ти міна
 			if (targetClassJbd.Contains(targetMinePTM)) {
