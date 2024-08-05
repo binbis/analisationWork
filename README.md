@@ -21,3 +21,8 @@
 - обери необхідну дату
 - побери 8 рядок(клітинку)
 - жмеш `Ctrl+Alt+T`, магія почне працювати
+
+HotKeys
+		hk["Ctrl+Alt+T"] = o => script.run(@"\analisationWork\main\ecipashCreateFast.cs");
+		hk["Alt+Z"] = o => script.run(@"\analisationWork\main\createMarkInJbd.cs");
+		hk["Alt+X"] = o => script.run(@"\analisationWork\main\fastCopDelta.cs");
