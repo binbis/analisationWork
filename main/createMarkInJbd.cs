@@ -7,7 +7,7 @@
 - Антена, запихнув як техніка, бо інтерфейс співпадає
 - Бліндаж, наземне-підземне-укриття, це все туди
 - Т. вильоту дронів
-- Скупчення ОС оберає не той шар, повинен 10 завжди
+- Скупчення ОС
 
 - Вор. розвід. крило / Вор. FPV-крило
 ще є така помилка для массива (вона фантомна)
@@ -350,7 +350,7 @@ namespace CSLight {
 				} else if (establishedJbd.Contains("Розміновано")) {
 					commentContents += "розміновано спостерігали з " + crewTeamJbd;
 				} else {
-					commentContents += establishedJbd.ToLower() + " за допомогою ударного коптера " + crewTeamJbd;
+					commentContents += " встановлено за допомогою ударного коптера " + crewTeamJbd;
 				}
 			} else {
 				commentContents += establishedJbd.ToLower() + " за допомогою ударного коптера " + crewTeamJbd;
@@ -384,4 +384,3 @@ namespace CSLight {
 		}
 	}
 }
-
