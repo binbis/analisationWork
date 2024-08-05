@@ -1,4 +1,4 @@
-/* 05,08,2024_v1.6
+/* 05,08,2024_v1.6a
 * в тестовому режимі
 - міна, залежно від статусу заповнюється та оновлюється(назва, дата\час, боєздатність, коментар)
 - укриття, залежно від заповнення, заповнюється та оновлюється "без ід"(назва,  дата\час, ідентифікатор, коментар)[якщо виявлено, бере комент, ураження-знищення бере статус, ]
@@ -6,9 +6,8 @@
 - САУ, довелось зробити окремо, бо немає боєздатності
 - Антена, запихнув як техніка, бо інтерфейс співпадає
 - Бліндаж, наземне-підземне-укриття, це все туди
-
-
 - Т. вильоту дронів
+
 - Скупчення ОС
 - Вор. розвід. крило / Вор. FPV-крило
 ще є така помилка для массива (вона фантомна)
@@ -44,6 +43,7 @@ namespace CSLight {
 			string dateDeltaFormat = dateJbd.Replace('.','/');
 			// міна, уриття - типу район зосередження, Самохі́дна артилері́йська устано́вка
 			string targetMinePTM = "Міна", areaConcentration = "Укриття", selfPropelledArt = "САУ", dugout = "Бліндаж";
+			string flightOfDrones = "Т. вильоту дронів";
 			// массив техніки на 04 або 06 шари
 			string[] machineryArray = {
 				"ББМ / МТ-ЛБ","Авто","Вантажівка","Танк","Гармата",
@@ -104,15 +104,24 @@ namespace CSLight {
 				deltaAdditionalFields(idTargetJbd);
 			//..
 			//. якщо ти бліндаж
-			}else if (targetClassJbd.Contains(dugout)) {
-				deltaLayerWindow(dugout,commentJbd);
+			} else if (targetClassJbd.Contains(dugout)) {
+				deltaLayerWindow(dugout, commentJbd);
 				deltaMarkName(dugout, dateJbd, establishedJbd, commentJbd);
 				deltaDateLTimeWindow(dateDeltaFormat, timeJbd);
 				deltaIdentificationWindow(dugout, establishedJbd);
 				deltaCommentContents(dugout, dateJbd, timeJbd, crewTeamJbd, establishedJbd, targetClassJbd, commentJbd);
 				deltaAdditionalFields(idTargetJbd);
-			//..	
-			}else {
+				//..
+			//. якщо ти Т. вильоту дронів
+			} else if (targetClassJbd.Contains(flightOfDrones)) {
+				deltaLayerWindow(flightOfDrones, commentJbd);
+				deltaMarkName(flightOfDrones, dateJbd, establishedJbd, commentJbd);
+				deltaDateLTimeWindow(dateDeltaFormat, timeJbd);
+				deltaIdentificationWindow(flightOfDrones, establishedJbd);
+				deltaCommentContents(flightOfDrones, dateJbd, timeJbd, crewTeamJbd, establishedJbd, targetClassJbd, commentJbd);
+				deltaAdditionalFields(idTargetJbd);
+			//..
+			} else {
 				//Console.WriteLine("нічого спільного не зміг знайти");
 			}
 		}
@@ -144,6 +153,8 @@ namespace CSLight {
 				layerWindow.SendKeys("Ctrl+A","!02","Enter");
 			} else if (whoAreYou.Contains("Бліндаж")) {
 				layerWindow.SendKeys("Ctrl+A","!07","Enter");
+			}else if (whoAreYou.Contains("вильоту дрон")) {
+				layerWindow.SendKeys("Ctrl+A","!08","Enter");
 			}else {
 				if (commentJbd.Contains("в рус") || commentJbd.Contains("рух")) {
 					layerWindow.SendKeys("Ctrl+A","!06","Enter");
@@ -212,9 +223,9 @@ namespace CSLight {
 			// поле дата / час
 			var dateDeltaWindow = w.Elm["web:TEXT", prop: "@data-testid=W"].Find(3);
 			dateDeltaWindow.PostClick(2);
-			wait.ms(100);
+			wait.ms(200);
 			dateDeltaWindow.SendKeys("Ctrl+A","!"+ dateDeltaFormat);
-			wait.ms(100);
+			wait.ms(200);
 			var timeDeltaWindow = w.Elm["web:TEXT", prop: "@data-testid=W-time-input"].Find(1);
 			timeDeltaWindow.PostClick(2);
 			wait.ms(200);
@@ -369,3 +380,4 @@ namespace CSLight {
 		}
 	}
 }
+
