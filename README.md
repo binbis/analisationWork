@@ -22,7 +22,9 @@
 - побери 8 рядок(клітинку)
 - жмеш `Ctrl+Alt+T`, магія почне працювати
 
-HotKeys
-		hk["Ctrl+Alt+T"] = o => script.run(@"\analisationWork\main\ecipashCreateFast.cs");
-		hk["Alt+Z"] = o => script.run(@"\analisationWork\main\createMarkInJbd.cs");
-		hk["Alt+X"] = o => script.run(@"\analisationWork\main\fastCopDelta.cs");
+HotKeys:
+
+	hk["Alt+Z"] = o => script.run(@"\analisationWork-main\main\fastCopDelta.cs");
+	hk["Alt+X"] = o => script.run(@"\analisationWork-main\main\createMarkInJbd.cs");
+	hk["Ctrl+Alt+T"] = o => script.run(@"\analisationWork-main\main\ecipashCreateFast.cs");
+	hk["Alt+Shift+F"] = o => script.run(@"\analisationWork-main\main\fastZonaHiro.cs");
