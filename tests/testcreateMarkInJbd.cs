@@ -144,27 +144,35 @@ namespace CSLight {
 			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1").Activate();
 			// поле шар
 			var layerWindow = w.Elm["web:GROUPING", prop: "@data-testid=select-layer"].Find(3);
-			wait.ms(50);
 			layerWindow.ScrollTo();
-			wait.ms(100);
+			wait.ms(400);
 			layerWindow.PostClick(2);
-			wait.ms(100);
-			if (whoAreYou.Contains("Міна")) {
+			switch (whoAreYou) {
+			case "Міна":
 				layerWindow.SendKeys("Ctrl+A","!11","Enter");
-			} else if (whoAreYou.Contains("Укриття")) {
+				break;
+			case "Укриття":
 				layerWindow.SendKeys("Ctrl+A","!01","Enter");
-			} else if (whoAreYou.Contains("Антена")) {
+				break;
+			case "Антена":
 				layerWindow.SendKeys("Ctrl+A","!02","Enter");
-			} else if (whoAreYou.Contains("Бліндаж")) {
+				break;
+			case "Бліндаж":
 				layerWindow.SendKeys("Ctrl+A","!07","Enter");
-			}else if (whoAreYou.Contains("вильоту дрон")) {
+				break;
+			case "Т. вильоту дронів":
 				layerWindow.SendKeys("Ctrl+A","!08","Enter");
-			}else {
+				break;
+			case "Скупчення ОС":
+				layerWindow.SendKeys("Ctrl+A","!10","Enter");
+				break;
+			default:
 				if (commentJbd.Contains("в рус") || commentJbd.Contains("рух")) {
 					layerWindow.SendKeys("Ctrl+A","!06","Enter");
 				}else {
 					layerWindow.SendKeys("Ctrl+A","!04","Enter");
 				}
+				break;
 			}
 			//layerWindow.SendKeys("Ctrl+A","!000","Enter");
 		}
