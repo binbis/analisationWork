@@ -14,9 +14,8 @@ class Program
 		//for (int i = 0; i < 200; i++){
 		while(true){
 			//виділяємо рядок
-			wait.ms(100);
 			keys.send("Shift+Space");
-			wait.ms(100);
+			wait.ms(00);
 			//копіюємо код
 			keys.send("Ctrl+C");
 			wait.ms(100);
