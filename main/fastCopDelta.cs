@@ -1,18 +1,15 @@
 /**
-22,07,2024_v3.0
+07,08,2024_v3.1
 0. відкрий дельту в окремій вкладці та вікні, (!не міняй вкладку!), можеш звернути це вікно
-1. виділяєш текст де є координати mgrs
+1. виділяєш текст де є координати mgrs, google, уск-2000
 2. жмеш hotkey
 3. відкриває дельту(де б вона не була та який розмір вікна б не мала) 
 4. вставяє оброблені координати до пошуку та натискає кнопку пошуку
 
-ХОЧУ:
-(*) виправлення букв присутнє
-* щоб не переносився курсор
 */
-//using System;
+
 using System.Windows.Forms;
-//using System.Text.RegularExpressions;
+
 namespace CSLight
 {
     internal class Program
@@ -25,7 +22,6 @@ namespace CSLight
 			clipboard.clear();
 			//копіюємо код
 			keys.send("Ctrl+C");
-			
 			// Зчитуємо вміст з буферу обміну
 			string clipText = clipboard.copy();
 			// для профілактики
@@ -37,15 +33,45 @@ namespace CSLight
 				clipText = clipText.ToUpper();
 				clipText = Regex.Replace(clipText, "[^a-zA-Zа-яА-Я0-9]", "");
 			}
-			// взяти послідовність з 10 чисел та 5 символів перед нею
-			string pattern = @"(.{5})(\d{10})";
-			Match match = Regex.Match(clipText, pattern);
 			
-			// банальна перевірка
-			if (match.Success)
+			// взяти послідовність з 10 чисел та 5 символів перед нею
+			string patternMGRS = @"(.{5})(\d{10})";
+			// взяти послідовність з 18 чисел
+			//string patternGoogle = @".\d{18}";
+			string patternGoogle = @"(\d{2})(\d{7})(\d{2})(\d{7})";
+			// взяти послідовність з 14 чисел, такий запис для коми з пробілом
+			string patternYSK = @"(\d{7})(\d{7})";
+			
+			// Перевірка google паттерну
+			Match match1 = Regex.Match(clipText, patternGoogle);
+			if (match1.Success)
 			{
-				// додаємо пробіли в текст та заміняємо невірну букви
-				clipText = Transliterate(InsertSpaces(match.Groups[1].Value + match.Groups[2].Value));
+				clipText = $"{match1.Groups[1].Value}.{match1.Groups[2].Value}, {match1.Groups[3].Value}.{match1.Groups[4].Value}";
+				//Console.WriteLine("знайшов google = "+ match1);
+			}
+			else
+			{
+				// Перевірка уск-2000 паттерну
+				Match match2 = Regex.Match(clipText, patternYSK);
+				if (match2.Success)
+				{
+					clipText = $"{match2.Groups[1].Value}, {match2.Groups[2].Value}";
+					//Console.WriteLine("знайшов уск-2000 = "+ match2);
+				}
+				else
+				{
+					// Перевірка mgrs паттерну
+					Match match3 = Regex.Match(clipText, patternMGRS);
+					if (match3.Success)
+					{
+						clipText = Transliterate(InsertSpaces(match3.Groups[1].Value + match3.Groups[2].Value));
+						//Console.WriteLine("знайшов mgrs = " + match3);
+					}
+					else
+					{
+						Console.WriteLine("Жодна послідовність не знайдена.");
+					}
+				}
 			}
 			Clipboard.SetText(clipText);
 			// Знаходить та активує вікно якщо воно звернуте 
