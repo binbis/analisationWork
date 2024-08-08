@@ -44,13 +44,15 @@ namespace CSLight
 				//Console.WriteLine("знайшов mgrs = " + matchMGRS);
 				// вписуємо вміст
 				e.SendKeys("Ctrl+A", "!" + clipTextTry, "Enter");
+				Clipboard.SetText(clipTextTry);
 			}else {
 				//Console.WriteLine("знайшов mgrs незнайдено -");
 				// прибрити усе окрім цифр крапки та коми
 				clipText = Regex.Replace(clipText, @"[^0-9,.]", "");
 				e.SendKeys("Ctrl+A", "!" + clipText, "Enter");
+				Clipboard.SetText(clipText);
 			}
-			//Clipboard.SetText(clipText);
+			
 			
 		}
 		// додаємо пробіли
