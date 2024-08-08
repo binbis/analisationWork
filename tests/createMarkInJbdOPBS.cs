@@ -367,12 +367,11 @@ namespace CSLight {
 			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1");
 			// тип джерела
 			string flyeye = "повітр";
-			var typeOfSourceWindow = w.Elm["web:GROUPING", prop: "@data-testid=AD"].Find(100);
+			var typeOfSourceWindow = w.Elm["web:GROUPING", prop: "@data-testid=AD"].Find(1);
 			typeOfSourceWindow.ScrollTo();
-			wait.ms(100);
-			typeOfSourceWindow.Select();
+			wait.ms(500);
 			typeOfSourceWindow.PostClick(2);
-			wait.ms(100);
+			wait.ms(200);
 			typeOfSourceWindow.SendKeys("Ctrl+A", "!"+flyeye, "Enter");
 		}
 		// завйваження штабу ід
