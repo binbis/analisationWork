@@ -109,7 +109,7 @@ namespace CSLight {
 				deltaCommentContents(areaConcentration, dateJbd, timeJbd, crewTeamJbd, establishedJbd, targetClassJbd, commentJbd);
 				deltaAdditionalFields(idTargetJbd);
 			//..
-			//. якщо ти бліндаж
+			//. якщо ти бліндаж або з укриттів
 			} else if (targetClassJbd.Contains(dugout)) {
 				deltaLayerWindow(dugout, commentJbd);
 				deltaMarkName(dugout, dateJbd, establishedJbd, commentJbd);
@@ -131,7 +131,7 @@ namespace CSLight {
 				//Console.WriteLine("нічого спільного не зміг знайти");
 			}
 		}
-		static string datePlasFourteen(string date) {
+		static string datePlasDays(string date) {
 			// Перетворюємо рядок дати у DateTime
 			DateTime originalDate = DateTime.ParseExact(date, "dd.MM.yyyy", CultureInfo.InvariantCulture);
 			// Додаємо Х днів
@@ -184,49 +184,87 @@ namespace CSLight {
 			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1");
 			// поле назва
 			string markName = string.Empty;
-			if (establishedJbd.Contains("Знищ") || establishedJbd.Contains("знищ")) {
-				if (whoAreYou.Contains("Укриття")) {
-					markName = whoAreYou + " ОС (знищ.)";
-				} else {
-					markName = whoAreYou + " (знищ.)";
-				}
-			}else if (establishedJbd.Contains("Ураж") || establishedJbd.Contains("ураж")) {
-				if (whoAreYou.Contains("Укриття")) {
-					markName = whoAreYou + " ОС (ураж.)";
-				} else {
-					markName = whoAreYou + " (ураж.)";
-				}
-			}else if (whoAreYou.Contains("Міна")) {
-				if (establishedJbd.Contains("Авар. скид") || establishedJbd.Contains("Розміновано")) {
+			switch (whoAreYou) {
+			case "Міна":
+				if (establishedJbd.Contains("Авар. скид") || establishedJbd.Contains("Розміновано") || establishedJbd.Contains("Підтв. ураж.")) {
 					markName = "ПТМ-3 (" + dateJbd + ")";
 				}else {
-					markName = "ПТМ-3 до ("+ datePlasFourteen(dateJbd)+")";
+					markName = "ПТМ-3 до ("+ datePlasDays(dateJbd)+")";
 				}
-			}else {
-				if (whoAreYou.Contains("Укриття")) {
-					markName = whoAreYou + " ОС ";
-				}else {
-					markName = whoAreYou;
+				break;
+			//. "Укриття
+			case "Укриття":
+				if (establishedJbd.Contains("Знищ") || establishedJbd.Contains("знищ")) {
+					markName = whoAreYou + " ОС (знищ.)";
+				} else if (establishedJbd.Contains("Ураж") || establishedJbd.Contains("ураж")) {
+					markName = whoAreYou + " ОС (ураж.)";
+				} else if (establishedJbd.Contains("Виявлено") || establishedJbd.Contains("Підтверджено")) {
+					if (commentJbd.Contains("знищ")) {
+						markName = whoAreYou + " ОС (знищ.)";
+					}else if (commentJbd.Contains("ураж")) {
+						markName = whoAreYou + " ОС (ураж.)";
+					}else {
+						markName = whoAreYou + " ОС ";
+					}
 				}
+				break;
+			//..
+			//. Бліндаж
+			case "Бліндаж":
+				if (establishedJbd.Contains("Знищ") || establishedJbd.Contains("знищ")) {
+					markName = whoAreYou + " (знищ.)";
+				} else if (establishedJbd.Contains("Ураж") || establishedJbd.Contains("ураж")) {
+					markName = whoAreYou + " (ураж.)";
+				} else if (establishedJbd.Contains("Виявлено") || establishedJbd.Contains("Підтверджено")) {
+					if (commentJbd.Contains("знищ")) {
+						markName = whoAreYou + " (знищ.)";
+					}else if (commentJbd.Contains("ураж")) {
+						markName = whoAreYou + " (ураж.)";
+					}else {
+						markName = whoAreYou;
+					}
+				}
+				break;
+			//..
+			//. Т. вильоту дронів
+			case "Т. вильоту дронів":
+				if (establishedJbd.Contains("Знищ") || establishedJbd.Contains("знищ")) {
+					markName = whoAreYou + " (знищ.)";
+				} else if (establishedJbd.Contains("Ураж") || establishedJbd.Contains("ураж")) {
+					markName = whoAreYou + " (ураж.)";
+				} else if (establishedJbd.Contains("Виявлено") || establishedJbd.Contains("Підтверджено")) {
+					if (commentJbd.Contains("знищ")) {
+						markName = whoAreYou + " (знищ.)";
+					}else if (commentJbd.Contains("ураж")) {
+						markName = whoAreYou + " (ураж.)";
+					}else {
+						markName = whoAreYou;
+					}
+				}
+			break;
+			//..
+			case "":
+			
+			break;
+			default:
+				if (establishedJbd.Contains("Знищ") || establishedJbd.Contains("знищ")) {
+					markName = whoAreYou + " (знищ.)";
+				} else if (establishedJbd.Contains("Ураж") || establishedJbd.Contains("ураж")) {
+					markName = whoAreYou + " (ураж.)";
+				} else if (establishedJbd.Contains("Виявлено") || establishedJbd.Contains("Підтверджено")) {
+					if (commentJbd.Contains("знищ")) {
+						markName = whoAreYou + " (знищ.)";
+					}else if (commentJbd.Contains("ураж")) {
+						markName = whoAreYou + " (ураж.)";
+					}else if (commentJbd.Contains("в рус") || commentJbd.Contains("рух")) {
+						markName = whoAreYou + " (в русі)";
+					}else {
+						markName = whoAreYou;
+					}
+				}
+				break;
 			}
 			
-			if (commentJbd.Contains("в рус") || commentJbd.Contains("рух")) {
-				markName = whoAreYou + " (в русі)";
-			}else if (commentJbd.Contains("схов")) {
-				markName = whoAreYou + " (схов.)";
-			}else if (commentJbd.Contains("знищ")) {
-				if (whoAreYou.Contains("Укриття")) {
-					markName = whoAreYou + " ОС (знищ.)";
-				} else {
-					markName = whoAreYou + " (знищ.)";
-				}
-			}else if (commentJbd.Contains("ураж")) {
-				if (whoAreYou.Contains("Укриття")) {
-					markName = whoAreYou + " ОС (ураж.)";
-				} else {
-					markName = whoAreYou + " (ураж.)";
-				}
-			}
 			var nameOfMarkWindow = w.Elm["web:TEXT", prop: new("@data-testid=T")].Find(3);
 			nameOfMarkWindow.PostClick(2);
 			wait.ms(100);
