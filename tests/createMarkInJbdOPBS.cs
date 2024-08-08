@@ -1,13 +1,11 @@
-/* 05,08,2024_v1.6b
-* в тестовому режимі
+/* 08,08,2024_v1.6c
 - міна, залежно від статусу заповнюється та оновлюється(назва, дата\час, боєздатність, коментар)
 - укриття, залежно від заповнення, заповнюється та оновлюється "без ід"(назва,  дата\час, ідентифікатор, коментар)[якщо виявлено, бере комент, ураження-знищення бере статус, ]
 - техніка, окремий масив зі таким самим інтерфейсом
-- САУ, довелось зробити окремо, бо немає боєздатності
+- САУ, довелось зробити окремо, бо немає боєздатності, Скупчення ОС
 - Антена, запихнув як техніка, бо інтерфейс співпадає
-- Бліндаж, наземне-підземне-укриття, це все туди
 - Т. вильоту дронів
-- Скупчення ОС
+- Бліндаж (підземне, наземне, укриття)
 
 - Вор. розвід. крило / Вор. FPV-крило
 ще є така помилка для массива (вона фантомна)
@@ -17,7 +15,7 @@ Index was outside the bounds of the array. це от тут parts[]
 namespace CSLight {
 	class Program {
 		static void Main() {
-			opt.key.KeySpeed = 20;
+			opt.key.KeySpeed = 25;
 			opt.key.TextSpeed = 20;
 			//виділяємо весь рядок
 			keys.send("Shift+Space*2");
@@ -36,7 +34,7 @@ namespace CSLight {
 			string crewTeamJbd = parts[4].Replace("\n\t"," "); // R-18-1 (Мавка)
 			string whatDidJbd = parts[5]; // Мінування (можливо його видалю)
 			string targetClassJbd = parts[7]; // Міна/Вантажівка/Військ. баггі/Скупчення ОС/Укриття
-			string idTargetJbd = parts[9]; // Міна 270724043
+			string idTargetJbd = TrimString(parts[9], 19); // Міна 270724043
 			// Встановлено/Уражено/Промах/Авар. скид/Повторно уражено
 			string establishedJbd = parts[24];
 			//Console.WriteLine(establishedJbd);
@@ -165,14 +163,19 @@ namespace CSLight {
 			case "Т. вильоту дронів":
 				layerWindow.SendKeys("Ctrl+A","!08","Enter");
 				break;
+			case "Скупчення ОС":
+				layerWindow.SendKeys("Ctrl+A","!10","Enter");
+				break;
 			case "":
 				
 				break;
 			default:
 				if (commentJbd.Contains("в рус") || commentJbd.Contains("рух")) {
 					layerWindow.SendKeys("Ctrl+A","!06","Enter");
-				}else {
-					layerWindow.SendKeys("Ctrl+A","!04","Enter");
+				}else if (commentJbd.Contains("виходи") || commentJbd.Contains("вогнева позиція")) {
+					layerWindow.SendKeys("Ctrl+A","!05","Enter");
+				} else {
+					layerWindow.SendKeys("Ctrl+A", "!04", "Enter");
 				}
 				break;
 			}
@@ -374,7 +377,7 @@ namespace CSLight {
 			wait.ms(200);
 			typeOfSourceWindow.SendKeys("Ctrl+A", "!"+flyeye, "Enter");
 		}
-		// завйваження штабу ід
+		// завуваження штабу - ід
 		static void deltaIdPurchaseText(string idTargetJbd){
 			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1");
 			// завйваження штабу ід
@@ -387,26 +390,39 @@ namespace CSLight {
 		static void deltaCommentContents(string whoAreYou, string dateJbd, string timeJbd, string crewTeamJbd, string establishedJbd, string targetClassJbd, string commentJbd){
 			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1");
 			string commentContents = dateJbd + " " + timeJbd + " - ";
-			// коментар
-			if (crewTeamJbd.Contains("FPV")) {
-				commentContents += establishedJbd.ToLower() + " за допомогою " + crewTeamJbd;
-			} else if (establishedJbd.Contains("Виявлено")) {
-				commentContents += commentJbd + ", спостерігали з " + crewTeamJbd;
-			} else if (establishedJbd.Contains("Підтверджено")) {
-				commentContents += "дорозвідка, спостерігали з " + crewTeamJbd;
-			}else if (whoAreYou.Contains("Міна")) {
+			switch (whoAreYou) {
+			//. Міна
+			case "Міна":
 				if (establishedJbd.Contains("Авар. скид") || establishedJbd.Contains("Подавлено")) {
 					commentContents += "аварійно сикнуто з ударного коптера " + crewTeamJbd;
 				} else if (establishedJbd.Contains("Розміновано")) {
 					commentContents += "розміновано спостерігали з " + crewTeamJbd;
+				}else if (establishedJbd.Contains("Підтв. ураж.")) {
+					commentContents += "підрив на міні, кори ( id ), спостерігали з " + crewTeamJbd;
 				} else {
 					commentContents += " встановлено за допомогою ударного коптера " + crewTeamJbd;
 				}
-			} else {
-				commentContents += establishedJbd.ToLower() + " за допомогою ударного коптера " + crewTeamJbd;
+				break;
+			//..
+			//. 
+			case "":
+				
+				break;
+			//..
+			default:
+				if (establishedJbd.Contains("Виявлено")) {
+					commentContents += commentJbd + ", спостерігали з " + crewTeamJbd;
+				}else {
+					commentContents += establishedJbd.ToLower() + " за допомогою " + crewTeamJbd;
+				}
+				break;
 			}
-			
-			var commentWindow = w.Elm["web:TEXT", prop: "@data-testid=comment-editing__textarea"].Find(1);
+			// коментар
+			var commentWindow = w.Elm["web:TEXT", prop: new("@data-testid=comment-editing__textarea", "@name=text")].Find(1);
+			commentWindow.ScrollTo();
+			wait.ms(200);
+			keys.send("Down");
+			wait.ms(50);
 			commentWindow.PostClick();
 			commentWindow.SendKeys("Ctrl+A", "!"+commentContents);
 			wait.ms(100);
@@ -417,6 +433,7 @@ namespace CSLight {
 			wait.ms(200);
 			//commentAsseptButton.PostClick(2);
 		}
+		// додаткові поля
 		static void deltaAdditionalFields(string idTargetJbd) {
 			// додаткові поля
 			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1");
@@ -433,9 +450,19 @@ namespace CSLight {
 			var mainFilds = w.Elm["web:GROUPING", prop: "@title=Основні поля"].Find(1);
 			mainFilds.PostClick(1);
 		}
+		// main window
 		static void deltaGeograficPlace() {
 			
 		}
+		// обрізка до 19 символів в рядку
+		static string TrimString(string str, int maxLength)
+			{
+				if (str.Length > maxLength)
+				{
+					return str.Substring(str.Length - maxLength);
+				}
+				return str;
+			}
 	}
 }
 
