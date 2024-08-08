@@ -2,7 +2,7 @@
 - міна, залежно від статусу заповнюється та оновлюється(назва, дата\час, боєздатність, коментар)
 - укриття, залежно від заповнення, заповнюється та оновлюється "без ід"(назва,  дата\час, ідентифікатор, коментар)[якщо виявлено, бере комент, ураження-знищення бере статус, ]
 - техніка, окремий масив зі таким самим інтерфейсом
-- САУ, довелось зробити окремо, бо немає боєздатності, Скупчення ОС
+- САУ, довелось зробити окремо, бо немає боєздатності, Скупчення ОС (200/300)
 - Антена, запихнув як техніка, бо інтерфейс співпадає
 - Т. вильоту дронів
 - Бліндаж (підземне, наземне, укриття)
@@ -38,8 +38,10 @@ namespace CSLight {
 			string idTargetJbd = TrimString(parts[9], 19); // Міна 270724043
 			// Встановлено/Уражено/Промах/Авар. скид/Повторно уражено
 			string establishedJbd = parts[24];
-			//Console.WriteLine(establishedJbd);
-			//Console.WriteLine(targetClassJbd);
+			string twoHundredth = parts[25]; // 200
+			string threeHundredth = parts[26]; // 300
+			Console.WriteLine(twoHundredth);
+			Console.WriteLine(threeHundredth);
 			//звести дату до формату дельти
 			string dateDeltaFormat = dateJbd.Replace('.','/');
 			// міна, уриття - типу район зосередження, Самохі́дна артилері́йська устано́вка
@@ -57,7 +59,7 @@ namespace CSLight {
 			for (int i = 0; i < storegas.Length; i++) {
 				if (targetClassJbd.Contains(storegas[i])) {
 					deltaLayerWindow(storegas[i], commentJbd);
-					deltaMarkName(storegas[i], dateJbd, establishedJbd, commentJbd);
+					deltaMarkName(storegas[i], dateJbd, establishedJbd, commentJbd, twoHundredth ,threeHundredth);
 					deltaDateLTimeWindow(dateDeltaFormat, timeJbd);
 					deltaCombatCapabilityWindow(storegas[i], establishedJbd, commentJbd);
 					deltaIdentificationWindow(storegas[i], establishedJbd);
@@ -71,7 +73,7 @@ namespace CSLight {
 			for (int i = 0; i < machineryArray.Length; i++) {
 				if (targetClassJbd.Contains(machineryArray[i])) {
 					deltaLayerWindow(machineryArray[i], commentJbd);
-					deltaMarkName(machineryArray[i], dateJbd, establishedJbd, commentJbd);
+					deltaMarkName(machineryArray[i], dateJbd, establishedJbd, commentJbd, twoHundredth ,threeHundredth);
 					deltaDateLTimeWindow(dateDeltaFormat, timeJbd);
 					deltaNumberOfnumberWindow();
 					deltaCombatCapabilityWindow(machineryArray[i], establishedJbd, commentJbd);
@@ -87,7 +89,7 @@ namespace CSLight {
 			for (int i = 0; i < infantry.Length; i++) {
 					if (targetClassJbd.Contains(infantry[i])) {
 					deltaLayerWindow(infantry[i], commentJbd);
-					deltaMarkName(infantry[i], dateJbd, establishedJbd, commentJbd);
+					deltaMarkName(infantry[i], dateJbd, establishedJbd, commentJbd, twoHundredth ,threeHundredth);
 					deltaDateLTimeWindow(dateDeltaFormat, timeJbd);
 					deltaNumberOfnumberWindow();
 					deltaIdentificationWindow(infantry[i], establishedJbd);
@@ -102,7 +104,7 @@ namespace CSLight {
 			//. якщо ти міна
 			if (targetClassJbd.Contains(targetMinePTM)) {
 				deltaLayerWindow(targetMinePTM, commentJbd);
-				deltaMarkName(targetMinePTM, dateJbd,establishedJbd,commentJbd);
+				deltaMarkName(targetMinePTM, dateJbd,establishedJbd,commentJbd, twoHundredth ,threeHundredth);
 				deltaDateLTimeWindow(dateDeltaFormat, timeJbd);
 				deltaNumberOfnumberWindow();
 				deltaCombatCapabilityWindow(targetMinePTM, establishedJbd, commentJbd);
@@ -115,7 +117,7 @@ namespace CSLight {
 			//. якщо ти укриття
 			} else if (targetClassJbd.Contains(areaConcentration)) {
 				deltaLayerWindow(areaConcentration,commentJbd);
-				deltaMarkName(areaConcentration, dateJbd, establishedJbd, commentJbd);
+				deltaMarkName(areaConcentration, dateJbd, establishedJbd, commentJbd, twoHundredth ,threeHundredth);
 				deltaDateLTimeWindow(dateDeltaFormat, timeJbd);
 				deltaIdentificationWindow(areaConcentration, establishedJbd);
 				deltaReliabilityWindow();
@@ -126,7 +128,7 @@ namespace CSLight {
 			//. якщо ти бліндаж або з укриттів
 			} else if (targetClassJbd.Contains(dugout)) {
 				deltaLayerWindow(dugout, commentJbd);
-				deltaMarkName(dugout, dateJbd, establishedJbd, commentJbd);
+				deltaMarkName(dugout, dateJbd, establishedJbd, commentJbd, twoHundredth ,threeHundredth);
 				deltaDateLTimeWindow(dateDeltaFormat, timeJbd);
 				deltaIdentificationWindow(dugout, establishedJbd);
 				deltaCommentContents(dugout, dateJbd, timeJbd, crewTeamJbd, establishedJbd, targetClassJbd, commentJbd);
@@ -135,7 +137,7 @@ namespace CSLight {
 			//. якщо ти Т. вильоту дронів
 			} else if (targetClassJbd.Contains(flightOfDrones)) {
 				deltaLayerWindow(flightOfDrones, commentJbd);
-				deltaMarkName(flightOfDrones, dateJbd, establishedJbd, commentJbd);
+				deltaMarkName(flightOfDrones, dateJbd, establishedJbd, commentJbd, twoHundredth ,threeHundredth);
 				deltaDateLTimeWindow(dateDeltaFormat, timeJbd);
 				deltaIdentificationWindow(flightOfDrones, establishedJbd);
 				deltaCommentContents(flightOfDrones, dateJbd, timeJbd, crewTeamJbd, establishedJbd, targetClassJbd, commentJbd);
@@ -199,7 +201,7 @@ namespace CSLight {
 			//layerWindow.SendKeys("Ctrl+A","!000","Enter");
 		}
 		// поле назва
-		static void deltaMarkName(string whoAreYou, string dateJbd, string establishedJbd, string commentJbd){
+		static void deltaMarkName(string whoAreYou, string dateJbd, string establishedJbd, string commentJbd, string twoHundredth, string threeHundredth){
 			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1");
 			// поле назва
 			string markName = string.Empty;
@@ -262,9 +264,17 @@ namespace CSLight {
 				}
 			break;
 			//..
-			case "":
-			
+			//. Скупчення ОС
+			case "Скупчення ОС":
+				if (twoHundredth.Length > 0) {
+					markName = twoHundredth.ToInt() + " - 200";
+				}else if (threeHundredth.Length > 0) {
+					markName = threeHundredth.ToInt() + " - 300";
+				}else {
+					markName = whoAreYou;
+				}
 			break;
+			//..
 			default:
 				if (establishedJbd.Contains("Знищ") || establishedJbd.Contains("знищ")) {
 					markName = whoAreYou + " (знищ.)";
