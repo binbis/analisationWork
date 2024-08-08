@@ -62,7 +62,7 @@ namespace CSLight {
 					deltaMarkName(storegas[i], dateJbd, establishedJbd, commentJbd, twoHundredth ,threeHundredth);
 					deltaDateLTimeWindow(dateDeltaFormat, timeJbd);
 					deltaCombatCapabilityWindow(storegas[i], establishedJbd, commentJbd);
-					deltaIdentificationWindow(storegas[i], establishedJbd);
+					deltaIdentificationWindow(storegas[i], establishedJbd, commentJbd);
 					deltaReliabilityWindow();
 					deltaIdPurchaseText(idTargetJbd);
 					deltaCommentContents(machineryArray[i], dateJbd, timeJbd, crewTeamJbd, establishedJbd, targetClassJbd, commentJbd);
@@ -77,7 +77,7 @@ namespace CSLight {
 					deltaDateLTimeWindow(dateDeltaFormat, timeJbd);
 					deltaNumberOfnumberWindow();
 					deltaCombatCapabilityWindow(machineryArray[i], establishedJbd, commentJbd);
-					deltaIdentificationWindow(machineryArray[i], establishedJbd);
+					deltaIdentificationWindow(machineryArray[i], establishedJbd, commentJbd);
 					deltaReliabilityWindow();
 					deltaFlyeye();
 					deltaIdPurchaseText(idTargetJbd);
@@ -92,7 +92,7 @@ namespace CSLight {
 					deltaMarkName(infantry[i], dateJbd, establishedJbd, commentJbd, twoHundredth ,threeHundredth);
 					deltaDateLTimeWindow(dateDeltaFormat, timeJbd);
 					deltaNumberOfnumberWindow();
-					deltaIdentificationWindow(infantry[i], establishedJbd);
+					deltaIdentificationWindow(infantry[i], establishedJbd, commentJbd);
 					deltaReliabilityWindow();
 					deltaFlyeye();
 					deltaIdPurchaseText(idTargetJbd);
@@ -108,7 +108,7 @@ namespace CSLight {
 				deltaDateLTimeWindow(dateDeltaFormat, timeJbd);
 				deltaNumberOfnumberWindow();
 				deltaCombatCapabilityWindow(targetMinePTM, establishedJbd, commentJbd);
-				deltaIdentificationWindow(targetMinePTM, establishedJbd);
+				deltaIdentificationWindow(targetMinePTM, establishedJbd, commentJbd);
 				deltaReliabilityWindow();
 				deltaFlyeye();
 				deltaIdPurchaseText(idTargetJbd);
@@ -119,7 +119,7 @@ namespace CSLight {
 				deltaLayerWindow(areaConcentration,commentJbd);
 				deltaMarkName(areaConcentration, dateJbd, establishedJbd, commentJbd, twoHundredth ,threeHundredth);
 				deltaDateLTimeWindow(dateDeltaFormat, timeJbd);
-				deltaIdentificationWindow(areaConcentration, establishedJbd);
+				deltaIdentificationWindow(areaConcentration, establishedJbd, commentJbd);
 				deltaReliabilityWindow();
 				deltaFlyeye();
 				deltaCommentContents(areaConcentration, dateJbd, timeJbd, crewTeamJbd, establishedJbd, targetClassJbd, commentJbd);
@@ -130,7 +130,7 @@ namespace CSLight {
 				deltaLayerWindow(dugout, commentJbd);
 				deltaMarkName(dugout, dateJbd, establishedJbd, commentJbd, twoHundredth ,threeHundredth);
 				deltaDateLTimeWindow(dateDeltaFormat, timeJbd);
-				deltaIdentificationWindow(dugout, establishedJbd);
+				deltaIdentificationWindow(dugout, establishedJbd, commentJbd);
 				deltaCommentContents(dugout, dateJbd, timeJbd, crewTeamJbd, establishedJbd, targetClassJbd, commentJbd);
 				deltaAdditionalFields(idTargetJbd);
 				//..
@@ -139,12 +139,12 @@ namespace CSLight {
 				deltaLayerWindow(flightOfDrones, commentJbd);
 				deltaMarkName(flightOfDrones, dateJbd, establishedJbd, commentJbd, twoHundredth ,threeHundredth);
 				deltaDateLTimeWindow(dateDeltaFormat, timeJbd);
-				deltaIdentificationWindow(flightOfDrones, establishedJbd);
+				deltaIdentificationWindow(flightOfDrones, establishedJbd, commentJbd);
 				deltaCommentContents(flightOfDrones, dateJbd, timeJbd, crewTeamJbd, establishedJbd, targetClassJbd, commentJbd);
 				deltaAdditionalFields(idTargetJbd);
 			//..
 			} else {
-				//Console.WriteLine("нічого спільного не зміг знайти");
+				Console.WriteLine("нічого спільного не зміг знайти");
 			}
 		}
 		static string datePlasDays(string date) {
@@ -363,21 +363,28 @@ namespace CSLight {
 			wait.ms(100);			
 		}
 		// ідетнифікація
-		static void deltaIdentificationWindow(string whoAreYou, string establishedJbd){
+		static void deltaIdentificationWindow(string whoAreYou, string establishedJbd, string commentJbd){
 			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1");
 			// ідетнифікація
 			string friendly = string.Empty;
-			if (whoAreYou.Contains("Міна")) {
+			switch (whoAreYou) {
+			case "Міна":
 				friendly = "дружній";
-			} else if (whoAreYou.Contains("Укриття")) {
-				if (establishedJbd.Contains("Знищ")) {
+				break;
+			case "Укриття":
+				if (establishedJbd.Contains("Знищ") || establishedJbd.Contains("знищ")) {
+					if (commentJbd.Contains("знищ")) {
+						friendly = "відом";
+					}
 					friendly = "відом";
 				} else {
 					friendly = "воро";
 				}
-			}else {
+				break;
+			default:
 				friendly = "воро";
-			};
+				break;
+			}
 			var identificationWindow = w.Elm["web:GROUPING", prop: "@data-testid=select-HO"].Find(3);
 			identificationWindow.PostClick(1);
 			identificationWindow.SendKeys("Ctrl+A", "!"+friendly, "Enter");
@@ -434,20 +441,18 @@ namespace CSLight {
 			//..
 			//. 
 			case "Укриття":
-				if (establishedJbd.Contains("Ураж") || establishedJbd.Contains("ураж")) {
+				if (establishedJbd.Contains("Знищ") || establishedJbd.Contains("знищ")) {
 					commentContents += establishedJbd.ToLower() + " за допомогою " + crewTeamJbd;
-				} else if (establishedJbd.Contains("Знищ") || establishedJbd.Contains("знищ")) {
+				} else if (establishedJbd.Contains("Ураж") || establishedJbd.Contains("ураж")) {
 					commentContents += establishedJbd.ToLower() + " за допомогою " + crewTeamJbd;
 				}else if (establishedJbd.Contains("Підтверджено") || establishedJbd.Contains("Спростовано")) {
-					if (commentJbd.Contains("ураж")) {
-						commentContents += establishedJbd.ToLower() + " після ураження, спостергіав " + crewTeamJbd;
-					}else if (commentJbd.Contains("знищ")) {
-							commentContents += establishedJbd.ToLower() + " після знищення, спостергіав " + crewTeamJbd;
-						} else {
-							commentContents += "виявлено ймовірне укриття ОС, за допомогою " + crewTeamJbd;
-						}
+					if (commentJbd.Contains("знищ") || commentJbd.Contains("ураж")) {
+						commentContents += "дорозвідка, спостергіав " + crewTeamJbd;
+					}else {
+						commentContents += "укриття ціле," + crewTeamJbd;
+					}
 				}else {
-					commentContents += "виявлено ймовірне укриття ОС, за допомогою " + crewTeamJbd;
+					commentContents += " спроба ураження, за допомогою " + crewTeamJbd;
 				}
 				break;
 			//..
