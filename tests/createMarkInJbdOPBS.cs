@@ -298,7 +298,8 @@ namespace CSLight {
 			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1");
 			// поле боєздатність
 			string fullaim = string.Empty;
-			if (whoAreYou.Contains("Міна")) {
+			switch (whoAreYou) {
+			case "Міна":
 				if (establishedJbd.Contains("Авар. скид") || establishedJbd.Contains("Розміновано")) {
 					fullaim = "небо";
 				} else if (establishedJbd.Contains("Встановлено")) {
@@ -306,22 +307,25 @@ namespace CSLight {
 				} else {
 					fullaim = "част";
 				}
-			}else if (establishedJbd.Contains("Ураж") || establishedJbd.Contains("ураж")) {
-				fullaim = "част";
-			}else if (establishedJbd.Contains("Знищ") || establishedJbd.Contains("знищ")) {
-				fullaim = "небо";
-			}else if (establishedJbd.Contains("Виявлено")) {
-				if (commentJbd.Contains("Ураж") || commentJbd.Contains("ураж")) {
-					fullaim = "част";
-				}
-				if (commentJbd.Contains("Знищ") || commentJbd.Contains("знищ")) {
+				break;
+
+			default:
+				if (establishedJbd.Contains("Знищ") || establishedJbd.Contains("знищ")) {
 					fullaim = "небо";
-				}else {
-					fullaim = "повніс";
+				}else if (establishedJbd.Contains("Ураж") || establishedJbd.Contains("ураж")) {
+					fullaim = "част";
+				}else if (establishedJbd.Contains("Виявлено")) {
+					if (commentJbd.Contains("Знищ") || commentJbd.Contains("знищ")) {
+						fullaim = "небо";
+					}else if (commentJbd.Contains("Ураж") || commentJbd.Contains("ураж")) {
+						fullaim = "част";
+					}else {
+						fullaim = "повніс";
+					}
 				}
-			}else {
-				fullaim = "повніс";
+				break;
 			}
+		
 			var combatCapabilityWindow = w.Elm["web:GROUPING", prop: "@data-testid=operational-condition-select"].Find(3);
 			combatCapabilityWindow.PostClick(2);
 			combatCapabilityWindow.SendKeys("Ctrl+A","!"+fullaim, "Enter");
