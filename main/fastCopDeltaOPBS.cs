@@ -41,14 +41,13 @@ namespace CSLight
 			Match matchMGRS = Regex.Match(clipTextTry, patternMGRS);
 			if (matchMGRS.Success){
 				clipTextTry = Transliterate(InsertSpaces(matchMGRS.Groups[1].Value + matchMGRS.Groups[2].Value));
-				Console.WriteLine("знайшов mgrs = " + matchMGRS);
+				//Console.WriteLine("знайшов mgrs = " + matchMGRS);
 				// вписуємо вміст
 				e.SendKeys("Ctrl+A", "!" + clipTextTry, "Enter");
 			}else {
-				Console.WriteLine("знайшов mgrs незнайдено -");
+				//Console.WriteLine("знайшов mgrs незнайдено -");
 				// прибрити усе окрім цифр крапки та коми
 				clipText = Regex.Replace(clipText, @"[^0-9,.]", "");
-				Console.WriteLine("utu = ", clipText);
 				e.SendKeys("Ctrl+A", "!" + clipText, "Enter");
 			}
 			//Clipboard.SetText(clipText);

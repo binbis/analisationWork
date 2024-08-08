@@ -11,7 +11,6 @@ class Program
 {
 	static void Main() {
 		string initialString = string.Empty;
-		//for (int i = 0; i < 200; i++){
 		while(true){
 			//виділяємо рядок
 			keys.send("Shift+Space");
@@ -77,6 +76,6 @@ class Program
 			wait.ms(200);
 			keys.send("Down");
 		}
-		
+		keys.send("Ctrl+Home");
     }
 }
