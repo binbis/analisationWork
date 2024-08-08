@@ -6,6 +6,7 @@
 - Антена, запихнув як техніка, бо інтерфейс співпадає
 - Т. вильоту дронів
 - Бліндаж (підземне, наземне, укриття)
+- Склад майна, Польовий склад БК, Склад БК (без кількості та розвідки)
 
 - Вор. розвід. крило / Вор. FPV-крило
 ще є така помилка для массива (вона фантомна)
@@ -43,7 +44,8 @@ namespace CSLight {
 			string dateDeltaFormat = dateJbd.Replace('.','/');
 			// міна, уриття - типу район зосередження, Самохі́дна артилері́йська устано́вка
 			string targetMinePTM = "Міна", areaConcentration = "Укриття", dugout = "Бліндаж";
-			string[] infantry = { "САУ", "Скупчення ОС" };
+			string[] infantry = { "САУ", "Скупчення ОС",};
+			string[] storegas = { "Склад майна", "Польовий склад БК", "Склад БК" };
 			string flightOfDrones = "Т. вильоту дронів";
 			// массив техніки на 04 або 06 шари
 			string[] machineryArray = {
@@ -51,6 +53,20 @@ namespace CSLight {
 				"Мотоцикл","Військ. баггі","Гаубиця","РСЗВ","БТР",
 				"БМП","Антена"
 			};
+			//. якщо ти склад(без)
+			for (int i = 0; i < storegas.Length; i++) {
+				if (targetClassJbd.Contains(storegas[i])) {
+					deltaLayerWindow(storegas[i], commentJbd);
+					deltaMarkName(storegas[i], dateJbd, establishedJbd, commentJbd);
+					deltaDateLTimeWindow(dateDeltaFormat, timeJbd);
+					deltaCombatCapabilityWindow(storegas[i], establishedJbd, commentJbd);
+					deltaIdentificationWindow(storegas[i], establishedJbd);
+					deltaReliabilityWindow();
+					deltaIdPurchaseText(idTargetJbd);
+					deltaCommentContents(machineryArray[i], dateJbd, timeJbd, crewTeamJbd, establishedJbd, targetClassJbd, commentJbd);
+				}
+			}
+			//..
 			//. якщо ти техніка
 			for (int i = 0; i < machineryArray.Length; i++) {
 				if (targetClassJbd.Contains(machineryArray[i])) {
