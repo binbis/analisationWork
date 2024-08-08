@@ -389,6 +389,8 @@ namespace CSLight {
 			wait.ms(400);
 			notesWindow.PostClick(1);
 			notesWindow.SendKeys("Ctrl+A", "!"+idTargetJbd, "Enter");
+			var mainFilds = w.Elm["web:GROUPING", prop: "@title=Основні поля"].Find(1);
+			mainFilds.PostClick(1);
 		}
 		static void deltaGeograficPlace() {
 			
