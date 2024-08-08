@@ -16,8 +16,8 @@ Index was outside the bounds of the array. це от тут parts[]
 namespace CSLight {
 	class Program {
 		static void Main() {
-			opt.key.KeySpeed = 35;
-			opt.key.TextSpeed = 25;
+			opt.key.KeySpeed = 25;
+			opt.key.TextSpeed = 20;
 			//виділяємо весь рядок
 			keys.send("Shift+Space*2");
 			wait.ms(100);
@@ -32,7 +32,7 @@ namespace CSLight {
 			string dateJbd = parts[0]; // 27.07.2024
 			string timeJbd = parts[1]; //00:40
 			string commentJbd = parts[2].Replace("\n"," ").ToLower(); //коментар (для ідентифікації скоріш за все)
-			string crewTeamJbd = parts[4].Replace("\n\t"," "); // R-18-1 (Мавка)
+			string crewTeamJbd = TrimAfterDot(parts[4].Replace("\n\t"," ")); // R-18-1 (Мавка)
 			string whatDidJbd = parts[5]; // Мінування (можливо його видалю)
 			string targetClassJbd = parts[7]; // Міна/Вантажівка/Військ. баггі/Скупчення ОС/Укриття
 			string idTargetJbd = TrimString(parts[9], 19); // Міна 270724043
@@ -227,6 +227,8 @@ namespace CSLight {
 					}else {
 						markName = whoAreYou + " ОС ";
 					}
+				}else {
+					markName = whoAreYou + " ОС ";
 				}
 				break;
 			//..
@@ -395,13 +397,13 @@ namespace CSLight {
 		static void deltaFlyeye(){
 			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1");
 			// тип джерела
-			string flyeye = "повітр";
+			string flyeye = "пові";
 			var typeOfSourceWindow = w.Elm["web:GROUPING", prop: "@data-testid=AD"].Find(1);
 			typeOfSourceWindow.ScrollTo();
 			wait.ms(500);
 			typeOfSourceWindow.PostClick(2);
 			wait.ms(200);
-			typeOfSourceWindow.SendKeys("Ctrl+A", "!"+flyeye, "Enter");
+			typeOfSourceWindow.SendKeys("!"+flyeye, "Tab");
 		}
 		// завуваження штабу - ід
 		static void deltaIdPurchaseText(string idTargetJbd){
@@ -431,8 +433,22 @@ namespace CSLight {
 				break;
 			//..
 			//. 
-			case "":
-				
+			case "Укриття":
+				if (establishedJbd.Contains("Ураж") || establishedJbd.Contains("ураж")) {
+					commentContents += establishedJbd.ToLower() + " за допомогою " + crewTeamJbd;
+				} else if (establishedJbd.Contains("Знищ") || establishedJbd.Contains("знищ")) {
+					commentContents += establishedJbd.ToLower() + " за допомогою " + crewTeamJbd;
+				}else if (establishedJbd.Contains("Підтверджено") || establishedJbd.Contains("Спростовано")) {
+					if (commentJbd.Contains("ураж")) {
+						commentContents += establishedJbd.ToLower() + " після ураження, спостергіав " + crewTeamJbd;
+					}else if (commentJbd.Contains("знищ")) {
+							commentContents += establishedJbd.ToLower() + " після знищення, спостергіав " + crewTeamJbd;
+						} else {
+							commentContents += "виявлено ймовірне укриття ОС, за допомогою " + crewTeamJbd;
+						}
+				}else {
+					commentContents += "виявлено ймовірне укриття ОС, за допомогою " + crewTeamJbd;
+				}
 				break;
 			//..
 			default:
@@ -447,8 +463,8 @@ namespace CSLight {
 			var commentWindow = w.Elm["web:TEXT", prop: new("@data-testid=comment-editing__textarea", "@name=text")].Find(1);
 			commentWindow.ScrollTo();
 			wait.ms(200);
-			keys.send("Down");
-			wait.ms(50);
+			//mouse.wheel(-5);
+			wait.ms(100);
 			commentWindow.PostClick();
 			commentWindow.SendKeys("Ctrl+A", "!"+commentContents);
 			wait.ms(100);
@@ -481,14 +497,23 @@ namespace CSLight {
 			
 		}
 		// обрізка до 19 символів в рядку
-		static string TrimString(string str, int maxLength)
+		static string TrimString(string str, int maxLength){
+			if (str.Length > maxLength)
 			{
-				if (str.Length > maxLength)
-				{
-					return str.Substring(str.Length - maxLength);
-				}
-				return str;
+				return str.Substring(str.Length - maxLength);
 			}
+			return str;
+		}
+		// обрізати рядок усе після крапки
+		static string TrimAfterDot(string str)
+		{
+			int dotIndex = str.IndexOf('.');
+			if (dotIndex != -1)
+			{
+				return str.Substring(0, dotIndex);
+			}
+			return str;
+		}
 	}
 }
 

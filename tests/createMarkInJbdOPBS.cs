@@ -32,12 +32,12 @@ namespace CSLight {
 			string dateJbd = parts[0]; // 27.07.2024
 			string timeJbd = parts[1]; //00:40
 			string commentJbd = parts[2].Replace("\n"," ").ToLower(); //коментар (для ідентифікації скоріш за все)
-			string crewTeamJbd = parts[4].Replace("\n\t"," "); // R-18-1 (Мавка)
+			string crewTeamJbd = TrimAfterDot(parts[4].Replace("\n\t"," ")); // R-18-1 (Мавка)
 			string whatDidJbd = parts[5]; // Мінування (можливо його видалю)
 			string targetClassJbd = parts[7]; // Міна/Вантажівка/Військ. баггі/Скупчення ОС/Укриття
 			string idTargetJbd = TrimString(parts[9], 19); // Міна 270724043
 			// Встановлено/Уражено/Промах/Авар. скид/Повторно уражено
-			string establishedJbd = TrimAfterDot(parts[24]);
+			string establishedJbd = parts[24];
 			string twoHundredth = parts[25]; // 200
 			string threeHundredth = parts[26]; // 300
 			Console.WriteLine(twoHundredth);
