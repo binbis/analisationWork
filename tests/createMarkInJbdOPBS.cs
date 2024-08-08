@@ -372,11 +372,8 @@ namespace CSLight {
 				friendly = "дружній";
 				break;
 			case "Укриття":
-				if (establishedJbd.Contains("Знищ") || establishedJbd.Contains("знищ")) {
-					if (commentJbd.Contains("знищ")) {
+				if (establishedJbd.Contains("Знищ") || establishedJbd.Contains("знищ") || commentJbd.Contains("знищ")) {
 						friendly = "відом";
-					}
-					friendly = "відом";
 				} else {
 					friendly = "воро";
 				}
@@ -451,7 +448,15 @@ namespace CSLight {
 					}else {
 						commentContents += "укриття ціле," + crewTeamJbd;
 					}
-				}else {
+				}else if (establishedJbd.Contains("Виявлено")) {
+					if (commentJbd.Contains("знищ")) {
+						commentContents += establishedJbd.ToLower() + " знищ." + whoAreYou.ToLower() + ", спостерігав " + crewTeamJbd;
+					}else if (commentJbd.Contains("ураж")) {
+						commentContents += establishedJbd.ToLower() + " ураж." + whoAreYou.ToLower() + ", спостерігав " + crewTeamJbd;
+					} else {
+						commentContents += commentJbd + ", спостерігав " + crewTeamJbd;
+					}
+				} else {
 					commentContents += " спроба ураження, за допомогою " + crewTeamJbd;
 				}
 				break;
