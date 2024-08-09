@@ -28,7 +28,7 @@ class Program
 			
 			// Використання регулярних виразів для отримання потрібних частин рядка
 			string datePattern = @"(\d{2}\.\d{2}\.\d{4})";
-			string crewPattern = @"Екіпаж — ([^Т]*)";
+			string crewPattern = @"Екіпаж — (.*?)(?=Точка|Початок)";
 			string pointPattern = @"Точка вильоту — ([^З]*)";
 			string teamPattern = @"Склад: — (.+)";
 			

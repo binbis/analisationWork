@@ -331,7 +331,7 @@ namespace CSLight {
 			string fullaim = string.Empty;
 			switch (whoAreYou) {
 			case "Міна":
-				if (establishedJbd.Contains("Авар. скид") || establishedJbd.Contains("Розміновано")) {
+				if (establishedJbd.Contains("Авар. скид") || establishedJbd.Contains("Розміновано") || establishedJbd.Contains("Підтв. ураж.")) {
 					fullaim = "небо";
 				} else if (establishedJbd.Contains("Встановлено")) {
 					fullaim = "повніс";
