@@ -41,7 +41,7 @@ namespace CSLight
 			Match matchMGRS = Regex.Match(clipTextTry, patternMGRS);
 			if (matchMGRS.Success){
 				clipTextTry = Transliterate(InsertSpaces(matchMGRS.Groups[1].Value + matchMGRS.Groups[2].Value));
-				Console.WriteLine("знайшов mgrs = " + matchMGRS);
+				//Console.WriteLine("знайшов mgrs = " + matchMGRS);
 				// вписуємо вміст
 				e.SendKeys("Ctrl+A", "!" + clipTextTry, "Enter");
 			}else {

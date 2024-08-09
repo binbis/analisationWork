@@ -11,7 +11,6 @@ class Program
 {
 	static void Main() {
 		string initialString = string.Empty;
-		//for (int i = 0; i < 200; i++){
 		while(true){
 			//виділяємо рядок
 			keys.send("Shift+Space");
@@ -29,7 +28,8 @@ class Program
 			
 			// Використання регулярних виразів для отримання потрібних частин рядка
 			string datePattern = @"(\d{2}\.\d{2}\.\d{4})";
-			string crewPattern = @"Екіпаж — ([^Т]*)";
+			//string crewPattern = @"Екіпаж — ([^Т]*)";
+			string crewPattern = @"Екіпаж — (.*?)(?=Точка|Початок)";
 			string pointPattern = @"Точка вильоту — ([^З]*)";
 			string teamPattern = @"Склад: — (.+)";
 			
@@ -77,6 +77,6 @@ class Program
 			wait.ms(200);
 			keys.send("Down");
 		}
-		
+		keys.send("Ctrl+Home");
     }
 }
