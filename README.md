@@ -1,30 +1,39 @@
 # Documentation
 
-## _fastCopDelta_
-    виправляє координати MGRS, відкриває дельту та шукає
+## _fastCopDeltaOPBS_
+    виправляє координати MGRS, відкриває дельту та натискає пошук
 - Дельта повинна бути відкритою окремим вікном`(окремою вкладкою)` або перед використанням перейти на вкладку дельти.
 - Виділяєш текст`(буддь де)`де є кори mgrs.
 - жмеш `Alt+X`, магія почне працювати
+`дивись відео для наглядності`
 
-## _createMarkInJbd_
+## _createMarkInJbdOPBS_
     заповнює або оновлює з жбд обрану мітку
-- `дивись гіфку`
-гіфка
+- на основі жбд обираєш, в дельті, необхідну мітку
 - в дельті обераєш відповідну мітку для заповлення`(оновлення)`
 - в жбд обираєш будь яку клітинку`(аби вона була на необхідному рядку)`
 - жмеш `Alt+Z`, магія почне працювати
+- `дивись відео для наглядності`
 
-## _ecipashCreateFast_
+## _ecipashCreateFastOPBS_
     створює папку на пробочому столі в якій будуть створені папки з екіпажами
 - відкрий ексель табличку `Планування ...`
 - перейди на сторінку `Звіт`
 - обери необхідну дату
 - побери 8 рядок(клітинку)
 - жмеш `Ctrl+Alt+T`, магія почне працювати
+`дивись відео для наглядності`
+
+## _fastZonaHiroOPBS_
+    те, що так і не реалізували розробники дельти, створення нової зони
+- деактивуєш усі вікна в дельті
+- жмеш `Alt+Shift+F`, магія почне працювати
+`дивись відео для наглядності`
 
 HotKeys:
 
-	hk["Alt+Z"] = o => script.run(@"\analisationWork-main\main\fastCopDelta.cs");
-	hk["Alt+X"] = o => script.run(@"\analisationWork-main\main\createMarkInJbd.cs");
-	hk["Ctrl+Alt+T"] = o => script.run(@"\analisationWork-main\main\ecipashCreateFast.cs");
-	hk["Alt+Shift+F"] = o => script.run(@"\analisationWork-main\main\fastZonaHiro.cs");
+	var hk = Triggers.Hotkey;
+	hk["Alt+Z"] = o => script.run(@"\analisationWork\main\fastCopDeltaOPBS.cs");
+	hk["Alt+X"] = o => script.run(@"\analisationWork\main\createMarkInJbdOPBS.cs");
+	hk["Ctrl+Alt+T"] = o => script.run(@"\analisationWork\main\ecipashCreateFastOPBS.cs");
+	hk["Alt+Shift+F"] = o => script.run(@"\analisationWork\main\fastZonaHiroOPBS.cs");

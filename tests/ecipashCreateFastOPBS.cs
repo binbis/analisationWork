@@ -14,10 +14,10 @@ class Program
 		while(true){
 			//виділяємо рядок
 			keys.send("Shift+Space");
-			wait.ms(00);
+			wait.ms(100);
 			//копіюємо код
 			keys.send("Ctrl+C");
-			wait.ms(100);
+			wait.ms(200);
 			// Зчитуємо вміст з буферу обміну
 			initialString = clipboard.copy();
 			wait.ms(200);

@@ -20,7 +20,7 @@ Index was outside the bounds of the array. це от тут parts[]
 namespace CSLight {
 	class Program {
 		static void Main() {
-			opt.key.KeySpeed = 25;
+			opt.key.KeySpeed = 45;
 			opt.key.TextSpeed = 20;
 			//виділяємо весь рядок
 			keys.send("Shift+Space*2");
