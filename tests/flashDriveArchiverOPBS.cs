@@ -23,43 +23,7 @@ class Program
 
         int driveNumber = 1;
 		//тут захована можливість обрати конкретну папку з флешки
-/*
-        foreach (string drive in removableDrives)
-        {
-            try
-            {
-                // Перевірка, чи є диск знімним (флешкою)
-                DriveInfo driveInfo = new DriveInfo(drive);
-                if (driveInfo.DriveType == DriveType.Removable && driveInfo.IsReady)
-                {
-                    string sourceDir = Path.Combine(drive, folderToCopy); // Шлях до папки "Documents"
-                    if (Directory.Exists(sourceDir))
-                    {
-                        string destinationPath = Path.Combine(destinationBasePath, $"FlashDrive_{driveNumber}");
-                        Directory.CreateDirectory(destinationPath);
 
-                        Console.WriteLine($"Копіювання з {sourceDir} в {destinationPath}...");
-
-                        CopyDirectory(sourceDir, destinationPath);
-
-                        driveNumber++;
-                    }
-					
-                    else
-                    {
-                        Console.WriteLine($"Папка {folderToCopy} не знайдена на диску {drive}.");
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Помилка при доступі до {drive}: {ex.Message}");
-            }
-        }
-
-        Console.WriteLine("Копіювання завершено.");
-    }
-*/
 		foreach (string drive in removableDrives)
 			{
 				try
