@@ -1,4 +1,4 @@
-/* 10,08,2024_v1.7
+/* 12,08,2024_v1.7a
 - міна, залежно від статусу заповнюється та оновлюється(назва, дата\час, боєздатність, коментар)
 - укриття, залежно від заповнення, заповнюється та оновлюється "без ід"(назва,  дата\час, ідентифікатор, коментар)[якщо виявлено, бере комент, ураження-знищення бере статус, ]
 - техніка, окремий масив зі таким самим інтерфейсом
@@ -35,7 +35,7 @@ namespace CSLight {
 			// Присвоюємо змінним відповідні значення
 			string dateJbd = parts[0]; // 27.07.2024
 			string timeJbd = parts[1]; //00:40
-			string commentJbd = parts[2].Replace("\n"," ").ToLower(); //коментар (для ідентифікації скоріш за все)
+			string commentJbd = parts[2].Replace("\n"," "); //коментар (для ідентифікації скоріш за все)
 			string crewTeamJbd = TrimAfterDot(parts[4].Replace("\n\t"," ")); // R-18-1 (Мавка)
 			string whatDidJbd = parts[5]; // Мінування (можливо його видалю)
 			string targetClassJbd = parts[7]; // Міна/Вантажівка/Військ. баггі/Скупчення ОС/Укриття
@@ -128,6 +128,7 @@ namespace CSLight {
 				deltaFlyeye();
 				deltaCommentContents(areaConcentration, dateJbd, timeJbd, crewTeamJbd, establishedJbd, targetClassJbd, commentJbd);
 				deltaAdditionalFields(idTargetJbd);
+				deltaGeografPlace(areaConcentration, establishedJbd, commentJbd);
 			//..
 			//. якщо ти бліндаж або з укриттів
 			} else if (targetClassJbd.Contains(dugout)) {
@@ -174,16 +175,16 @@ namespace CSLight {
 				layerWindow.SendKeys("Ctrl+A","!11","Enter");
 				break;
 			case "Укриття":
-				layerWindow.SendKeys("Ctrl+A","!01","Enter");
+				layerWindow.SendKeys("Ctrl+A","!Пост","Enter");
 				break;
 			case "Мережеве обладнання":
-				layerWindow.SendKeys("Ctrl+A","!02","Enter");
+				layerWindow.SendKeys("Ctrl+A","!антени","Enter");
 				break;
 			case "Камера":
-				layerWindow.SendKeys("Ctrl+A","!02","Enter");
+				layerWindow.SendKeys("Ctrl+A","!антени","Enter");
 				break;
 			case "Антена":
-				layerWindow.SendKeys("Ctrl+A","!02","Enter");
+				layerWindow.SendKeys("Ctrl+A","!антени","Enter");
 				break;
 			case "Бліндаж":
 				layerWindow.SendKeys("Ctrl+A","!07","Enter");
@@ -509,8 +510,91 @@ namespace CSLight {
 			wait.ms(400);
 			notesWindow.PostClick(1);
 			notesWindow.SendKeys("Ctrl+A", "!"+idTargetJbd, "Enter");
+			wait.ms(200);
+		}
+		// Георафічне розташування
+		static void deltaGeografPlace(string whoAreYou, string establishedJbd, string commentJbd) {
+			//основне вікно
+			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1");
+			// Георафічне розташування
+			var geografPlaceWindow = w.Elm["web:GROUPING", prop: "@title=Географічне розташування"].Find(1);
+			geografPlaceWindow.PostClick();
+			wait.ms(200);
+			
+			switch (whoAreYou) {
+			//. укриття
+			case "Укриття":
+				if (establishedJbd.Contains("Знищ") || establishedJbd.Contains("знищ")) {
+					// колір жовтий - знищ
+					var placeColorYellowButton = w.Elm["web:BUTTON", "#ffeb3b", "@title=#ffeb3b"].Find(1);
+					placeColorYellowButton.PostClick();
+					wait.ms(300);
+					// відсоток прозрачності
+					var transpatentColorRange = w.Elm["web:SLIDER", prop: "@data-testid=slider"].Find(1);
+					transpatentColorRange.PostClick();
+					transpatentColorRange.SendKeys("Left*5");
+					wait.ms(300);
+				}else if (establishedJbd.Contains("Ураж") || establishedJbd.Contains("ураж")) {
+					//колір червоний - ворож - ураж
+					var placeColorRedButton = w.Elm["web:BUTTON", "#f44336", "@title=#f44336"].Find(1);
+					placeColorRedButton.PostClick();
+					wait.ms(300);
+					// відсоток прозрачності
+					var transpatentColorRange = w.Elm["web:SLIDER", prop: "@data-testid=slider"].Find(1);
+					transpatentColorRange.PostClick();
+					transpatentColorRange.SendKeys("Left*5");
+					wait.ms(300);
+				}else if (establishedJbd.Contains("Виявлено")) {
+					if (commentJbd.Contains("Знищ") || commentJbd.Contains("знищ")) {
+						// колір жовтий - знищ
+						var placeColorYellowButton = w.Elm["web:BUTTON", "#ffeb3b", "@title=#ffeb3b"].Find(1);
+						placeColorYellowButton.PostClick();
+						wait.ms(300);
+						// відсоток прозрачності
+						var transpatentColorRange = w.Elm["web:SLIDER", prop: "@data-testid=slider"].Find(1);
+						transpatentColorRange.PostClick();
+						transpatentColorRange.SendKeys("Left*5");
+						wait.ms(300);
+					}else if (commentJbd.Contains("Ураж") || commentJbd.Contains("ураж")) {
+						//колір червоний - ворож - ураж
+						var placeColorRedButton = w.Elm["web:BUTTON", "#f44336", "@title=#f44336"].Find(1);
+						placeColorRedButton.PostClick();
+						wait.ms(300);
+						// відсоток прозрачності
+						var transpatentColorRange = w.Elm["web:SLIDER", prop: "@data-testid=slider"].Find(1);
+						transpatentColorRange.PostClick();
+						transpatentColorRange.SendKeys("Left*5");
+						wait.ms(300);
+					}else {
+						//колір червоний - ворож - ураж
+						var placeColorRedButton = w.Elm["web:BUTTON", "#f44336", "@title=#f44336"].Find(1);
+						placeColorRedButton.PostClick();
+						wait.ms(300);
+						// відсоток прозрачності
+						var transpatentColorRange = w.Elm["web:SLIDER", prop: "@data-testid=slider"].Find(1);
+						transpatentColorRange.PostClick();
+						transpatentColorRange.SendKeys("Left*5");
+						wait.ms(300);
+					}
+				}
+				break;
+			//..
+			default:
+				
+				break;
+			}
+			
+			// колір голубий - дружній
+			/* заготовка під майбутнє
+			var placeColorBlueButton = w.Elm["web:BUTTON", "#00bcd4", "@title=#00bcd4"].Find(1);
+			placeColorBlueButton.PostClick();
+			wait.ms(200);
+			*/
+			
+			// повернення на основне вікно
 			var mainFilds = w.Elm["web:GROUPING", prop: "@title=Основні поля"].Find(1);
 			mainFilds.PostClick(1);
+			wait.ms(200);
 		}
 		// main window
 		static void deltaGeograficPlace() {
