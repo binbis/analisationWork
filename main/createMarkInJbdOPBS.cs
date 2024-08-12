@@ -21,7 +21,7 @@ namespace CSLight {
 	class Program {
 		static void Main() {
 			opt.key.KeySpeed = 55;
-			opt.key.TextSpeed = 40;
+			opt.key.TextSpeed = 20;
 			//виділяємо весь рядок
 			keys.send("Shift+Space*2");
 			wait.ms(500);
@@ -527,6 +527,8 @@ namespace CSLight {
 				if (establishedJbd.Contains("Знищ") || establishedJbd.Contains("знищ")) {
 					// колір жовтий - знищ
 					var placeColorYellowButton = w.Elm["web:BUTTON", "#ffeb3b", "@title=#ffeb3b"].Find(1);
+					placeColorYellowButton.ScrollTo();
+					wait.ms(300);
 					placeColorYellowButton.PostClick();
 					wait.ms(500);
 					// відсоток прозрачності
@@ -537,6 +539,8 @@ namespace CSLight {
 				}else if (establishedJbd.Contains("Ураж") || establishedJbd.Contains("ураж")) {
 					//колір червоний - ворож - ураж
 					var placeColorRedButton = w.Elm["web:BUTTON", "#f44336", "@title=#f44336"].Find(1);
+					placeColorRedButton.ScrollTo();
+					wait.ms(300);
 					placeColorRedButton.PostClick();
 					wait.ms(500);
 					// відсоток прозрачності
@@ -548,6 +552,8 @@ namespace CSLight {
 					if (commentJbd.Contains("Знищ") || commentJbd.Contains("знищ")) {
 						// колір жовтий - знищ
 						var placeColorYellowButton = w.Elm["web:BUTTON", "#ffeb3b", "@title=#ffeb3b"].Find(1);
+						placeColorYellowButton.ScrollTo();
+						wait.ms(300);
 						placeColorYellowButton.PostClick();
 						wait.ms(500);
 						// відсоток прозрачності
@@ -558,6 +564,8 @@ namespace CSLight {
 					}else if (commentJbd.Contains("Ураж") || commentJbd.Contains("ураж")) {
 						//колір червоний - ворож - ураж
 						var placeColorRedButton = w.Elm["web:BUTTON", "#f44336", "@title=#f44336"].Find(1);
+						placeColorRedButton.ScrollTo();
+						wait.ms(300);
 						placeColorRedButton.PostClick();
 						wait.ms(500);
 						// відсоток прозрачності
@@ -568,6 +576,8 @@ namespace CSLight {
 					}else {
 						//колір червоний - ворож - ураж
 						var placeColorRedButton = w.Elm["web:BUTTON", "#f44336", "@title=#f44336"].Find(1);
+						placeColorRedButton.ScrollTo();
+						wait.ms(300);
 						placeColorRedButton.PostClick();
 						wait.ms(500);
 						// відсоток прозрачності

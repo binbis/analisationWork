@@ -518,6 +518,8 @@ namespace CSLight {
 			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1");
 			// Георафічне розташування
 			var geografPlaceWindow = w.Elm["web:GROUPING", prop: "@title=Географічне розташування"].Find(1);
+			geografPlaceWindow.ScrollTo();
+			wait.ms(200);
 			geografPlaceWindow.PostClick();
 			wait.ms(200);
 			
@@ -527,6 +529,8 @@ namespace CSLight {
 				if (establishedJbd.Contains("Знищ") || establishedJbd.Contains("знищ")) {
 					// колір жовтий - знищ
 					var placeColorYellowButton = w.Elm["web:BUTTON", "#ffeb3b", "@title=#ffeb3b"].Find(1);
+					placeColorYellowButton.ScrollTo();
+					wait.ms(300);
 					placeColorYellowButton.PostClick();
 					wait.ms(300);
 					// відсоток прозрачності
@@ -537,6 +541,8 @@ namespace CSLight {
 				}else if (establishedJbd.Contains("Ураж") || establishedJbd.Contains("ураж")) {
 					//колір червоний - ворож - ураж
 					var placeColorRedButton = w.Elm["web:BUTTON", "#f44336", "@title=#f44336"].Find(1);
+					placeColorRedButton.ScrollTo();
+					wait.ms(300);
 					placeColorRedButton.PostClick();
 					wait.ms(300);
 					// відсоток прозрачності
@@ -548,6 +554,8 @@ namespace CSLight {
 					if (commentJbd.Contains("Знищ") || commentJbd.Contains("знищ")) {
 						// колір жовтий - знищ
 						var placeColorYellowButton = w.Elm["web:BUTTON", "#ffeb3b", "@title=#ffeb3b"].Find(1);
+						placeColorYellowButton.ScrollTo();
+						wait.ms(300);
 						placeColorYellowButton.PostClick();
 						wait.ms(300);
 						// відсоток прозрачності
@@ -558,6 +566,8 @@ namespace CSLight {
 					}else if (commentJbd.Contains("Ураж") || commentJbd.Contains("ураж")) {
 						//колір червоний - ворож - ураж
 						var placeColorRedButton = w.Elm["web:BUTTON", "#f44336", "@title=#f44336"].Find(1);
+						placeColorRedButton.ScrollTo();
+						wait.ms(300);
 						placeColorRedButton.PostClick();
 						wait.ms(300);
 						// відсоток прозрачності
@@ -568,6 +578,8 @@ namespace CSLight {
 					}else {
 						//колір червоний - ворож - ураж
 						var placeColorRedButton = w.Elm["web:BUTTON", "#f44336", "@title=#f44336"].Find(1);
+						placeColorRedButton.ScrollTo();
+						wait.ms(300);
 						placeColorRedButton.PostClick();
 						wait.ms(300);
 						// відсоток прозрачності
