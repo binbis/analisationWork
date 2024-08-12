@@ -127,8 +127,8 @@ class Program
 
                 // Виведення прогресу копіювання для папки
                 Console.WriteLine($"Копіювання папки: {dir} ({copiedItems}/{totalItems}) - " +
-                                  $"Скопійовано {FormatSize(copiedSizeBytes)} із {FormatSize(totalSizeBytes)} - " +
-                                  $"Залишилося приблизно {TimeSpan.FromSeconds(estimatedRemainingTime):hh\\:mm\\:ss}");
+                $"Скопійовано {FormatSize(copiedSizeBytes)} із {FormatSize(totalSizeBytes)} - " +
+				$"Залишилося приблизно {TimeSpan.FromSeconds(estimatedRemainingTime):hh\\:mm\\:ss}");
             }
             catch (Exception ex)
             {
