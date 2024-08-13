@@ -20,8 +20,8 @@ Index was outside the bounds of the array. це от тут parts[]
 namespace CSLight {
 	class Program {
 		static void Main() {
-			opt.key.KeySpeed = 25;
-			opt.key.TextSpeed = 20;
+			opt.key.KeySpeed = 65;
+			opt.key.TextSpeed = 30;
 			//виділяємо весь рядок
 			keys.send("Shift+Space*2");
 			wait.ms(100);
@@ -218,7 +218,7 @@ namespace CSLight {
 			string markName = string.Empty;
 			switch (whoAreYou) {
 			case "Міна":
-				if (establishedJbd.Contains("Авар. скид") || establishedJbd.Contains("Розміновано") || establishedJbd.Contains("Підтв. ураж.")) {
+				if (establishedJbd.Contains("Авар. скид") || establishedJbd.Contains("Розміновано") || establishedJbd.Contains("Підтв. ураж.") || establishedJbd.Contains("Тільки розрив")) {
 					markName = "ПТМ-3 (" + dateJbd + ")";
 				}else {
 					markName = "ПТМ-3 до ("+ datePlasDays(dateJbd)+")";
@@ -342,7 +342,7 @@ namespace CSLight {
 			string fullaim = string.Empty;
 			switch (whoAreYou) {
 			case "Міна":
-				if (establishedJbd.Contains("Авар. скид") || establishedJbd.Contains("Розміновано") || establishedJbd.Contains("Підтв. ураж.")) {
+				if (establishedJbd.Contains("Авар. скид") || establishedJbd.Contains("Розміновано") || establishedJbd.Contains("Підтв. ураж.") || establishedJbd.Contains("Тільки розрив")) {
 					fullaim = "небо";
 				} else if (establishedJbd.Contains("Встановлено")) {
 					fullaim = "повніс";
@@ -438,7 +438,7 @@ namespace CSLight {
 			case "Міна":
 				if (establishedJbd.Contains("Авар. скид") || establishedJbd.Contains("Подавлено")) {
 					commentContents += "аварійно сикнуто з ударного коптера " + crewTeamJbd;
-				} else if (establishedJbd.Contains("Розміновано")) {
+				} else if (establishedJbd.Contains("Розміновано") || establishedJbd.Contains("Тільки розрив")) {
 					commentContents += "розміновано спостерігали з " + crewTeamJbd;
 				}else if (establishedJbd.Contains("Підтв. ураж.")) {
 					commentContents += "підрив на міні, кори ( id ), спостерігали з " + crewTeamJbd;
