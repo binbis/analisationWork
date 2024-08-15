@@ -146,7 +146,7 @@ namespace CSLight {
 				deltaReliabilityWindow();
 				deltaFlyeye();
 				deltaCommentContents(areaConcentration, dateJbd, timeJbd, crewTeamJbd, establishedJbd, targetClassJbd, commentJbd);
-				deltaAdditionalFields(idTargetJbd);
+				deltaAdditionalFields(idTargetJbd, areaConcentration);
 				deltaGeografPlace(areaConcentration, establishedJbd, commentJbd);
 			//..
 			//. якщо ти бліндаж або з укриттів
@@ -156,7 +156,7 @@ namespace CSLight {
 				deltaDateLTimeWindow(dateDeltaFormat, timeJbd);
 				deltaIdentificationWindow(dugout, establishedJbd, commentJbd);
 				deltaCommentContents(dugout, dateJbd, timeJbd, crewTeamJbd, establishedJbd, targetClassJbd, commentJbd);
-				deltaAdditionalFields(idTargetJbd);
+				deltaAdditionalFields(idTargetJbd, dugout);
 				//..
 			//. якщо ти Т. вильоту дронів
 			} else if (targetClassJbd.Contains(flightOfDrones)) {
@@ -165,7 +165,7 @@ namespace CSLight {
 				deltaDateLTimeWindow(dateDeltaFormat, timeJbd);
 				deltaIdentificationWindow(flightOfDrones, establishedJbd, commentJbd);
 				deltaCommentContents(flightOfDrones, dateJbd, timeJbd, crewTeamJbd, establishedJbd, targetClassJbd, commentJbd);
-				deltaAdditionalFields(idTargetJbd);
+				deltaAdditionalFields(idTargetJbd, flightOfDrones);
 				//..
 			} else {
 				Console.WriteLine("нічого спільного не зміг знайти");
@@ -515,20 +515,27 @@ namespace CSLight {
 			commentAsseptButton.PostClick(2);
 		}
 		// додаткові поля
-		static void deltaAdditionalFields(string idTargetJbd) {
+		static void deltaAdditionalFields(string idTargetJbd, string whoAreYou) {
 			// додаткові поля
 			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1");
 			var additionalFields = w.Elm["web:GROUPING", "Додаткові поля", "@title=Додаткові поля"].Find(1);
 			additionalFields.PostClick(1);
 			wait.ms(200);
 			//примітки штабу
-			//var notesWindow = w.Elm["web:TEXT", prop: new("@data-testid=string-field__input", "@name=Назва типу")].Find(1);
 			var notesWindow = w.Elm["web:TEXT", prop: new("@data-testid=string-field__input", "@name=Примітки штабу")].Find(1);
 			notesWindow.ScrollTo();
 			wait.ms(400);
 			notesWindow.PostClick(1);
 			notesWindow.SendKeys("Ctrl+A", "!"+idTargetJbd, "Enter");
 			wait.ms(200);
+			
+			if (!whoAreYou.Contains("Укриття")) {
+				// повернення на основне вікно
+				var mainFilds = w.Elm["web:GROUPING", prop: "@title=Основні поля"].Find(1);
+				mainFilds.PostClick(1);
+				wait.ms(200);
+			}
+
 		}
 		// Георафічне розташування
 		static void deltaGeografPlace(string whoAreYou, string establishedJbd, string commentJbd) {
@@ -607,6 +614,10 @@ namespace CSLight {
 						wait.ms(300);
 					}
 				}
+				// повернення на основне вікно
+				var mainFilds = w.Elm["web:GROUPING", prop: "@title=Основні поля"].Find(1);
+				mainFilds.PostClick(1);
+				wait.ms(200);
 				break;
 			//..
 			default:
@@ -621,10 +632,6 @@ namespace CSLight {
 			wait.ms(200);
 			*/
 			
-			// повернення на основне вікно
-			var mainFilds = w.Elm["web:GROUPING", prop: "@title=Основні поля"].Find(1);
-			mainFilds.PostClick(1);
-			wait.ms(200);
 		}
 		// main window
 		static void deltaGeograficPlace() {
