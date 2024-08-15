@@ -1,4 +1,4 @@
-/* 12,08,2024_v1.7a
+/* 14,08,2024_v1.7a
 - міна, залежно від статусу заповнюється та оновлюється(назва, дата\час, боєздатність, коментар)
 - укриття, залежно від заповнення, заповнюється та оновлюється "без ід"(назва,  дата\час, ідентифікатор, коментар)[якщо виявлено, бере комент, ураження-знищення бере статус, ]
 - техніка, окремий масив зі таким самим інтерфейсом
@@ -10,9 +10,10 @@
 - мережеве обладнання (генератор)
 - камера відеоспостереження
 - Міномет
+- Вор. розвід. крило / Вор. FPV-крило / Розв. крило / Ударні крила
 
 - вонева позиція
-- Вор. розвід. крило / Вор. FPV-крило
+
 ще є така помилка для массива (вона фантомна)
 Index was outside the bounds of the array. це от тут parts[]
 */
@@ -20,8 +21,8 @@ Index was outside the bounds of the array. це от тут parts[]
 namespace CSLight {
 	class Program {
 		static void Main() {
-			opt.key.KeySpeed = 65;
-			opt.key.TextSpeed = 30;
+			opt.key.KeySpeed = 35;
+			opt.key.TextSpeed = 20;
 			//виділяємо весь рядок
 			keys.send("Shift+Space*2");
 			wait.ms(100);
@@ -48,10 +49,15 @@ namespace CSLight {
 			Console.WriteLine(threeHundredth);
 			//звести дату до формату дельти
 			string dateDeltaFormat = dateJbd.Replace('.','/');
-			// міна, уриття - типу район зосередження, Самохі́дна артилері́йська устано́вка
+			// мітка безпілотний літак на сховану техніку - на 04 шар
+			string[] wings = {"Вор. розвід. крило","Вор. FPV-крило","Розв. крило","Ударні крила"};
+			// міна, уриття - типу район зосередження, Самохі́дна артилері́йська устано́вка;
 			string targetMinePTM = "Міна", areaConcentration = "Укриття", dugout = "Бліндаж";
+			//
 			string[] infantry = { "САУ", "Скупчення ОС", "Камера"};
+			//
 			string[] storegas = { "Склад майна", "Польовий склад БК", "Склад БК" };
+			//
 			string flightOfDrones = "Т. вильоту дронів";
 			// массив техніки на 04 або 06 шари
 			string[] machineryArray = {
@@ -105,6 +111,19 @@ namespace CSLight {
 			}
 			
 			//..
+			//. якщо ти крило
+				for (int i = 0; i < wings.Length; i++) {
+				if (targetClassJbd.Contains(wings[i])) {  
+					deltaLayerWindow(wings[i], commentJbd);
+					deltaMarkName(wings[i], dateJbd, establishedJbd, commentJbd, twoHundredth ,threeHundredth);
+					deltaDateLTimeWindow(dateDeltaFormat, timeJbd);
+					deltaCombatCapabilityWindow(wings[i], establishedJbd, commentJbd);
+					deltaIdentificationWindow(wings[i], establishedJbd, commentJbd);
+					deltaIdPurchaseText(idTargetJbd);
+					deltaCommentContents(wings[i], dateJbd, timeJbd, crewTeamJbd, establishedJbd, targetClassJbd, commentJbd);
+				}
+			}
+			//..
 			//. якщо ти міна
 			if (targetClassJbd.Contains(targetMinePTM)) {
 				deltaLayerWindow(targetMinePTM, commentJbd);
@@ -142,15 +161,16 @@ namespace CSLight {
 			//. якщо ти Т. вильоту дронів
 			} else if (targetClassJbd.Contains(flightOfDrones)) {
 				deltaLayerWindow(flightOfDrones, commentJbd);
-				deltaMarkName(flightOfDrones, dateJbd, establishedJbd, commentJbd, twoHundredth ,threeHundredth);
+				deltaMarkName(flightOfDrones, dateJbd, establishedJbd, commentJbd, twoHundredth, threeHundredth);
 				deltaDateLTimeWindow(dateDeltaFormat, timeJbd);
 				deltaIdentificationWindow(flightOfDrones, establishedJbd, commentJbd);
 				deltaCommentContents(flightOfDrones, dateJbd, timeJbd, crewTeamJbd, establishedJbd, targetClassJbd, commentJbd);
 				deltaAdditionalFields(idTargetJbd);
-			//..
+				//..
 			} else {
 				Console.WriteLine("нічого спільного не зміг знайти");
 			}
+			
 		}
 		static string datePlasDays(string date) {
 			// Перетворюємо рядок дати у DateTime
@@ -467,8 +487,6 @@ namespace CSLight {
 					} else {
 						commentContents += commentJbd + ", спостерігав " + crewTeamJbd;
 					}
-				} else {
-					commentContents += " спроба ураження, за допомогою " + crewTeamJbd;
 				}
 				break;
 			//..
@@ -494,7 +512,7 @@ namespace CSLight {
 			var commentAsseptButton = w.Elm["web:BUTTON", prop: "@data-testid=comment-editing__button-save"].Find(1);
 			commentAsseptButton.ScrollTo();
 			wait.ms(200);
-			//commentAsseptButton.PostClick(2);
+			commentAsseptButton.PostClick(2);
 		}
 		// додаткові поля
 		static void deltaAdditionalFields(string idTargetJbd) {
