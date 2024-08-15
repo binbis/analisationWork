@@ -12,10 +12,9 @@
 - Міномет
 - Вор. розвід. крило / Вор. FPV-крило / Розв. крило / Ударні крила
 
-- вонева позиція
 
-ще є така помилка для массива (вона фантомна)
-Index was outside the bounds of the array. це от тут parts[]
+- майже усі екрани
+- вонева позиція
 */
 
 namespace CSLight {
@@ -45,8 +44,6 @@ namespace CSLight {
 			string establishedJbd = parts[24];
 			string twoHundredth = parts[25]; // 200
 			string threeHundredth = parts[26]; // 300
-			Console.WriteLine(twoHundredth);
-			Console.WriteLine(threeHundredth);
 			//звести дату до формату дельти
 			string dateDeltaFormat = dateJbd.Replace('.','/');
 			// мітка безпілотний літак на сховану техніку - на 04 шар
@@ -170,7 +167,7 @@ namespace CSLight {
 			} else {
 				Console.WriteLine("нічого спільного не зміг знайти");
 			}
-			
+
 		}
 		static string datePlasDays(string date) {
 			// Перетворюємо рядок дати у DateTime
@@ -178,7 +175,6 @@ namespace CSLight {
 			// Додаємо Х днів
 			DateTime newDate = originalDate.AddDays(60);
 			// Перетворюємо нову дату назад у рядок
-			//string newDateString = newDate.ToString("dd.MM.yyyy");
 			string newDateString = newDate.ToString("dd.MM.yyyy");
 			return newDateString;
 		}
@@ -361,6 +357,7 @@ namespace CSLight {
 			// поле боєздатність
 			string fullaim = string.Empty;
 			switch (whoAreYou) {
+			//. Якщо ти міна
 			case "Міна":
 				if (establishedJbd.Contains("Авар. скид") || establishedJbd.Contains("Розміновано") || establishedJbd.Contains("Підтв. ураж.") || establishedJbd.Contains("Тільки розрив")) {
 					fullaim = "небо";
@@ -370,7 +367,7 @@ namespace CSLight {
 					fullaim = "част";
 				}
 				break;
-
+			//..
 			default:
 				if (establishedJbd.Contains("Знищ") || establishedJbd.Contains("знищ")) {
 					fullaim = "небо";
@@ -389,6 +386,8 @@ namespace CSLight {
 			}
 		
 			var combatCapabilityWindow = w.Elm["web:GROUPING", prop: "@data-testid=operational-condition-select"].Find(3);
+			combatCapabilityWindow.ScrollTo();
+			wait.ms(200);
 			combatCapabilityWindow.PostClick(2);
 			combatCapabilityWindow.SendKeys("Ctrl+A","!"+fullaim, "Enter");
 			wait.ms(100);			
@@ -414,6 +413,8 @@ namespace CSLight {
 				break;
 			}
 			var identificationWindow = w.Elm["web:GROUPING", prop: "@data-testid=select-HO"].Find(3);
+			identificationWindow.ScrollTo();
+			wait.ms(200);
 			identificationWindow.PostClick(1);
 			identificationWindow.SendKeys("Ctrl+A", "!"+friendly, "Enter");
 			wait.ms(100);

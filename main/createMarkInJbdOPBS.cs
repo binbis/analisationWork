@@ -12,10 +12,9 @@
 - Міномет
 - Вор. розвід. крило / Вор. FPV-крило / Розв. крило / Ударні крила
 
-- вонева позиція
 
-ще є така помилка для массива (вона фантомна)
-Index was outside the bounds of the array. це от тут parts[]
+- майже усі екрани
+- вонева позиція
 */
 
 namespace CSLight {
@@ -25,10 +24,10 @@ namespace CSLight {
 			opt.key.TextSpeed = 30;
 			//виділяємо весь рядок
 			keys.send("Shift+Space*2");
-			wait.ms(100);
+			wait.ms(250);
 			//копіюємо код
 			keys.send("Ctrl+C");
-			wait.ms(100);
+			wait.ms(250);
 			// зчитуємо буфер обміну
 			string clipboardData = clipboard.copy();
 			// Розділяємо рядок на частини
@@ -41,12 +40,10 @@ namespace CSLight {
 			string whatDidJbd = parts[5]; // Мінування (можливо його видалю)
 			string targetClassJbd = parts[7]; // Міна/Вантажівка/Військ. баггі/Скупчення ОС/Укриття
 			string idTargetJbd = TrimString(parts[9], 19); // Міна 270724043
-			// Встановлено/Уражено/Промах/Авар. скид/Повторно уражено
-			string establishedJbd = parts[24];
+			string establishedJbd = parts[24]; // Встановлено/Уражено/Промах/Авар. скид/Повторно уражено
 			string twoHundredth = parts[25]; // 200
 			string threeHundredth = parts[26]; // 300
-			Console.WriteLine(twoHundredth);
-			Console.WriteLine(threeHundredth);
+			
 			//звести дату до формату дельти
 			string dateDeltaFormat = dateJbd.Replace('.','/');
 			// мітка безпілотний літак на сховану техніку - на 04 шар
@@ -170,7 +167,7 @@ namespace CSLight {
 			} else {
 				Console.WriteLine("нічого спільного не зміг знайти");
 			}
-			
+
 		}
 		static string datePlasDays(string date) {
 			// Перетворюємо рядок дати у DateTime
@@ -178,7 +175,6 @@ namespace CSLight {
 			// Додаємо Х днів
 			DateTime newDate = originalDate.AddDays(60);
 			// Перетворюємо нову дату назад у рядок
-			//string newDateString = newDate.ToString("dd.MM.yyyy");
 			string newDateString = newDate.ToString("dd.MM.yyyy");
 			return newDateString;
 		}
@@ -188,7 +184,7 @@ namespace CSLight {
 			// поле шар
 			var layerWindow = w.Elm["web:GROUPING", prop: "@data-testid=select-layer"].Find(3);
 			layerWindow.ScrollTo();
-			wait.ms(200);
+			wait.ms(250);
 			layerWindow.PostClick(2);
 			switch (whoAreYou) {
 			case "Міна":
@@ -329,7 +325,7 @@ namespace CSLight {
 			
 			var nameOfMarkWindow = w.Elm["web:TEXT", prop: new("@data-testid=T")].Find(3);
 			nameOfMarkWindow.PostClick(2);
-			wait.ms(100);
+			wait.ms(250);
 			nameOfMarkWindow.SendKeys("Ctrl+A","!"+markName);
 		}
 		// поле дата / час
@@ -338,12 +334,12 @@ namespace CSLight {
 			// поле дата / час
 			var dateDeltaWindow = w.Elm["web:TEXT", prop: "@data-testid=W"].Find(3);
 			dateDeltaWindow.PostClick(2);
-			wait.ms(100);
+			wait.ms(250);
 			dateDeltaWindow.SendKeys("Ctrl+A","!"+ dateDeltaFormat);
-			wait.ms(200);
+			wait.ms(250);
 			var timeDeltaWindow = w.Elm["web:TEXT", prop: "@data-testid=W-time-input"].Find(1);
 			timeDeltaWindow.PostClick(2);
-			wait.ms(100);
+			wait.ms(250);
 			timeDeltaWindow.SendKeys("Ctrl+A", "!"+timeJbd, "Enter*2");
 		}
 		// поле кількість
@@ -353,7 +349,7 @@ namespace CSLight {
 			var numberOfnumberWindow = w.Elm["web:SPINBUTTON", prop: new("@data-testid=C", "@type=number")].Find(3);
 			numberOfnumberWindow.PostClick(1);
 			numberOfnumberWindow.SendKeys("Ctrl+A", "!1");
-			wait.ms(100);
+			wait.ms(250);
 		}
 		// поле боєздатність
 		static void deltaCombatCapabilityWindow(string whoAreYou, string establishedJbd, string commentJbd) {
@@ -361,6 +357,7 @@ namespace CSLight {
 			// поле боєздатність
 			string fullaim = string.Empty;
 			switch (whoAreYou) {
+			//. Якщо ти міна
 			case "Міна":
 				if (establishedJbd.Contains("Авар. скид") || establishedJbd.Contains("Розміновано") || establishedJbd.Contains("Підтв. ураж.") || establishedJbd.Contains("Тільки розрив")) {
 					fullaim = "небо";
@@ -370,7 +367,7 @@ namespace CSLight {
 					fullaim = "част";
 				}
 				break;
-
+			//..
 			default:
 				if (establishedJbd.Contains("Знищ") || establishedJbd.Contains("знищ")) {
 					fullaim = "небо";
@@ -389,9 +386,11 @@ namespace CSLight {
 			}
 		
 			var combatCapabilityWindow = w.Elm["web:GROUPING", prop: "@data-testid=operational-condition-select"].Find(3);
+			combatCapabilityWindow.ScrollTo();
+			wait.ms(250);
 			combatCapabilityWindow.PostClick(2);
 			combatCapabilityWindow.SendKeys("Ctrl+A","!"+fullaim, "Enter");
-			wait.ms(100);			
+			wait.ms(250);			
 		}
 		// ідетнифікація
 		static void deltaIdentificationWindow(string whoAreYou, string establishedJbd, string commentJbd){
@@ -414,9 +413,11 @@ namespace CSLight {
 				break;
 			}
 			var identificationWindow = w.Elm["web:GROUPING", prop: "@data-testid=select-HO"].Find(3);
+			identificationWindow.ScrollTo();
+			wait.ms(250);
 			identificationWindow.PostClick(1);
 			identificationWindow.SendKeys("Ctrl+A", "!"+friendly, "Enter");
-			wait.ms(100);
+			wait.ms(250);
 		}
 		// достовірність
 		static void deltaReliabilityWindow(){
@@ -424,7 +425,7 @@ namespace CSLight {
 			// достовірність
 			var reliabilityWindow = w.Elm["web:RADIOBUTTON", "A", "@data-testid=reliability-key-A"].Find(3);
 			reliabilityWindow.PostClick(1);
-			wait.ms(100);
+			wait.ms(250);
 			var certaintyWindow = w.Elm["web:RADIOBUTTON", "2", "@data-testid=reliability-key-2"].Find(3);
 			certaintyWindow.PostClick(1);
 		}
@@ -437,7 +438,7 @@ namespace CSLight {
 			typeOfSourceWindow.ScrollTo();
 			wait.ms(500);
 			typeOfSourceWindow.PostClick(2);
-			wait.ms(200);
+			wait.ms(250);
 			typeOfSourceWindow.SendKeys("!"+flyeye, "Tab");
 		}
 		// завуваження штабу - ід
@@ -446,7 +447,7 @@ namespace CSLight {
 			// завйваження штабу ід
 			var idPurchaseWindow = w.Elm["web:TEXT", prop: "@data-testid=G", flags: EFFlags.HiddenToo].Find(1);
 			idPurchaseWindow.PostClick();
-			wait.ms(100);
+			wait.ms(250);
 			idPurchaseWindow.SendKeys("Ctrl+A", "!"+idTargetJbd, "Enter");
 		}
 		// коментар
@@ -501,17 +502,17 @@ namespace CSLight {
 			// коментар
 			var commentWindow = w.Elm["web:TEXT", prop: new("@data-testid=comment-editing__textarea", "@name=text")].Find(1);
 			commentWindow.ScrollTo();
-			wait.ms(200);
+			wait.ms(250);
 			//mouse.wheel(-5);
-			wait.ms(100);
+			wait.ms(250);
 			commentWindow.PostClick();
 			commentWindow.SendKeys("Ctrl+A", "!"+commentContents);
-			wait.ms(100);
+			wait.ms(250);
 			
 			// кнопка коментаря
 			var commentAsseptButton = w.Elm["web:BUTTON", prop: "@data-testid=comment-editing__button-save"].Find(1);
 			commentAsseptButton.ScrollTo();
-			wait.ms(200);
+			wait.ms(250);
 			commentAsseptButton.PostClick(2);
 		}
 		// додаткові поля
@@ -520,20 +521,20 @@ namespace CSLight {
 			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1");
 			var additionalFields = w.Elm["web:GROUPING", "Додаткові поля", "@title=Додаткові поля"].Find(1);
 			additionalFields.PostClick(1);
-			wait.ms(200);
+			wait.ms(250);
 			//примітки штабу
 			var notesWindow = w.Elm["web:TEXT", prop: new("@data-testid=string-field__input", "@name=Примітки штабу")].Find(1);
 			notesWindow.ScrollTo();
 			wait.ms(400);
 			notesWindow.PostClick(1);
 			notesWindow.SendKeys("Ctrl+A", "!"+idTargetJbd, "Enter");
-			wait.ms(200);
+			wait.ms(250);
 			
 			if (!whoAreYou.Contains("Укриття")) {
 				// повернення на основне вікно
 				var mainFilds = w.Elm["web:GROUPING", prop: "@title=Основні поля"].Find(1);
 				mainFilds.PostClick(1);
-				wait.ms(200);
+				wait.ms(250);
 			}
 
 		}
@@ -544,9 +545,9 @@ namespace CSLight {
 			// Георафічне розташування
 			var geografPlaceWindow = w.Elm["web:GROUPING", prop: "@title=Географічне розташування"].Find(1);
 			geografPlaceWindow.ScrollTo();
-			wait.ms(200);
+			wait.ms(250);
 			geografPlaceWindow.PostClick();
-			wait.ms(200);
+			wait.ms(250);
 			
 			switch (whoAreYou) {
 			//. укриття
@@ -617,7 +618,7 @@ namespace CSLight {
 				// повернення на основне вікно
 				var mainFilds = w.Elm["web:GROUPING", prop: "@title=Основні поля"].Find(1);
 				mainFilds.PostClick(1);
-				wait.ms(200);
+				wait.ms(250);
 				break;
 			//..
 			default:
@@ -629,7 +630,7 @@ namespace CSLight {
 			/* заготовка під майбутнє
 			var placeColorBlueButton = w.Elm["web:BUTTON", "#00bcd4", "@title=#00bcd4"].Find(1);
 			placeColorBlueButton.PostClick();
-			wait.ms(200);
+			wait.ms(250);
 			*/
 			
 		}
