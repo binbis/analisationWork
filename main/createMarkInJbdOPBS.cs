@@ -1,4 +1,4 @@
-/* 14,08,2024_v1.7a
+/* 15,08,2024_v1.7a
 - міна, залежно від статусу заповнюється та оновлюється(назва, дата\час, боєздатність, коментар)
 - укриття, залежно від заповнення, заповнюється та оновлюється "без ід"(назва,  дата\час, ідентифікатор, коментар)[якщо виявлено, бере комент, ураження-знищення бере статус, ]
 - техніка, окремий масив зі таким самим інтерфейсом
@@ -13,29 +13,26 @@
 - Вор. розвід. крило / Вор. FPV-крило / Розв. крило / Ударні крила
 
 
-- майже усі екрани
-- вонева позиція
+- вонева позиція, ще невпевнений
 */
 
 namespace CSLight {
 	class Program {
 		static void Main() {
-			opt.key.KeySpeed = 65;
+			opt.key.KeySpeed = 55;
 			opt.key.TextSpeed = 30;
-			//виділяємо весь рядок
-			keys.send("Shift+Space*2");
-			wait.ms(250);
-			//копіюємо код
-			keys.send("Ctrl+C");
-			wait.ms(250);
-			// зчитуємо буфер обміну
-			string clipboardData = clipboard.copy();
-			// Розділяємо рядок на частини
-			string[] parts = clipboardData.Split('\t');
+			
+			keys.send("Shift+Space*2");//виділяємо весь рядок
+			wait.ms(100);
+			keys.send("Ctrl+C"); //копіюємо код
+			wait.ms(100);
+			string clipboardData = clipboard.copy(); // зчитуємо буфер обміну
+			string[] parts = clipboardData.Split('\t'); // Розділяємо рядок на частини
+			
 			// Присвоюємо змінним відповідні значення
 			string dateJbd = parts[0]; // 27.07.2024
 			string timeJbd = parts[1]; //00:40
-			string commentJbd = parts[2].Replace("\n"," "); //коментар (для ідентифікації скоріш за все)
+			string commentJbd = parts[2].Replace("\n"," ").ToLower(); //коментар (для ідентифікації скоріш за все)
 			string crewTeamJbd = TrimAfterDot(parts[4].Replace("\n\t"," ")); // R-18-1 (Мавка)
 			string whatDidJbd = parts[5]; // Мінування (можливо його видалю)
 			string targetClassJbd = parts[7]; // Міна/Вантажівка/Військ. баггі/Скупчення ОС/Укриття
@@ -184,7 +181,7 @@ namespace CSLight {
 			// поле шар
 			var layerWindow = w.Elm["web:GROUPING", prop: "@data-testid=select-layer"].Find(3);
 			layerWindow.ScrollTo();
-			wait.ms(250);
+			wait.ms(200);
 			layerWindow.PostClick(2);
 			switch (whoAreYou) {
 			case "Міна":
@@ -325,7 +322,7 @@ namespace CSLight {
 			
 			var nameOfMarkWindow = w.Elm["web:TEXT", prop: new("@data-testid=T")].Find(3);
 			nameOfMarkWindow.PostClick(2);
-			wait.ms(250);
+			wait.ms(100);
 			nameOfMarkWindow.SendKeys("Ctrl+A","!"+markName);
 		}
 		// поле дата / час
@@ -334,12 +331,12 @@ namespace CSLight {
 			// поле дата / час
 			var dateDeltaWindow = w.Elm["web:TEXT", prop: "@data-testid=W"].Find(3);
 			dateDeltaWindow.PostClick(2);
-			wait.ms(250);
+			wait.ms(100);
 			dateDeltaWindow.SendKeys("Ctrl+A","!"+ dateDeltaFormat);
-			wait.ms(250);
+			wait.ms(200);
 			var timeDeltaWindow = w.Elm["web:TEXT", prop: "@data-testid=W-time-input"].Find(1);
 			timeDeltaWindow.PostClick(2);
-			wait.ms(250);
+			wait.ms(100);
 			timeDeltaWindow.SendKeys("Ctrl+A", "!"+timeJbd, "Enter*2");
 		}
 		// поле кількість
@@ -349,7 +346,7 @@ namespace CSLight {
 			var numberOfnumberWindow = w.Elm["web:SPINBUTTON", prop: new("@data-testid=C", "@type=number")].Find(3);
 			numberOfnumberWindow.PostClick(1);
 			numberOfnumberWindow.SendKeys("Ctrl+A", "!1");
-			wait.ms(250);
+			wait.ms(100);
 		}
 		// поле боєздатність
 		static void deltaCombatCapabilityWindow(string whoAreYou, string establishedJbd, string commentJbd) {
@@ -387,10 +384,10 @@ namespace CSLight {
 		
 			var combatCapabilityWindow = w.Elm["web:GROUPING", prop: "@data-testid=operational-condition-select"].Find(3);
 			combatCapabilityWindow.ScrollTo();
-			wait.ms(250);
+			wait.ms(200);
 			combatCapabilityWindow.PostClick(2);
 			combatCapabilityWindow.SendKeys("Ctrl+A","!"+fullaim, "Enter");
-			wait.ms(250);			
+			wait.ms(100);			
 		}
 		// ідетнифікація
 		static void deltaIdentificationWindow(string whoAreYou, string establishedJbd, string commentJbd){
@@ -414,10 +411,10 @@ namespace CSLight {
 			}
 			var identificationWindow = w.Elm["web:GROUPING", prop: "@data-testid=select-HO"].Find(3);
 			identificationWindow.ScrollTo();
-			wait.ms(250);
+			wait.ms(200);
 			identificationWindow.PostClick(1);
 			identificationWindow.SendKeys("Ctrl+A", "!"+friendly, "Enter");
-			wait.ms(250);
+			wait.ms(100);
 		}
 		// достовірність
 		static void deltaReliabilityWindow(){
@@ -425,7 +422,7 @@ namespace CSLight {
 			// достовірність
 			var reliabilityWindow = w.Elm["web:RADIOBUTTON", "A", "@data-testid=reliability-key-A"].Find(3);
 			reliabilityWindow.PostClick(1);
-			wait.ms(250);
+			wait.ms(100);
 			var certaintyWindow = w.Elm["web:RADIOBUTTON", "2", "@data-testid=reliability-key-2"].Find(3);
 			certaintyWindow.PostClick(1);
 		}
@@ -438,7 +435,7 @@ namespace CSLight {
 			typeOfSourceWindow.ScrollTo();
 			wait.ms(500);
 			typeOfSourceWindow.PostClick(2);
-			wait.ms(250);
+			wait.ms(200);
 			typeOfSourceWindow.SendKeys("!"+flyeye, "Tab");
 		}
 		// завуваження штабу - ід
@@ -447,7 +444,7 @@ namespace CSLight {
 			// завйваження штабу ід
 			var idPurchaseWindow = w.Elm["web:TEXT", prop: "@data-testid=G", flags: EFFlags.HiddenToo].Find(1);
 			idPurchaseWindow.PostClick();
-			wait.ms(250);
+			wait.ms(100);
 			idPurchaseWindow.SendKeys("Ctrl+A", "!"+idTargetJbd, "Enter");
 		}
 		// коментар
@@ -502,17 +499,17 @@ namespace CSLight {
 			// коментар
 			var commentWindow = w.Elm["web:TEXT", prop: new("@data-testid=comment-editing__textarea", "@name=text")].Find(1);
 			commentWindow.ScrollTo();
-			wait.ms(250);
+			wait.ms(200);
 			//mouse.wheel(-5);
-			wait.ms(250);
+			wait.ms(100);
 			commentWindow.PostClick();
 			commentWindow.SendKeys("Ctrl+A", "!"+commentContents);
-			wait.ms(250);
+			wait.ms(100);
 			
 			// кнопка коментаря
 			var commentAsseptButton = w.Elm["web:BUTTON", prop: "@data-testid=comment-editing__button-save"].Find(1);
 			commentAsseptButton.ScrollTo();
-			wait.ms(250);
+			wait.ms(200);
 			commentAsseptButton.PostClick(2);
 		}
 		// додаткові поля
@@ -521,20 +518,20 @@ namespace CSLight {
 			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1");
 			var additionalFields = w.Elm["web:GROUPING", "Додаткові поля", "@title=Додаткові поля"].Find(1);
 			additionalFields.PostClick(1);
-			wait.ms(250);
+			wait.ms(200);
 			//примітки штабу
 			var notesWindow = w.Elm["web:TEXT", prop: new("@data-testid=string-field__input", "@name=Примітки штабу")].Find(1);
 			notesWindow.ScrollTo();
 			wait.ms(400);
 			notesWindow.PostClick(1);
 			notesWindow.SendKeys("Ctrl+A", "!"+idTargetJbd, "Enter");
-			wait.ms(250);
+			wait.ms(200);
 			
 			if (!whoAreYou.Contains("Укриття")) {
 				// повернення на основне вікно
 				var mainFilds = w.Elm["web:GROUPING", prop: "@title=Основні поля"].Find(1);
 				mainFilds.PostClick(1);
-				wait.ms(250);
+				wait.ms(200);
 			}
 
 		}
@@ -545,9 +542,9 @@ namespace CSLight {
 			// Георафічне розташування
 			var geografPlaceWindow = w.Elm["web:GROUPING", prop: "@title=Географічне розташування"].Find(1);
 			geografPlaceWindow.ScrollTo();
-			wait.ms(250);
+			wait.ms(200);
 			geografPlaceWindow.PostClick();
-			wait.ms(250);
+			wait.ms(200);
 			
 			switch (whoAreYou) {
 			//. укриття
@@ -618,7 +615,7 @@ namespace CSLight {
 				// повернення на основне вікно
 				var mainFilds = w.Elm["web:GROUPING", prop: "@title=Основні поля"].Find(1);
 				mainFilds.PostClick(1);
-				wait.ms(250);
+				wait.ms(200);
 				break;
 			//..
 			default:
@@ -630,7 +627,7 @@ namespace CSLight {
 			/* заготовка під майбутнє
 			var placeColorBlueButton = w.Elm["web:BUTTON", "#00bcd4", "@title=#00bcd4"].Find(1);
 			placeColorBlueButton.PostClick();
-			wait.ms(250);
+			wait.ms(200);
 			*/
 			
 		}
