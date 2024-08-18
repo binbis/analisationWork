@@ -1,4 +1,4 @@
-/* 14,08,2024_v1.7a
+/* 15,08,2024_v1.7a
 - міна, залежно від статусу заповнюється та оновлюється(назва, дата\час, боєздатність, коментар)
 - укриття, залежно від заповнення, заповнюється та оновлюється "без ід"(назва,  дата\час, ідентифікатор, коментар)[якщо виявлено, бере комент, ураження-знищення бере статус, ]
 - техніка, окремий масив зі таким самим інтерфейсом
@@ -13,8 +13,7 @@
 - Вор. розвід. крило / Вор. FPV-крило / Розв. крило / Ударні крила
 
 
-- майже усі екрани
-- вонева позиція
+- вонева позиція, ще невпевнений
 */
 
 namespace CSLight {
@@ -22,28 +21,26 @@ namespace CSLight {
 		static void Main() {
 			opt.key.KeySpeed = 35;
 			opt.key.TextSpeed = 20;
-			//виділяємо весь рядок
-			keys.send("Shift+Space*2");
+			
+			keys.send("Shift+Space*2");//виділяємо весь рядок
 			wait.ms(100);
-			//копіюємо код
-			keys.send("Ctrl+C");
+			keys.send("Ctrl+C"); //копіюємо код
 			wait.ms(100);
-			// зчитуємо буфер обміну
-			string clipboardData = clipboard.copy();
-			// Розділяємо рядок на частини
-			string[] parts = clipboardData.Split('\t');
+			string clipboardData = clipboard.copy(); // зчитуємо буфер обміну
+			string[] parts = clipboardData.Split('\t'); // Розділяємо рядок на частини
+			
 			// Присвоюємо змінним відповідні значення
 			string dateJbd = parts[0]; // 27.07.2024
 			string timeJbd = parts[1]; //00:40
-			string commentJbd = parts[2].Replace("\n"," "); //коментар (для ідентифікації скоріш за все)
+			string commentJbd = parts[2].Replace("\n"," ").ToLower(); //коментар (для ідентифікації скоріш за все)
 			string crewTeamJbd = TrimAfterDot(parts[4].Replace("\n\t"," ")); // R-18-1 (Мавка)
 			string whatDidJbd = parts[5]; // Мінування (можливо його видалю)
 			string targetClassJbd = parts[7]; // Міна/Вантажівка/Військ. баггі/Скупчення ОС/Укриття
 			string idTargetJbd = TrimString(parts[9], 19); // Міна 270724043
-			// Встановлено/Уражено/Промах/Авар. скид/Повторно уражено
-			string establishedJbd = parts[24];
+			string establishedJbd = parts[24]; // Встановлено/Уражено/Промах/Авар. скид/Повторно уражено
 			string twoHundredth = parts[25]; // 200
 			string threeHundredth = parts[26]; // 300
+			
 			//звести дату до формату дельти
 			string dateDeltaFormat = dateJbd.Replace('.','/');
 			// мітка безпілотний літак на сховану техніку - на 04 шар
