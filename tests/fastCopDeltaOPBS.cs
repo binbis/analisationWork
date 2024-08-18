@@ -30,7 +30,7 @@ namespace CSLight
 			// Знаходить пошуковий рядок
 			var e = w.Elm["web:COMBOBOX", "Пошук"].Find(2);
 			// жмем пишем
-			e.PostClick(1);
+			e.PostClick(100);
 			
 			// взяти послідовності з 10 цифр 3 букви спереду та ще 2 цифр 
 			string patternMGRS = @"(\d{2}[a-zA-Zа-яА-Я]{3})(\d{10})";
