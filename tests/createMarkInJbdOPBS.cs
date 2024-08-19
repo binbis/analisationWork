@@ -485,7 +485,7 @@ namespace CSLight {
 				}
 				break;
 			//..
-			//. 
+			//. Укриття
 			case "Укриття":
 				if (establishedJbd.Contains("Знищ") || establishedJbd.Contains("знищ")) {
 					commentContents += establishedJbd.ToLower() + " за допомогою " + crewTeamJbd;
@@ -493,9 +493,7 @@ namespace CSLight {
 					commentContents += establishedJbd.ToLower() + " за допомогою " + crewTeamJbd;
 				}else if (establishedJbd.Contains("Підтверджено") || establishedJbd.Contains("Спростовано")) {
 					if (commentJbd.Contains("знищ") || commentJbd.Contains("ураж")) {
-						commentContents += "дорозвідка, спостергіав " + crewTeamJbd;
-					}else {
-						commentContents += "укриття ціле," + crewTeamJbd;
+						commentContents += commentJbd + ", спостергіав " + crewTeamJbd;
 					}
 				}else if (establishedJbd.Contains("Виявлено")) {
 					if (commentJbd.Contains("знищ")) {
@@ -618,7 +616,8 @@ namespace CSLight {
 						transpatentColorRange.PostClick();
 						transpatentColorRange.SendKeys("Left*5");
 						wait.ms(300);
-					}else {
+					}
+				}else {
 						//колір червоний - ворож - ураж
 						var placeColorRedButton = w.Elm["web:BUTTON", "#f44336", "@title=#f44336"].Find(1);
 						placeColorRedButton.ScrollTo();
@@ -631,7 +630,6 @@ namespace CSLight {
 						transpatentColorRange.SendKeys("Left*5");
 						wait.ms(300);
 					}
-				}
 				// повернення на основне вікно
 				var mainFilds = w.Elm["web:GROUPING", prop: "@title=Основні поля"].Find(1);
 				mainFilds.PostClick(1);
