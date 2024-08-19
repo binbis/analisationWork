@@ -1,4 +1,4 @@
-/* 15,08,2024_v1.7a
+/* 19,08,2024_v1.7b
 - міна, залежно від статусу заповнюється та оновлюється(назва, дата\час, боєздатність, коментар)
 - укриття, залежно від заповнення, заповнюється та оновлюється "без ід"(назва,  дата\час, ідентифікатор, коментар)[якщо виявлено, бере комент, ураження-знищення бере статус, ]
 - техніка, окремий масив зі таким самим інтерфейсом
@@ -11,7 +11,7 @@
 - камера відеоспостереження
 - Міномет
 - Вор. розвід. крило / Вор. FPV-крило / Розв. крило / Ударні крила
-
+- Загородження (шипи)
 
 - вонева позиція, ще невпевнений
 */
@@ -47,12 +47,13 @@ namespace CSLight {
 			string[] wings = {"Вор. розвід. крило","Вор. FPV-крило","Розв. крило","Ударні крила"};
 			// міна, уриття - типу район зосередження, Самохі́дна артилері́йська устано́вка;
 			string targetMinePTM = "Міна", areaConcentration = "Укриття", dugout = "Бліндаж";
-			//
+			// без хп (піхота)
 			string[] infantry = { "САУ", "Скупчення ОС", "Камера"};
-			//
+			// склади
 			string[] storegas = { "Склад майна", "Польовий склад БК", "Склад БК" };
 			//
 			string flightOfDrones = "Т. вильоту дронів";
+			string barrage = "Загородження";
 			// массив техніки на 04 або 06 шари
 			string[] machineryArray = {
 				"ББМ / МТ-ЛБ","Авто","Вантажівка","Танк","Гармата",
@@ -160,7 +161,15 @@ namespace CSLight {
 				deltaIdentificationWindow(flightOfDrones, establishedJbd, commentJbd);
 				deltaCommentContents(flightOfDrones, dateJbd, timeJbd, crewTeamJbd, establishedJbd, targetClassJbd, commentJbd);
 				deltaAdditionalFields(idTargetJbd, flightOfDrones);
-				//..
+			//..
+			//. якщо ти загородження (шипи)
+			}else if (targetClassJbd.Contains(barrage)) {
+				deltaLayerWindow(barrage, commentJbd);
+				deltaMarkName(barrage, dateJbd, establishedJbd, commentJbd, twoHundredth ,threeHundredth);
+				deltaIdentificationWindow(barrage, establishedJbd, commentJbd);
+				deltaCommentContents(barrage, dateJbd, timeJbd, crewTeamJbd, establishedJbd, targetClassJbd, commentJbd);
+				deltaAdditionalFields(idTargetJbd, barrage);
+			//..	
 			} else {
 				Console.WriteLine("нічого спільного не зміг знайти");
 			}
@@ -183,8 +192,12 @@ namespace CSLight {
 			layerWindow.ScrollTo();
 			wait.ms(200);
 			layerWindow.PostClick(2);
+			
 			switch (whoAreYou) {
 			case "Міна":
+				layerWindow.SendKeys("Ctrl+A","!11","Enter");
+				break;
+			case "Загородження":
 				layerWindow.SendKeys("Ctrl+A","!11","Enter");
 				break;
 			case "Укриття":
@@ -212,7 +225,9 @@ namespace CSLight {
 				layerWindow.SendKeys("Ctrl+A","!09","Enter");
 				break;
 			default:
-				if (commentJbd.Contains("в рус") || commentJbd.Contains("рух")) {
+				if (whoAreYou.Contains("Склад майна") || whoAreYou.Contains("Польовий склад БК") || whoAreYou.Contains("Склад БК")) {
+					layerWindow.SendKeys("Ctrl+A","!Пост","Enter");
+				}else if (commentJbd.Contains("в рус") || commentJbd.Contains("рух")) {
 					layerWindow.SendKeys("Ctrl+A","!06","Enter");
 				}else if (commentJbd.Contains("виходи") || commentJbd.Contains("вогнева позиція")) {
 					layerWindow.SendKeys("Ctrl+A","!05","Enter");
@@ -221,8 +236,6 @@ namespace CSLight {
 				}
 				break;
 			}
-		
-			//layerWindow.SendKeys("Ctrl+A","!000","Enter");
 		}
 		// поле назва
 		static void deltaMarkName(string whoAreYou, string dateJbd, string establishedJbd, string commentJbd, string twoHundredth, string threeHundredth){
@@ -237,6 +250,11 @@ namespace CSLight {
 					markName = "ПТМ-3 до ("+ datePlasDays(dateJbd)+")";
 				}
 				break;
+			//. Шипи - район загородження
+			case "Загородження":
+				markName = "Шипи (" + dateJbd + ")";
+				break;
+			//..
 			//. "Укриття
 			case "Укриття":
 				if (establishedJbd.Contains("Знищ") || establishedJbd.Contains("знищ")) {
@@ -313,9 +331,9 @@ namespace CSLight {
 						markName = whoAreYou + " (ураж.)";
 					}else if (commentJbd.Contains("в рус") || commentJbd.Contains("рух")) {
 						markName = whoAreYou + " (в русі)";
-					}else {
-						markName = whoAreYou;
 					}
+				}else {
+					markName = whoAreYou;
 				}
 				break;
 			}
@@ -378,6 +396,8 @@ namespace CSLight {
 					}else {
 						fullaim = "повніс";
 					}
+				}else {
+					fullaim = "повніс";
 				}
 				break;
 			}
@@ -492,7 +512,7 @@ namespace CSLight {
 				if (establishedJbd.Contains("Виявлено")) {
 					commentContents += commentJbd + ", спостерігали з " + crewTeamJbd;
 				}else {
-					commentContents += establishedJbd.ToLower() + " за допомогою " + crewTeamJbd;
+					commentContents += commentJbd + " ," + establishedJbd.ToLower() + " за допомогою " + crewTeamJbd;
 				}
 				break;
 			}
@@ -503,7 +523,7 @@ namespace CSLight {
 			//mouse.wheel(-5);
 			wait.ms(100);
 			commentWindow.PostClick();
-			commentWindow.SendKeys("Ctrl+A", "!"+commentContents);
+			commentWindow.SendKeys("Ctrl+A", "!" + commentContents);
 			wait.ms(100);
 			
 			// кнопка коментаря
