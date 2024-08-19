@@ -1,5 +1,5 @@
 /**
-18,08,2024_v3.1
+20,08,2024_v3.1a
 0. відкрий дельту в окремій вкладці та вікні, (!не міняй вкладку!), можеш звернути це вікно
 1. виділяєш текст де є координати mgrs, типу delta-google, google-maps без букв, уск-2000
 - спершу шукає mgrs, якщо не знаходить, прибирає усе окрім цифр, ком та крапок
@@ -18,39 +18,39 @@ namespace CSLight
         [STAThread]
         static void Main(string[] args)
         {
-			opt.mouse.MoveSpeed = opt.key.KeySpeed = opt.key.TextSpeed = 10;
-			clipboard.clear();// чистим буфер
+			opt.key.KeySpeed = opt.key.TextSpeed = 10;
 			keys.send("Ctrl+C"); // копіюємо
 			string clipText = clipboard.copy(); // Зчитуємо вміст з буферу обміну
-			clipboard.clear();// чистим буфер
 			string clipTextTry = clipText; //
-			
-			// Знаходить та активує вікно якщо воно звернуте 
-			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1").Activate();
-			// Знаходить пошуковий рядок
-			var e = w.Elm["web:COMBOBOX", "Пошук"].Find(2);
-			// жмем пишем
-			e.PostClick(100);
 			
 			// взяти послідовності з 10 цифр 3 букви спереду та ще 2 цифр 
 			string patternMGRS = @"(\d{2}[a-zA-Zа-яА-Я]{3})(\d{10})";
-			//банальна перевірка
 			clipTextTry = "rtrt" + clipTextTry + "rtrt"; // для профілактики
 			clipTextTry = clipTextTry.ToUpper();
 			clipTextTry = Regex.Replace(clipTextTry, "[^a-zA-Zа-яА-Я0-9]", "");
 			Match matchMGRS = Regex.Match(clipTextTry, patternMGRS);
 			if (matchMGRS.Success){
 				clipTextTry = Transliterate(InsertSpaces(matchMGRS.Groups[1].Value + matchMGRS.Groups[2].Value));
-				//Console.WriteLine("знайшов mgrs = " + matchMGRS);
 				// вписуємо вміст
-				e.SendKeys("Ctrl+A", "!" + clipTextTry, "Enter");
 				Clipboard.SetText(clipTextTry);
+				// Знаходить та активує вікно якщо воно звернуте 
+				var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1").Activate();
+				// Знаходить пошуковий рядок
+				var e = w.Elm["web:COMBOBOX", "Пошук"].Find(2);
+				// жмем пишем
+				e.PostClick(100);
+				e.SendKeys("Ctrl+A", "!" + clipTextTry, "Enter");
 			}else {
-				//Console.WriteLine("знайшов mgrs незнайдено -");
-				// прибрити усе окрім цифр крапки та коми
+				// прибрати усе окрім цифр крапки та коми
 				clipText = Regex.Replace(clipText, @"[^0-9,.]", "");
-				e.SendKeys("Ctrl+A", "!" + clipText, "Enter");
+				// Знаходить та активує вікно якщо воно звернуте 
+				var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1").Activate();
+				// Знаходить пошуковий рядок
+				var e = w.Elm["web:COMBOBOX", "Пошук"].Find(2);
+				// жмем пишем
+				e.PostClick(100);
 				Clipboard.SetText(clipText);
+				e.SendKeys("Ctrl+A", "!" + clipText, "Enter");
 			}
 			
 			
