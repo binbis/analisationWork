@@ -573,7 +573,7 @@ namespace CSLight {
 			switch (whoAreYou) {
 			//. укриття
 			case "Укриття":
-				if (establishedJbd.Contains("Знищ") || establishedJbd.Contains("знищ")) {
+				if (establishedJbd.ToLower().Contains("знищ") || establishedJbd.ToLower().Contains("ураж")) {
 					// колір жовтий - знищ
 					var placeColorYellowButton = w.Elm["web:BUTTON", "#ffeb3b", "@title=#ffeb3b"].Find(1);
 					placeColorYellowButton.ScrollTo();
@@ -585,20 +585,8 @@ namespace CSLight {
 					transpatentColorRange.PostClick();
 					transpatentColorRange.SendKeys("Left*5");
 					wait.ms(300);
-				} else if (establishedJbd.Contains("Ураж") || establishedJbd.Contains("ураж")) {
-					//колір червоний - ворож - ураж
-					var placeColorRedButton = w.Elm["web:BUTTON", "#f44336", "@title=#f44336"].Find(1);
-					placeColorRedButton.ScrollTo();
-					wait.ms(300);
-					placeColorRedButton.PostClick();
-					wait.ms(300);
-					// відсоток прозрачності
-					var transpatentColorRange = w.Elm["web:SLIDER", prop: "@data-testid=slider"].Find(1);
-					transpatentColorRange.PostClick();
-					transpatentColorRange.SendKeys("Left*5");
-					wait.ms(300);
 				} else if (establishedJbd.Contains("Виявлено")) {
-					if (commentJbd.Contains("Знищ") || commentJbd.Contains("знищ")) {
+					if (commentJbd.ToLower().Contains("знищ") || commentJbd.ToLower().Contains("ураж")) {
 						// колір жовтий - знищ
 						var placeColorYellowButton = w.Elm["web:BUTTON", "#ffeb3b", "@title=#ffeb3b"].Find(1);
 						placeColorYellowButton.ScrollTo();
@@ -610,21 +598,9 @@ namespace CSLight {
 						transpatentColorRange.PostClick();
 						transpatentColorRange.SendKeys("Left*5");
 						wait.ms(300);
-					} else if (commentJbd.Contains("Ураж") || commentJbd.Contains("ураж")) {
-						//колір червоний - ворож - ураж
-						var placeColorRedButton = w.Elm["web:BUTTON", "#f44336", "@title=#f44336"].Find(1);
-						placeColorRedButton.ScrollTo();
-						wait.ms(300);
-						placeColorRedButton.PostClick();
-						wait.ms(300);
-						// відсоток прозрачності
-						var transpatentColorRange = w.Elm["web:SLIDER", prop: "@data-testid=slider"].Find(1);
-						transpatentColorRange.PostClick();
-						transpatentColorRange.SendKeys("Left*5");
-						wait.ms(300);
 					}
 				} else {
-					//колір червоний - ворож - ураж
+					//колір червоний - ворож
 					var placeColorRedButton = w.Elm["web:BUTTON", "#f44336", "@title=#f44336"].Find(1);
 					placeColorRedButton.ScrollTo();
 					wait.ms(300);
