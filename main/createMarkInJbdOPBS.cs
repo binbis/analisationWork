@@ -19,13 +19,13 @@
 namespace CSLight {
 	class Program {
 		static void Main() {
-			opt.key.KeySpeed = 55;
+			opt.key.KeySpeed = 65;
 			opt.key.TextSpeed = 30;
 			
 			keys.send("Shift+Space*2");//виділяємо весь рядок
-			wait.ms(100);
+			wait.ms(250);
 			keys.send("Ctrl+C"); //копіюємо код
-			wait.ms(100);
+			wait.ms(250);
 			string clipboardData = clipboard.copy(); // зчитуємо буфер обміну
 			string[] parts = clipboardData.Split('\t'); // Розділяємо рядок на частини
 			
@@ -257,18 +257,20 @@ namespace CSLight {
 			//..
 			//. "Укриття
 			case "Укриття":
-				if (establishedJbd.Contains("Знищ") || establishedJbd.Contains("знищ")) {
+				if (establishedJbd.ToLower().Contains("знищ")) {
 					markName = whoAreYou + " ОС (знищ.)";
-				} else if (establishedJbd.Contains("Ураж") || establishedJbd.Contains("ураж")) {
+				} else if (establishedJbd.ToLower().Contains("ураж")) {
 					markName = whoAreYou + " ОС (ураж.)";
 				} else if (establishedJbd.Contains("Виявлено") || establishedJbd.Contains("Підтверджено")) {
 					if (commentJbd.ToLower().Contains("знищ")) {
 						markName = whoAreYou + " ОС (знищ.)";
 					} else if (commentJbd.ToLower().Contains("ураж")) {
 						markName = whoAreYou + " ОС (ураж.)";
+					} else {
+						markName = whoAreYou + " ОС";
 					}
 				} else {
-					markName = whoAreYou + " ОС";
+					
 				}
 				break;
 			//..
@@ -338,7 +340,7 @@ namespace CSLight {
 			
 			var nameOfMarkWindow = w.Elm["web:TEXT", prop: new("@data-testid=T")].Find(3);
 			nameOfMarkWindow.PostClick(2);
-			wait.ms(100);
+			wait.ms(250);
 			nameOfMarkWindow.SendKeys("Ctrl+A", "!" + markName);
 		}
 		// поле дата / час
@@ -347,12 +349,12 @@ namespace CSLight {
 			// поле дата / час
 			var dateDeltaWindow = w.Elm["web:TEXT", prop: "@data-testid=W"].Find(3);
 			dateDeltaWindow.PostClick(2);
-			wait.ms(100);
+			wait.ms(250);
 			dateDeltaWindow.SendKeys("Ctrl+A", "!" + dateDeltaFormat);
 			wait.ms(200);
 			var timeDeltaWindow = w.Elm["web:TEXT", prop: "@data-testid=W-time-input"].Find(1);
 			timeDeltaWindow.PostClick(2);
-			wait.ms(100);
+			wait.ms(250);
 			timeDeltaWindow.SendKeys("Ctrl+A", "!" + timeJbd, "Enter*2");
 		}
 		// поле кількість
@@ -362,7 +364,7 @@ namespace CSLight {
 			var numberOfnumberWindow = w.Elm["web:SPINBUTTON", prop: new("@data-testid=C", "@type=number")].Find(3);
 			numberOfnumberWindow.PostClick(1);
 			numberOfnumberWindow.SendKeys("Ctrl+A", "!1");
-			wait.ms(100);
+			wait.ms(250);
 		}
 		// поле боєздатність
 		static void deltaCombatCapabilityWindow(string whoAreYou, string establishedJbd, string commentJbd) {
@@ -405,7 +407,7 @@ namespace CSLight {
 			wait.ms(200);
 			combatCapabilityWindow.PostClick(2);
 			combatCapabilityWindow.SendKeys("Ctrl+A", "!" + fullaim, "Enter");
-			wait.ms(100);
+			wait.ms(250);
 		}
 		// ідетнифікація
 		static void deltaIdentificationWindow(string whoAreYou, string establishedJbd, string commentJbd) {
@@ -432,7 +434,7 @@ namespace CSLight {
 			wait.ms(200);
 			identificationWindow.PostClick(1);
 			identificationWindow.SendKeys("Ctrl+A", "!" + friendly, "Enter");
-			wait.ms(100);
+			wait.ms(250);
 		}
 		// достовірність
 		static void deltaReliabilityWindow() {
@@ -440,7 +442,7 @@ namespace CSLight {
 			// достовірність
 			var reliabilityWindow = w.Elm["web:RADIOBUTTON", "A", "@data-testid=reliability-key-A"].Find(3);
 			reliabilityWindow.PostClick(1);
-			wait.ms(100);
+			wait.ms(250);
 			var certaintyWindow = w.Elm["web:RADIOBUTTON", "2", "@data-testid=reliability-key-2"].Find(3);
 			certaintyWindow.PostClick(1);
 		}
@@ -462,7 +464,7 @@ namespace CSLight {
 			// завйваження штабу ід
 			var idPurchaseWindow = w.Elm["web:TEXT", prop: "@data-testid=G", flags: EFFlags.HiddenToo].Find(1);
 			idPurchaseWindow.PostClick();
-			wait.ms(100);
+			wait.ms(250);
 			idPurchaseWindow.SendKeys("Ctrl+A", "!" + idTargetJbd, "Enter");
 		}
 		// коментар
@@ -491,6 +493,8 @@ namespace CSLight {
 					commentContents += establishedJbd.ToLower() + " за допомогою " + crewTeamJbd;
 				} else if (establishedJbd.Contains("Підтверджено") || establishedJbd.Contains("Спростовано")) {
 					if (commentJbd.ToLower().Contains("знищ") || commentJbd.ToLower().Contains("ураж")) {
+						commentContents += commentJbd + ", спостергіав " + crewTeamJbd;
+					}else {
 						commentContents += commentJbd + ", спостергіав " + crewTeamJbd;
 					}
 				} else if (establishedJbd.Contains("Виявлено")) {
@@ -521,10 +525,10 @@ namespace CSLight {
 			commentWindow.ScrollTo();
 			wait.ms(200);
 			//mouse.wheel(-5);
-			wait.ms(100);
+			wait.ms(250);
 			commentWindow.PostClick();
 			commentWindow.SendKeys("Ctrl+A", "!" + commentContents);
-			wait.ms(100);
+			wait.ms(250);
 			
 			// кнопка коментаря
 			var commentAsseptButton = w.Elm["web:BUTTON", prop: "@data-testid=comment-editing__button-save"].Find(1);

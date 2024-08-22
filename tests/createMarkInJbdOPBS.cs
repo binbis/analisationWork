@@ -257,18 +257,20 @@ namespace CSLight {
 			//..
 			//. "Укриття
 			case "Укриття":
-				if (establishedJbd.Contains("Знищ") || establishedJbd.Contains("знищ")) {
+				if (establishedJbd.ToLower().Contains("знищ")) {
 					markName = whoAreYou + " ОС (знищ.)";
-				} else if (establishedJbd.Contains("Ураж") || establishedJbd.Contains("ураж")) {
+				} else if (establishedJbd.ToLower().Contains("ураж")) {
 					markName = whoAreYou + " ОС (ураж.)";
 				} else if (establishedJbd.Contains("Виявлено") || establishedJbd.Contains("Підтверджено")) {
 					if (commentJbd.ToLower().Contains("знищ")) {
 						markName = whoAreYou + " ОС (знищ.)";
 					} else if (commentJbd.ToLower().Contains("ураж")) {
 						markName = whoAreYou + " ОС (ураж.)";
+					} else {
+						markName = whoAreYou + " ОС";
 					}
 				} else {
-					markName = whoAreYou + " ОС";
+					
 				}
 				break;
 			//..
@@ -491,6 +493,8 @@ namespace CSLight {
 					commentContents += establishedJbd.ToLower() + " за допомогою " + crewTeamJbd;
 				} else if (establishedJbd.Contains("Підтверджено") || establishedJbd.Contains("Спростовано")) {
 					if (commentJbd.ToLower().Contains("знищ") || commentJbd.ToLower().Contains("ураж")) {
+						commentContents += commentJbd + ", спостергіав " + crewTeamJbd;
+					}else {
 						commentContents += commentJbd + ", спостергіав " + crewTeamJbd;
 					}
 				} else if (establishedJbd.Contains("Виявлено")) {
