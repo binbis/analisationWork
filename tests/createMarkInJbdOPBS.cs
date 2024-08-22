@@ -501,6 +501,8 @@ namespace CSLight {
 					} else {
 						commentContents += commentJbd + ", спостерігав " + crewTeamJbd;
 					}
+				}else if (establishedJbd.Contains("Не зрозуміло")) {
+					commentContents += "спроба ураження, " + crewTeamJbd;
 				}
 				break;
 			//..
