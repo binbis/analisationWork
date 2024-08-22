@@ -1,4 +1,4 @@
-/* 19,08,2024_v1.7b
+/* 22,08,2024_v1.7b
 - міна, залежно від статусу заповнюється та оновлюється(назва, дата\час, боєздатність, коментар)
 - укриття, залежно від заповнення, заповнюється та оновлюється "без ід"(назва,  дата\час, ідентифікатор, коментар)[якщо виявлено, бере комент, ураження-знищення бере статус, ]
 - техніка, окремий масив зі таким самим інтерфейсом
@@ -32,7 +32,7 @@ namespace CSLight {
 			// Присвоюємо змінним відповідні значення
 			string dateJbd = parts[0]; // 27.07.2024
 			string timeJbd = parts[1]; //00:40
-			string commentJbd = parts[2].Replace("\n", " ").ToLower(); //коментар (для ідентифікації скоріш за все)
+			string commentJbd = parts[2].Replace("\n", " "); //коментар (для ідентифікації скоріш за все)
 			string crewTeamJbd = TrimAfterDot(parts[4].Replace("\n\t", " ")); // R-18-1 (Мавка)
 			string whatDidJbd = parts[5]; // Мінування (можливо його видалю)
 			string targetClassJbd = parts[7]; // Міна/Вантажівка/Військ. баггі/Скупчення ОС/Укриття
@@ -227,7 +227,7 @@ namespace CSLight {
 			default:
 				if (whoAreYou.Contains("Склад майна") || whoAreYou.Contains("Польовий склад БК") || whoAreYou.Contains("Склад БК")) {
 					layerWindow.SendKeys("Ctrl+A", "!Пост", "Enter");
-				} else if (commentJbd.Contains("в рус") || commentJbd.Contains("рух")) {
+				} else if (commentJbd.Contains("рус") || commentJbd.Contains("рух")) {
 					layerWindow.SendKeys("Ctrl+A", "!06", "Enter");
 				} else if (commentJbd.Contains("виходи") || commentJbd.Contains("вогнева позиція")) {
 					layerWindow.SendKeys("Ctrl+A", "!05", "Enter");
@@ -262,15 +262,13 @@ namespace CSLight {
 				} else if (establishedJbd.Contains("Ураж") || establishedJbd.Contains("ураж")) {
 					markName = whoAreYou + " ОС (ураж.)";
 				} else if (establishedJbd.Contains("Виявлено") || establishedJbd.Contains("Підтверджено")) {
-					if (commentJbd.Contains("знищ")) {
+					if (commentJbd.ToLower().Contains("знищ")) {
 						markName = whoAreYou + " ОС (знищ.)";
-					} else if (commentJbd.Contains("ураж")) {
+					} else if (commentJbd.ToLower().Contains("ураж")) {
 						markName = whoAreYou + " ОС (ураж.)";
-					} else {
-						markName = whoAreYou + " ОС ";
 					}
 				} else {
-					markName = whoAreYou + " ОС ";
+					markName = whoAreYou + " ОС";
 				}
 				break;
 			//..
@@ -281,9 +279,9 @@ namespace CSLight {
 				} else if (establishedJbd.Contains("Ураж") || establishedJbd.Contains("ураж")) {
 					markName = whoAreYou + " (ураж.)";
 				} else if (establishedJbd.Contains("Виявлено") || establishedJbd.Contains("Підтверджено")) {
-					if (commentJbd.Contains("знищ")) {
+					if (commentJbd.ToLower().Contains("знищ")) {
 						markName = whoAreYou + " (знищ.)";
-					} else if (commentJbd.Contains("ураж")) {
+					} else if (commentJbd.ToLower().Contains("ураж")) {
 						markName = whoAreYou + " (ураж.)";
 					} else {
 						markName = whoAreYou;
@@ -298,9 +296,9 @@ namespace CSLight {
 				} else if (establishedJbd.Contains("Ураж") || establishedJbd.Contains("ураж")) {
 					markName = whoAreYou + " (ураж.)";
 				} else if (establishedJbd.Contains("Виявлено") || establishedJbd.Contains("Підтверджено")) {
-					if (commentJbd.Contains("знищ")) {
+					if (commentJbd.ToLower().Contains("знищ")) {
 						markName = whoAreYou + " (знищ.)";
-					} else if (commentJbd.Contains("ураж")) {
+					} else if (commentJbd.ToLower().Contains("ураж")) {
 						markName = whoAreYou + " (ураж.)";
 					} else {
 						markName = whoAreYou;
@@ -325,11 +323,11 @@ namespace CSLight {
 				} else if (establishedJbd.Contains("Ураж") || establishedJbd.Contains("ураж")) {
 					markName = whoAreYou + " (ураж.)";
 				} else if (establishedJbd.Contains("Виявлено") || establishedJbd.Contains("Підтверджено")) {
-					if (commentJbd.Contains("знищ")) {
+					if (commentJbd.ToLower().Contains("знищ")) {
 						markName = whoAreYou + " (знищ.)";
-					} else if (commentJbd.Contains("ураж")) {
+					} else if (commentJbd.ToLower().Contains("ураж")) {
 						markName = whoAreYou + " (ураж.)";
-					} else if (commentJbd.Contains("в рус") || commentJbd.Contains("рух")) {
+					} else if (commentJbd.ToLower().Contains("в рус") || commentJbd.ToLower().Contains("рух")) {
 						markName = whoAreYou + " (в русі)";
 					}
 				} else {
@@ -389,9 +387,9 @@ namespace CSLight {
 				} else if (establishedJbd.Contains("Ураж") || establishedJbd.Contains("ураж")) {
 					fullaim = "част";
 				} else if (establishedJbd.Contains("Виявлено")) {
-					if (commentJbd.Contains("Знищ") || commentJbd.Contains("знищ")) {
+					if (commentJbd.ToLower().Contains("знищ")) {
 						fullaim = "небо";
-					} else if (commentJbd.Contains("Ураж") || commentJbd.Contains("ураж")) {
+					} else if (commentJbd.ToLower().Contains("ураж")) {
 						fullaim = "част";
 					} else {
 						fullaim = "повніс";
@@ -487,16 +485,16 @@ namespace CSLight {
 			//..
 			//. Укриття
 			case "Укриття":
-				if (establishedJbd.Contains("Знищ") || establishedJbd.Contains("знищ")) {
+				if (establishedJbd.ToLower().Contains("знищ")) {
 					commentContents += establishedJbd.ToLower() + " за допомогою " + crewTeamJbd;
-				} else if (establishedJbd.Contains("Ураж") || establishedJbd.Contains("ураж")) {
+				} else if (establishedJbd.ToLower().Contains("ураж")) {
 					commentContents += establishedJbd.ToLower() + " за допомогою " + crewTeamJbd;
 				} else if (establishedJbd.Contains("Підтверджено") || establishedJbd.Contains("Спростовано")) {
-					if (commentJbd.Contains("знищ") || commentJbd.Contains("ураж")) {
+					if (commentJbd.ToLower().Contains("знищ") || commentJbd.ToLower().Contains("ураж")) {
 						commentContents += commentJbd + ", спостергіав " + crewTeamJbd;
 					}
 				} else if (establishedJbd.Contains("Виявлено")) {
-					if (commentJbd.Contains("знищ")) {
+					if (commentJbd.ToLower().Contains("знищ")) {
 						commentContents += establishedJbd.ToLower() + " знищ." + whoAreYou.ToLower() + ", спостерігав " + crewTeamJbd;
 					} else if (commentJbd.Contains("ураж")) {
 						commentContents += establishedJbd.ToLower() + " ураж." + whoAreYou.ToLower() + ", спостерігав " + crewTeamJbd;
@@ -509,6 +507,8 @@ namespace CSLight {
 			default:
 				if (establishedJbd.Contains("Виявлено")) {
 					commentContents += commentJbd + ", спостерігали з " + crewTeamJbd;
+				}else if (establishedJbd.Contains("Не зрозуміло")) {
+					commentContents += "спроба ураження, " + crewTeamJbd;
 				} else {
 					commentContents += commentJbd + " ," + establishedJbd.ToLower() + " за допомогою " + crewTeamJbd;
 				}
