@@ -1,4 +1,4 @@
-/* 22,08,2024_v1.7b
+/* 24,08,2024_v1.7b
 - міна, залежно від статусу заповнюється та оновлюється(назва, дата\час, боєздатність, коментар)
 - укриття, залежно від заповнення, заповнюється та оновлюється "без ід"(назва,  дата\час, ідентифікатор, коментар)[якщо виявлено, бере комент, ураження-знищення бере статус, ]
 - техніка, окремий масив зі таким самим інтерфейсом
@@ -331,6 +331,8 @@ namespace CSLight {
 						markName = whoAreYou + " (ураж.)";
 					} else if (commentJbd.ToLower().Contains("в рус") || commentJbd.ToLower().Contains("рух")) {
 						markName = whoAreYou + " (в русі)";
+					} else {
+						markName = whoAreYou;
 					}
 				} else {
 					markName = whoAreYou;
@@ -476,8 +478,10 @@ namespace CSLight {
 			case "Міна":
 				if (establishedJbd.Contains("Авар. скид") || establishedJbd.Contains("Подавлено")) {
 					commentContents += "аварійно сикнуто з ударного коптера " + crewTeamJbd;
-				} else if (establishedJbd.Contains("Розміновано") || establishedJbd.Contains("Тільки розрив")) {
-					commentContents += "розміновано спостерігали з " + crewTeamJbd;
+				} else if (establishedJbd.Contains("Розміновано")) {
+					commentContents += commentJbd + " ,розміновано, спостерігали з " + crewTeamJbd;
+				} else if (establishedJbd.Contains("Тільки розрив")) {
+					commentContents += "тільки розрив, спостерігали з " + crewTeamJbd;
 				} else if (establishedJbd.Contains("Підтв. ураж.")) {
 					commentContents += "підрив на міні, кори ( id ), спостерігали з " + crewTeamJbd;
 				} else {
@@ -494,7 +498,7 @@ namespace CSLight {
 				} else if (establishedJbd.Contains("Підтверджено") || establishedJbd.Contains("Спростовано")) {
 					if (commentJbd.ToLower().Contains("знищ") || commentJbd.ToLower().Contains("ураж")) {
 						commentContents += commentJbd + ", спостергіав " + crewTeamJbd;
-					}else {
+					} else {
 						commentContents += commentJbd + ", спостергіав " + crewTeamJbd;
 					}
 				} else if (establishedJbd.Contains("Виявлено")) {
@@ -505,7 +509,7 @@ namespace CSLight {
 					} else {
 						commentContents += commentJbd + ", спостерігав " + crewTeamJbd;
 					}
-				}else if (establishedJbd.Contains("Не зрозуміло")) {
+				} else if (establishedJbd.Contains("Не зрозуміло")) {
 					commentContents += "спроба ураження, " + crewTeamJbd;
 				}
 				break;
@@ -513,7 +517,7 @@ namespace CSLight {
 			default:
 				if (establishedJbd.Contains("Виявлено")) {
 					commentContents += commentJbd + ", спостерігали з " + crewTeamJbd;
-				}else if (establishedJbd.Contains("Не зрозуміло")) {
+				} else if (establishedJbd.Contains("Не зрозуміло")) {
 					commentContents += "спроба ураження, " + crewTeamJbd;
 				} else {
 					commentContents += commentJbd + " ," + establishedJbd.ToLower() + " за допомогою " + crewTeamJbd;
