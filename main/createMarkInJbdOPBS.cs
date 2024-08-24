@@ -80,7 +80,7 @@ namespace CSLight {
 					deltaLayerWindow(machineryArray[i], commentJbd);
 					deltaMarkName(machineryArray[i], dateJbd, establishedJbd, commentJbd, twoHundredth, threeHundredth);
 					deltaDateLTimeWindow(dateDeltaFormat, timeJbd);
-					deltaNumberOfnumberWindow();
+					deltaNumberOfnumberWindow(twoHundredth, threeHundredth);
 					deltaCombatCapabilityWindow(machineryArray[i], establishedJbd, commentJbd);
 					deltaIdentificationWindow(machineryArray[i], establishedJbd, commentJbd);
 					deltaReliabilityWindow();
@@ -96,7 +96,7 @@ namespace CSLight {
 					deltaLayerWindow(infantry[i], commentJbd);
 					deltaMarkName(infantry[i], dateJbd, establishedJbd, commentJbd, twoHundredth, threeHundredth);
 					deltaDateLTimeWindow(dateDeltaFormat, timeJbd);
-					deltaNumberOfnumberWindow();
+					deltaNumberOfnumberWindow(twoHundredth, threeHundredth);
 					deltaIdentificationWindow(infantry[i], establishedJbd, commentJbd);
 					deltaReliabilityWindow();
 					deltaFlyeye();
@@ -124,7 +124,7 @@ namespace CSLight {
 				deltaLayerWindow(targetMinePTM, commentJbd);
 				deltaMarkName(targetMinePTM, dateJbd, establishedJbd, commentJbd, twoHundredth, threeHundredth);
 				deltaDateLTimeWindow(dateDeltaFormat, timeJbd);
-				deltaNumberOfnumberWindow();
+				deltaNumberOfnumberWindow(twoHundredth, threeHundredth);
 				deltaCombatCapabilityWindow(targetMinePTM, establishedJbd, commentJbd);
 				deltaIdentificationWindow(targetMinePTM, establishedJbd, commentJbd);
 				deltaReliabilityWindow();
@@ -311,11 +311,13 @@ namespace CSLight {
 			//. Скупчення ОС
 			case "Скупчення ОС":
 				if (twoHundredth.Length > 0) {
-					markName = twoHundredth.ToInt() + " - 200";
-				} else if (threeHundredth.Length > 0) {
-					markName = threeHundredth.ToInt() + " - 300";
-				} else {
-					markName = whoAreYou;
+					markName = twoHundredth + " - 200";
+				}
+				if (threeHundredth.Length > 0) {
+					markName = threeHundredth + " - 300";
+				}
+				if (twoHundredth.Length > 0 && threeHundredth.Length > 0) {
+					markName = twoHundredth + " - 200, " + threeHundredth + " - 300";
 				}
 				break;
 			//..
@@ -360,12 +362,16 @@ namespace CSLight {
 			timeDeltaWindow.SendKeys("Ctrl+A", "!" + timeJbd, "Enter*2");
 		}
 		// поле кількість
-		static void deltaNumberOfnumberWindow() {
+		static void deltaNumberOfnumberWindow(string twoHundredth, string threeHundredth) {
 			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1");
+			int counts = 0;
+			if (twoHundredth.Length > 0 || threeHundredth.Length > 0) {
+				counts += (twoHundredth.ToInt() + threeHundredth.ToInt());
+			}
 			// поле кількість
 			var numberOfnumberWindow = w.Elm["web:SPINBUTTON", prop: new("@data-testid=C", "@type=number")].Find(3);
 			numberOfnumberWindow.PostClick(1);
-			numberOfnumberWindow.SendKeys("Ctrl+A", "!1");
+			numberOfnumberWindow.SendKeys("Ctrl+A", "!" + counts);
 			wait.ms(250);
 		}
 		// поле боєздатність
