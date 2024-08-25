@@ -364,9 +364,9 @@ namespace CSLight {
 		// поле кількість
 		static void deltaNumberOfnumberWindow(string twoHundredth, string threeHundredth) {
 			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1");
-			int counts = 0;
+			int counts = 1;
 			if (twoHundredth.Length > 0 || threeHundredth.Length > 0) {
-				counts += (twoHundredth.ToInt() + threeHundredth.ToInt());
+				counts = (twoHundredth.ToInt() + threeHundredth.ToInt());
 			}
 			// поле кількість
 			var numberOfnumberWindow = w.Elm["web:SPINBUTTON", prop: new("@data-testid=C", "@type=number")].Find(3);
@@ -466,7 +466,7 @@ namespace CSLight {
 			wait.ms(200);
 			typeOfSourceWindow.SendKeys("!" + flyeye, "Tab");
 		}
-		// завуваження штабу - ід
+		// зауваження штабу - ід
 		static void deltaIdPurchaseText(string idTargetJbd) {
 			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1");
 			// завйваження штабу ід
