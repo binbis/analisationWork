@@ -41,6 +41,8 @@ namespace CSLight {
 			string twoHundredth = parts[25]; // 200
 			string threeHundredth = parts[26]; // 300
 			
+			string pathToServerFile = @" \\Sng-4\аеророзвідка\(2) Результативні вильоти + нарізки";
+			
 			//звести дату до формату дельти
 			string dateDeltaFormat = dateJbd.Replace('.', '/');
 			// мітка безпілотний літак на сховану техніку - на 04 шар
@@ -131,6 +133,7 @@ namespace CSLight {
 				deltaFlyeye();
 				deltaIdPurchaseText(idTargetJbd);
 				deltaCommentContents(targetClassJbd, dateJbd, timeJbd, crewTeamJbd, establishedJbd, commentJbd);
+				deltaImportFiles(idTargetJbd, pathToServerFile);
 				//..
 				//. якщо ти бліндаж або з підвал-погріб	
 			} else if (targetClassJbd.Contains(dugout) || (commentJbd.Contains("підва")) || (commentJbd.Contains("погр"))) {
@@ -654,6 +657,34 @@ namespace CSLight {
 		}
 		// main window
 		static void deltaGeograficPlace() {
+			
+		}
+		// пошук файлів за ід для прикріплення
+		static void deltaImportFiles(string idTargetJbd, string pathToServerFiles) {
+			// основне вікно
+			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1");
+			// кнопка прикріплення
+			var deltaStickWindow = w.Elm["web:GROUPING", "Прикріплення", "@title=Прикріплення"].Find(1);
+			deltaStickWindow.PostClick();
+			wait.ms(200);
+			var deltaUploadButton = w.Elm["web:BUTTON", prop: "@data-testid=files-upload-button"].Find(1);
+			deltaUploadButton.PostClick();
+			wait.ms(400);
+			
+			// попап віндовса
+			var w2 = wnd.find(1, "Відкриття файлу", null, "chrome.exe").Activate();
+			
+			// поле адресси
+			var adressBar = w2.Elm["WINDOW", prop: "class=Address Band Root"].Find(1);
+			adressBar.PostClick(100);
+			adressBar.SendKeys("!" + pathToServerFiles, "Enter");
+			wait.ms(200);
+			
+			// поле пошуку
+			var windowsSearch = w2.Elm["WINDOW", prop: "class=UniversalSearchBand"].Find(1);
+			windowsSearch.PostClick(100);
+			windowsSearch.SendKeys("Ctrl+A", "!" + idTargetJbd);
+			wait.ms(200);
 			
 		}
 		// обрізка до 19 символів в рядку
