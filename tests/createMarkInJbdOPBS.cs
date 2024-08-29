@@ -499,7 +499,7 @@ namespace CSLight {
 				if (establishedJbd.Contains("Авар. скид") || establishedJbd.Contains("Подавлено")) {
 					commentContents += "аварійно сикнуто з ударного коптера " + crewTeamJbd;
 				} else if (establishedJbd.Contains("Розміновано")) {
-					commentContents += commentJbd + " ,розміновано, спостерігали з " + crewTeamJbd;
+					commentContents += commentJbd + ",розміновано, спостерігали з " + crewTeamJbd;
 				} else if (establishedJbd.Contains("Тільки розрив")) {
 					commentContents += "тільки розрив, спостерігали з " + crewTeamJbd;
 				} else if (establishedJbd.Contains("Підтв. ураж.")) {
@@ -517,9 +517,9 @@ namespace CSLight {
 					commentContents += establishedJbd.ToLower() + " за допомогою " + crewTeamJbd;
 				} else if (establishedJbd.Contains("Підтверджено") || establishedJbd.Contains("Спростовано")) {
 					if (commentJbd.ToLower().Contains("знищ") || commentJbd.ToLower().Contains("ураж")) {
-						commentContents += commentJbd + ", спостергіав " + crewTeamJbd;
+						commentContents += commentJbd + ", спостерігав " + crewTeamJbd;
 					} else {
-						commentContents += commentJbd + ", спостергіав " + crewTeamJbd;
+						commentContents += commentJbd + ", спостерігав " + crewTeamJbd;
 					}
 				} else if (establishedJbd.Contains("Виявлено")) {
 					if (commentJbd.ToLower().Contains("знищ")) {
@@ -548,8 +548,6 @@ namespace CSLight {
 			var commentWindow = w.Elm["web:TEXT", prop: new("@data-testid=comment-editing__textarea", "@name=text")].Find(1);
 			commentWindow.ScrollTo();
 			wait.ms(200);
-			//mouse.wheel(-5);
-			wait.ms(100);
 			commentWindow.PostClick();
 			commentWindow.SendKeys("Ctrl+A", "!" + commentContents);
 			wait.ms(100);
