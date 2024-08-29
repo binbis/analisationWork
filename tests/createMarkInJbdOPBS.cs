@@ -564,7 +564,7 @@ namespace CSLight {
 		static void deltaAdditionalFields(string idTargetJbd, string targetClassJbd) {
 			// додаткові поля
 			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1");
-			var additionalFields = w.Elm["web:GROUPING", "Додаткові поля", "@title=Додаткові поля"].Find(1);
+			var additionalFields = w.Elm["web:GROUPING", prop: new("desc=Додаткові поля", "@title=Додаткові поля")].Find(1);
 			additionalFields.PostClick(1);
 			wait.ms(200);
 			//примітки штабу
@@ -609,7 +609,7 @@ namespace CSLight {
 					transpatentColorRange.PostClick();
 					transpatentColorRange.SendKeys("Left*5");
 					wait.ms(300);
-				} else if (establishedJbd.Contains("Виявлено")) {
+				} else if (establishedJbd.Contains("Виявлено") || establishedJbd.Contains("Підтверджено") || establishedJbd.Contains("Спростовано")) {
 					if (commentJbd.ToLower().Contains("знищ") || commentJbd.ToLower().Contains("ураж")) {
 						// колір жовтий - знищ
 						var placeColorYellowButton = w.Elm["web:BUTTON", prop: "@title=#ffeb3b"].Find(100);
@@ -622,10 +622,22 @@ namespace CSLight {
 						transpatentColorRange.PostClick();
 						transpatentColorRange.SendKeys("Left*5");
 						wait.ms(300);
+					} else {
+						//колір червоний - ворож
+						var placeColorRedButton = w.Elm["web:BUTTON", prop: new("@title=#f44336", "@type=button")].Find(100);
+						placeColorRedButton.ScrollTo();
+						wait.ms(300);
+						placeColorRedButton.PostClick();
+						wait.ms(300);
+						// відсоток прозрачності
+						var transpatentColorRange = w.Elm["web:SLIDER", prop: "@data-testid=slider"].Find(100);
+						transpatentColorRange.PostClick();
+						transpatentColorRange.SendKeys("Left*5");
+						wait.ms(300);
 					}
 				} else {
 					//колір червоний - ворож
-					var placeColorRedButton = w.Elm["web:BUTTON", "#f44336", "@title=#f44336"].Find(100);
+					var placeColorRedButton = w.Elm["web:BUTTON", prop: new("@title=#f44336", "@type=button")].Find(100);
 					placeColorRedButton.ScrollTo();
 					wait.ms(300);
 					placeColorRedButton.PostClick();
