@@ -28,7 +28,7 @@ namespace CSLight {
 			string twoHundredth = parts[25]; // 200
 			string threeHundredth = parts[26]; // 300
 			
-			//string pathToServerFiles = @" \\Sng-4\аеророзвідка\(2) Результативні вильоти + нарізки";
+			string pathToServerFiles = @" \\Sng-4\аеророзвідка\(2) Результативні вильоти + нарізки";
 			
 			//перетворення дати до формату дельти
 			string dateDeltaFormat = dateJbd.Replace('.', '/');
@@ -60,8 +60,10 @@ namespace CSLight {
 			deltaGeografPlace(targetClassJbd, establishedJbd, commentJbd);
 			wait.ms(250);
 			goToMain();
-			// же працює але треба ще почекати
-			//deltaImportFiles(idTargetJbd, pathToServerFiles);
+			if (targetClassJbd.Contains("Міна")) {
+				wait.ms(250);
+				deltaImportFiles(idTargetJbd, pathToServerFiles);
+			}
 		}
 		static string datePlasDays(string date) {
 			// Перетворюємо рядок дати у DateTime
@@ -373,7 +375,7 @@ namespace CSLight {
 			var typeOfSourceWindow = w.Elm["web:GROUPING", prop: "@data-testid=AD"].Find();
 			if (typeOfSourceWindow != null) {
 				typeOfSourceWindow.ScrollTo();
-				wait.ms(200);
+				wait.ms(400);
 				typeOfSourceWindow.PostClick();
 				wait.ms(200);
 				typeOfSourceWindow.SendKeys("!" + flyeye, "Tab");
