@@ -41,4 +41,4 @@ HotKeys:
 	hk["Alt+Z"] = o => script.run(@"\analisationWork-main\main\createMarkInJbdOPBS.cs");
 	hk["Ctrl+Alt+T"] = o => script.run(@"\analisationWork-main\main\ecipashCreateFastOPBS.cs");
 	hk["Alt+Shift+F"] = o => script.run(@"\analisationWork-main\main\fastZonaHiroOPBS.cs");
-	hk["Alt+Shift+I"] = o => script.run(@"\analisationWork\main\processedStartOPBS.cs");
+	hk["Alt+Shift+I"] = o => script.run(@"\analisationWork-main\main\processedStartOPBS.cs");
