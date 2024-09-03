@@ -29,9 +29,16 @@
 - жмеш `Alt+Shift+F`, магія почне працювати
 `дивись відео для наглядності`
 
+## _processedStartOPBS_
+    спроба спростити роботу з необробленими. Виставляє дату(якщо її немає), бере нікнейм того хто прикріпив перше прикріплення(якщо є), коментар за форматом (дата - спостерігав з дрону нікнейм).
+- відкриваєш вікно редагування мітки
+- жмеш `Alt+Shift+I`, магія почне працювати
+`без відео(поки що) є ідеї для покращення й схема може змінитися`
+
 HotKeys:
 
 	hk["Alt+X"] = o => script.run(@"\analisationWork-main\main\fastCopDeltaOPBS.cs");
 	hk["Alt+Z"] = o => script.run(@"\analisationWork-main\main\createMarkInJbdOPBS.cs");
 	hk["Ctrl+Alt+T"] = o => script.run(@"\analisationWork-main\main\ecipashCreateFastOPBS.cs");
 	hk["Alt+Shift+F"] = o => script.run(@"\analisationWork-main\main\fastZonaHiroOPBS.cs");
+	hk["Alt+Shift+I"] = o => script.run(@"\analisationWork\main\processedStartOPBS.cs");
