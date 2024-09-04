@@ -9,7 +9,9 @@ var deltaAttachmentWindow = w.Elm["web:GROUPING", prop: new("desc=Прикріп
 deltaAttachmentWindow.PostClick(scroll: 250);
 // знаходжу елемент, відповідний за назву того хто прикріпив прикруплення
 var firstAttachmentMessage = w.Elm["web:GROUPING", prop: "@data-testid=uploaded-attachments-list-item", navig: "child2 last"].Find(-1);
-nameAttachmentMessage = firstAttachmentMessage.Name;
+if (firstAttachmentMessage != null) {
+	nameAttachmentMessage = firstAttachmentMessage.Name;
+}
 // Основні поля - вкладка
 var deltaMainFildsWindow = w.Elm["web:GROUPING", prop: "@title=Основні поля"].Find(1);
 deltaMainFildsWindow.PostClick(scroll: 250);
