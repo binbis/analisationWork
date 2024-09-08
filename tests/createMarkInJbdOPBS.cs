@@ -1,5 +1,5 @@
 
-/* 04,09,2024_v1.7g
+/* 08,09,2024_v1.7g
 - міна, залежно від статусу заповнюється та оновлюється(назва, дата\час, боєздатність, коментар)
 - укриття, залежно від заповнення, заповнюється та оновлюється "без ід"(назва,  дата\час, ідентифікатор, коментар)[якщо виявлено, бере комент, ураження-знищення бере статус, ]
 - техніка, окремий масив зі таким самим інтерфейсом
@@ -15,7 +15,6 @@
 - Загородження (шипи)
 - вонева позиція
 
-deltaImportFiles(idTargetJbd, pathToServerFiles); додано лише для міни
 */
 using System.Windows;
 using System.Windows.Controls;
@@ -44,8 +43,12 @@ namespace CSLight {
 			string establishedJbd = parts[24]; // Встановлено/Уражено/Промах/...
 			string twoHundredth = parts[25]; // 200
 			string threeHundredth = parts[26]; // 300
+			string combatLogId = parts[33]; // 1725666514064
 			
+			// шлях для ід цілі
 			string pathToServerFiles = @" \\Sng-4\аеророзвідка\(2) Результативні вильоти + нарізки";
+			// шлях для ід повідомлення
+			string pathTo_combatLogId = @" \\SNG-8-sh\CombatLog";
 			
 			//перетворення дати до формату дельти
 			string dateDeltaFormat = dateJbd.Replace('.', '/');
@@ -76,10 +79,13 @@ namespace CSLight {
 			wait.ms(200);
 			deltaGeografPlace(targetClassJbd, establishedJbd, commentJbd);
 			wait.ms(200);
+			if (combatLogId.Length > 6) {
+				deltaImportFiles(idTargetJbd, pathToServerFiles, combatLogId, pathTo_combatLogId);
+			}
 			goToMain();
 			if (targetClassJbd.Contains("Міна")) {
 				wait.ms(200);
-				deltaImportFiles(idTargetJbd, pathToServerFiles);
+				deltaImportFiles(idTargetJbd, pathToServerFiles, combatLogId, pathTo_combatLogId);
 			}
 		}
 		static string datePlasDays(string date) {
@@ -544,7 +550,7 @@ namespace CSLight {
 			
 		}
 		// пошук файлів за ід для прикріплення (поки що не використовується)
-		static void deltaImportFiles(string idTargetJbd, string pathToServerFiles) {
+		static void deltaImportFiles(string idTargetJbd, string pathToServerFiles, string combatLogId, string pathTo_combatLogId) {
 			// основне вікно
 			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1");
 			// кнопка прикріплення
@@ -562,17 +568,26 @@ namespace CSLight {
 			var adressBar = w2.Elm["WINDOW", prop: "class=Address Band Root"].Find(1);
 			adressBar.PostClick();
 			wait.ms(200);
-			adressBar.SendKeys("!" + pathToServerFiles, "Enter");
+			if (combatLogId.Length > 6) {
+				adressBar.SendKeys("!" + pathTo_combatLogId, "Enter");
+			} else {
+				adressBar.SendKeys("!" + pathToServerFiles, "Enter");
+			}
+			
 			// поле пошуку
 			var windowsSearch = w2.Elm["WINDOW", prop: "class=UniversalSearchBand"].Find(1);
 			windowsSearch.PostClick(100);
-			windowsSearch.SendKeys("Ctrl+A", "!" + idTargetJbd);
+			if (combatLogId.Length > 6) {
+				windowsSearch.SendKeys("Ctrl+A", "!" + combatLogId);
+			} else {
+				windowsSearch.SendKeys("Ctrl+A", "!" + combatLogId);
+			}
 			wait.ms(200);
 			
 		}
 		static void goToMain() {
 			// основне вікно
-			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1");
+			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1").Activate();
 			// повернення на основне вікно
 			wait.ms(200);
 			var mainFilds = w.Elm["web:GROUPING", prop: new("desc=Основні поля", "@title=Основні поля")].Find(1);

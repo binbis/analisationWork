@@ -1,5 +1,5 @@
 /**
-20,08,2024_v3.1a
+05,09,2024_v3.1b
 0. відкрий дельту в окремій вкладці та вікні, (!не міняй вкладку!), можеш звернути це вікно
 1. виділяєш текст де є координати mgrs, типу delta-google, google-maps без букв, уск-2000
 - спершу шукає mgrs, якщо не знаходить, прибирає усе окрім цифр, ком та крапок
@@ -11,13 +11,10 @@
 
 using System.Windows.Forms;
 
-namespace CSLight
-{
-    internal class Program
-    {
-        [STAThread]
-        static void Main(string[] args)
-        {
+namespace CSLight {
+	internal class Program {
+		[STAThread]
+		static void Main(string[] args) {
 			opt.key.KeySpeed = opt.key.TextSpeed = 10;
 			keys.send("Ctrl+C"); // копіюємо
 			string clipText = clipboard.copy(); // Зчитуємо вміст з буферу обміну
@@ -29,7 +26,7 @@ namespace CSLight
 			clipTextTry = clipTextTry.ToUpper();
 			clipTextTry = Regex.Replace(clipTextTry, "[^a-zA-Zа-яА-Я0-9]", "");
 			Match matchMGRS = Regex.Match(clipTextTry, patternMGRS);
-			if (matchMGRS.Success){
+			if (matchMGRS.Success) {
 				clipTextTry = Transliterate(InsertSpaces(matchMGRS.Groups[1].Value + matchMGRS.Groups[2].Value));
 				// вписуємо вміст
 				Clipboard.SetText(clipTextTry);
@@ -40,33 +37,32 @@ namespace CSLight
 				// жмем пишем
 				e.PostClick(100);
 				e.SendKeys("Ctrl+A", "!" + clipTextTry, "Enter");
-			}else {
+				
+				
+			} else {
 				// прибрати усе окрім цифр крапки та коми
 				clipText = Regex.Replace(clipText, @"[^0-9,.]", "");
+				Clipboard.SetText(clipText);
 				// Знаходить та активує вікно якщо воно звернуте 
 				var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1").Activate();
 				// Знаходить пошуковий рядок
 				var e = w.Elm["web:COMBOBOX", "Пошук"].Find(2);
 				// жмем пишем
 				e.PostClick(100);
-				Clipboard.SetText(clipText);
 				e.SendKeys("Ctrl+A", "!" + clipText, "Enter");
+				
 			}
-			
-			
 		}
 		// додаємо пробіли
-		static string InsertSpaces(string input)
-		{
+		static string InsertSpaces(string input) {
 			input = input.Insert(input.Length - 5, " ");
 			input = input.Insert(input.Length - 11, " ");
 			input = input.Insert(input.Length - 14, " ");
-
+			
 			return input;
 		}
 		// заміняє букви кирилиці на латиницю
-		static string Transliterate(string text)
-		{
+		static string Transliterate(string text) {
 			// кирил на лат
 			Dictionary<char, string> translitMap = new Dictionary<char, string>
 			{
@@ -75,21 +71,17 @@ namespace CSLight
 				{'А', "A"}, {'О', "O"}, {'Н', "H"},
 				{'К', "K"}, {'Х', "X"}
 			};
-
+			
 			StringBuilder result = new StringBuilder();
-
-			foreach (char c in text)
-			{
-				if (translitMap.ContainsKey(c))
-				{
+			
+			foreach (char c in text) {
+				if (translitMap.ContainsKey(c)) {
 					result.Append(translitMap[c]);
-				}
-				else
-				{
+				} else {
 					result.Append(c);
 				}
 			}
-
+			
 			return result.ToString();
 		}
 	}
