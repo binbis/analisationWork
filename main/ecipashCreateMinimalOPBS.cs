@@ -11,19 +11,7 @@ class Program {
 	static void Main() {
 		string initialString = string.Empty;
 		
-		// Отримуємо шлях до робочого столу
-		string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-		
-		// Створюємо шлях до файлу на робочому столі
-		string filePath = Path.Combine(desktopPath, "textfile.txt");
-		
-		// Якщо файл існує, то перезаписуємо його
-		if (File.Exists(filePath)) {
-			File.Delete(filePath); // Видаляємо файл
-		}
-		
-		// Створюємо новий файл (перезаписуємо)
-		File.Create(filePath).Close(); // Створюємо і закриваємо файл для подальшого запису
+		string minimalEcspashClipbload = string.Empty;
 		
 		while (true) {
 			//виділяємо рядок
@@ -58,8 +46,7 @@ class Program {
 			// Змінна, що змінюється після кожної операції
 			string textName = $"{crew} - {point} \n\t ({formattedTeam})\n";
 			
-			// Додаємо новий текст у файл
-			AddTextToFile(filePath, textName);
+			minimalEcspashClipbload += textName;
 			
 			wait.ms(200);
 			keys.send("Down");
@@ -67,12 +54,7 @@ class Program {
 			keys.send("Down");
 		}
 		keys.send("Ctrl+Home");
-	}
-	// Метод для додавання тексту у файл
-	static void AddTextToFile(string filePath, string text) {
-		using (StreamWriter writer = new StreamWriter(filePath, true)) // true дозволяє додавати текст у кінець файлу
-		{
-			writer.WriteLine(text);
-		}
+		
+		Clipboard.SetText(minimalEcspashClipbload);
 	}
 }
