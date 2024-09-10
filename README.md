@@ -15,10 +15,10 @@
 - `дивись відео для наглядності`
 
 ## _ecipashCreateFastOPBS_
-    створює папку на пробочому столі в якій будуть створені папки з екіпажами
+    створює папку на робочому столі в якій будуть створені папки з екіпажами
 - відкрий ексель табличку `Планування ...`
 - перейди на сторінку `Звіт`
-- обери необхідну дату
+- обери необхідну дату (опціонально)
 - обери 8-й рядок(клітинку)
 - жмеш `Ctrl+Alt+T`, магія почне працювати
 `дивись відео для наглядності`
@@ -35,6 +35,16 @@
 - жмеш `Alt+Shift+I`, магія почне працювати
 `без відео(поки що) є ідеї для покращення й схема може змінитися`
 
+## _ecipashCreateMinimalOPBS_
+    для оперативників, створюється текстовий файл, на робочому столі, мінімалістичні  записи екіпажів
+- відкрий ексель табличку `Планування ...`
+- перейди на сторінку `Звіт`
+- обери необхідну дату (опціонально)
+- обери 8-й рядок(клітинку)
+- жмеш `Ctrl+Alt+T`, магія почне працювати
+
+
+
 HotKeys:
 
 	hk["Alt+X"] = o => script.run(@"\analisationWork-main\main\fastCopDeltaOPBS.cs");
@@ -42,3 +52,4 @@ HotKeys:
 	hk["Ctrl+Alt+T"] = o => script.run(@"\analisationWork-main\main\ecipashCreateFastOPBS.cs");
 	hk["Alt+Shift+F"] = o => script.run(@"\analisationWork-main\main\fastZonaHiroOPBS.cs");
 	hk["Alt+Shift+I"] = o => script.run(@"\analisationWork-main\main\processedStartOPBS.cs");
+	hk["Alt+Shift+G"] = o => script.run(@"\analisationWork-main\main\ecipashCreateMinimalOPBS.cs");
