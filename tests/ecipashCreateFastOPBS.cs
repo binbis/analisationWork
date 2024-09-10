@@ -7,11 +7,14 @@
 
 using System.Windows.Forms;
 
-class Program
-{
+class Program {
 	static void Main() {
 		string initialString = string.Empty;
-		while(true){
+		
+		// Отримати шлях до робочого столу поточного користувача
+		string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+		
+		while (true) {
 			//виділяємо рядок
 			keys.send("Shift+Space");
 			wait.ms(100);
@@ -22,7 +25,7 @@ class Program
 			initialString = clipboard.copy();
 			wait.ms(200);
 			if (initialString.Length < 30) { break; }
-			//Console.WriteLine(initialString.Length);
+			
 			// Видалення всіх лапок (подвійних та одинарних) та видалення переходів на нові рядки
 			initialString = initialString.Replace("\"", "").Replace("'", "").Replace("\n", "").Replace("\r", "");
 			
@@ -44,9 +47,6 @@ class Program
 			
 			// Формування кінцевого рядка
 			string folderName = $"{crew} - {point} ({formattedTeam})";
-			
-			// Отримати шлях до робочого столу поточного користувача
-			string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
 			
 			// Створити повний шлях до кореневої папки на робочому столі
 			string parentFolderPath = Path.Combine(desktopPath, date);
@@ -77,5 +77,5 @@ class Program
 			keys.send("Down");
 		}
 		keys.send("Ctrl+Home");
-    }
+	}
 }

@@ -2,7 +2,7 @@
 створення для створення папок з Планування excel
 1. вибираєш ячейку
 2. жмеш скрипт
-3. створюється папка на робочому столі з папкою в середині з відповідною назвою
+3. створюється textfile.txt на робочому столі з текстом
 */
 
 using System.Windows.Forms;
@@ -11,8 +11,19 @@ class Program {
 	static void Main() {
 		string initialString = string.Empty;
 		
-		// Отримати шлях до робочого столу поточного користувача
+		// Отримуємо шлях до робочого столу
 		string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+		
+		// Створюємо шлях до файлу на робочому столі
+		string filePath = Path.Combine(desktopPath, "textfile.txt");
+		
+		// Якщо файл існує, то перезаписуємо його
+		if (File.Exists(filePath)) {
+			File.Delete(filePath); // Видаляємо файл
+		}
+		
+		// Створюємо новий файл (перезаписуємо)
+		File.Create(filePath).Close(); // Створюємо і закриваємо файл для подальшого запису
 		
 		while (true) {
 			//виділяємо рядок
@@ -25,7 +36,6 @@ class Program {
 			initialString = clipboard.copy();
 			wait.ms(200);
 			if (initialString.Length < 30) { break; }
-			
 			// Видалення всіх лапок (подвійних та одинарних) та видалення переходів на нові рядки
 			initialString = initialString.Replace("\"", "").Replace("'", "").Replace("\n", "").Replace("\r", "");
 			
@@ -45,37 +55,24 @@ class Program {
 			string[] teamMembers = Regex.Split(team, @" — (?!командир)").Select(member => member.Replace("командир ", "")).ToArray();
 			string formattedTeam = string.Join(", ", teamMembers);
 			
-			// Формування кінцевого рядка
-			string folderName = $"{crew} - {point} ({formattedTeam})";
+			// Змінна, що змінюється після кожної операції
+			string textName = $"{crew} - {point} \n\t ({formattedTeam})\n";
 			
-			// Створити повний шлях до кореневої папки на робочому столі
-			string parentFolderPath = Path.Combine(desktopPath, date);
+			// Додаємо новий текст у файл
+			AddTextToFile(filePath, textName);
 			
-			// Перевірити, чи існує батьківська папка
-			if (!Directory.Exists(parentFolderPath)) {
-				// Створити нову батьківську папку
-				Directory.CreateDirectory(parentFolderPath);
-				Console.WriteLine("Коренева папка створена успішно.");
-			} else {
-				Console.WriteLine("Коренева папка вже існує.");
-			}
-			
-			// Створити повний шлях до вкладеної папки
-			string childFolderPath = Path.Combine(parentFolderPath, folderName);
-			
-			// Перевірити, чи існує вкладена папка
-			if (!Directory.Exists(childFolderPath)) {
-				// Створити нову вкладену папку
-				Directory.CreateDirectory(childFolderPath);
-				Console.WriteLine("Вкладена папка створена успішно.");
-			} else {
-				Console.WriteLine("Вкладена папка вже існує.");
-			}
 			wait.ms(200);
 			keys.send("Down");
 			wait.ms(200);
 			keys.send("Down");
 		}
 		keys.send("Ctrl+Home");
+	}
+	// Метод для додавання тексту у файл
+	static void AddTextToFile(string filePath, string text) {
+		using (StreamWriter writer = new StreamWriter(filePath, true)) // true дозволяє додавати текст у кінець файлу
+		{
+			writer.WriteLine(text);
+		}
 	}
 }
