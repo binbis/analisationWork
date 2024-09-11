@@ -1,7 +1,5 @@
 
-/* 
-08,09,2024_v1.7g
-*/
+/* 11,09,2024_v1.7.1*/
 using System.Windows;
 using System.Windows.Controls;
 
@@ -10,7 +8,6 @@ namespace CSLight {
 		static void Main() {
 			opt.key.KeySpeed = 45;
 			opt.key.TextSpeed = 30;
-			//clipboard.clear(); // чистимо вміст 
 			keys.send("Shift+Space*2"); //виділяємо весь рядок
 			wait.ms(100);
 			keys.send("Ctrl+C"); //копіюємо код
@@ -32,47 +29,48 @@ namespace CSLight {
 			string combatLogId = parts[33]; // 1725666514064
 			
 			// шлях для ід цілі
-			string pathToServerFiles = @" \\Sng-4\аеророзвідка\(2) Результативні вильоти + нарізки";
+			string pathToServerFiles = @"\\Sng-4\аеророзвідка\(2) Результативні вильоти + нарізки";
 			// шлях для ід повідомлення
-			string pathTo_combatLogId = @" \\SNG-8-sh\CombatLog";
+			string pathTo_combatLogId = @"\\SNG-8-sh\CombatLog";
 			
 			//перетворення дати до формату дельти
 			string dateDeltaFormat = dateJbd.Replace('.', '/');
 			
 			goToMain();
-			wait.ms(200);
+			wait.ms(250);
 			deltaLayerWindow(targetClassJbd, commentJbd);
-			wait.ms(200);
+			wait.ms(250);
 			deltaMarkName(targetClassJbd, dateJbd, establishedJbd, commentJbd, twoHundredth, threeHundredth);
-			wait.ms(200);
+			wait.ms(250);
 			deltaDateLTimeWindow(dateDeltaFormat, timeJbd);
-			wait.ms(200);
+			wait.ms(250);
 			deltaNumberOfnumberWindow(twoHundredth, threeHundredth);
-			wait.ms(200);
+			wait.ms(250);
 			deltaCombatCapabilityWindow(targetClassJbd, establishedJbd, commentJbd);
-			wait.ms(200);
+			wait.ms(250);
 			deltaIdentificationWindow(targetClassJbd, establishedJbd, commentJbd);
-			wait.ms(200);
+			wait.ms(250);
 			deltaReliabilityWindow();
-			wait.ms(200);
+			wait.ms(250);
 			deltaFlyeye();
-			wait.ms(200);
+			wait.ms(250);
 			deltaIdPurchaseText(idTargetJbd);
-			wait.ms(200);
+			wait.ms(250);
 			deltaCommentContents(targetClassJbd, dateJbd, timeJbd, crewTeamJbd, establishedJbd, commentJbd);
-			wait.ms(200);
+			wait.ms(250);
 			deltaAdditionalFields(idTargetJbd, targetClassJbd);
-			wait.ms(200);
+			wait.ms(250);
 			deltaGeografPlace(targetClassJbd, establishedJbd, commentJbd);
-			wait.ms(200);
-			if (combatLogId.Length > 6) {
-				deltaImportFiles(idTargetJbd, pathToServerFiles, combatLogId, pathTo_combatLogId);
-			}
-			goToMain();
+			wait.ms(250);
 			if (targetClassJbd.Contains("Міна")) {
-				wait.ms(200);
+				wait.ms(250);
 				deltaImportFiles(idTargetJbd, pathToServerFiles, combatLogId, pathTo_combatLogId);
+			} else if (combatLogId.Length > 6) {
+				deltaImportFiles(idTargetJbd, pathToServerFiles, combatLogId, pathTo_combatLogId);
+			} else {
+				goToMain();
 			}
+			
 		}
 		static string datePlasDays(string date) {
 			// Перетворюємо рядок дати у DateTime
@@ -482,44 +480,44 @@ namespace CSLight {
 						// колір жовтий - знищ
 						var placeColorYellowButton = w.Elm["web:BUTTON", prop: "@title=#ffeb3b"].Find(1);
 						placeColorYellowButton.PostClick(scroll: 250);
-						wait.ms(200);
+						wait.ms(250);
 						// відсоток прозрачності
 						var transpatentColorRange = w.Elm["web:SLIDER", prop: "@data-testid=slider"].Find(1);
 						transpatentColorRange.PostClick(scroll: 250);
 						transpatentColorRange.SendKeys("Left*5");
-						wait.ms(200);
+						wait.ms(250);
 					} else if (establishedJbd.Contains("Виявлено") || establishedJbd.Contains("Підтверджено") || establishedJbd.Contains("Спростовано")) {
 						if (commentJbd.ToLower().Contains("знищ") || commentJbd.ToLower().Contains("ураж")) {
 							// колір жовтий - знищ
 							var placeColorYellowButton = w.Elm["web:BUTTON", prop: "@title=#ffeb3b"].Find(1);
 							placeColorYellowButton.PostClick(scroll: 250);
-							wait.ms(200);
+							wait.ms(250);
 							// відсоток прозрачності
 							var transpatentColorRange = w.Elm["web:SLIDER", prop: "@data-testid=slider"].Find(1);
 							transpatentColorRange.PostClick(scroll: 250);
 							transpatentColorRange.SendKeys("Left*5");
-							wait.ms(200);
+							wait.ms(250);
 						} else {
 							//колір червоний - ворож
 							var placeColorRedButton = w.Elm["web:BUTTON", prop: "@title=#f44336"].Find(1);
 							placeColorRedButton.PostClick(scroll: 250);
-							wait.ms(200);
+							wait.ms(250);
 							// відсоток прозрачності
 							var transpatentColorRange = w.Elm["web:SLIDER", prop: "@data-testid=slider"].Find(1);
 							transpatentColorRange.PostClick(scroll: 250);
 							transpatentColorRange.SendKeys("Left*5");
-							wait.ms(200);
+							wait.ms(250);
 						}
 					} else {
 						//колір червоний - ворож
 						var placeColorRedButton = w.Elm["web:BUTTON", prop: "@title=#f44336"].Find(1);
 						placeColorRedButton.PostClick(scroll: 250);
-						wait.ms(200);
+						wait.ms(250);
 						// відсоток прозрачності
 						var transpatentColorRange = w.Elm["web:SLIDER", prop: "@data-testid=slider"].Find(1);
 						transpatentColorRange.PostClick(scroll: 250);
 						transpatentColorRange.SendKeys("Left*5");
-						wait.ms(200);
+						wait.ms(250);
 					}
 					break;
 				//..
@@ -531,7 +529,7 @@ namespace CSLight {
 			/* заготовка під майбутнє
 			var placeColorBlueButton = w.Elm["web:BUTTON", "#00bcd4", "@title=#00bcd4"].Find(1);
 			placeColorBlueButton.PostClick();
-			wait.ms(200);
+			wait.ms(250);
 			*/
 			
 		}
@@ -542,43 +540,50 @@ namespace CSLight {
 			// кнопка прикріплення
 			var deltaStickWindow = w.Elm["web:GROUPING", prop: new("desc=Прикріплення", "@title=Прикріплення")].Find(1);
 			deltaStickWindow.PostClick();
-			wait.ms(200);
-			var deltaUploadButton = w.Elm["web:BUTTON", prop: "@data-testid=files-upload-button"].Find(1);
-			deltaUploadButton.PostClick();
-			wait.ms(200);
+			wait.ms(250);
 			
-			// попап віндовса
-			var w2 = wnd.find(1, "Відкриття файлу", null, "chrome.exe").Activate();
-			
-			// поле адресси
-			var adressBar = w2.Elm["WINDOW", prop: "class=Address Band Root"].Find(1);
-			adressBar.PostClick();
-			wait.ms(200);
-			if (combatLogId.Length > 6) {
-				adressBar.SendKeys("!" + pathTo_combatLogId, "Enter");
-			} else {
-				adressBar.SendKeys("!" + pathToServerFiles, "Enter");
-			}
-			
-			// поле пошуку
-			var windowsSearch = w2.Elm["WINDOW", prop: "class=UniversalSearchBand"].Find(1);
-			windowsSearch.PostClick(100);
-			if (combatLogId.Length > 6) {
-				windowsSearch.SendKeys("Ctrl+A", "!" + combatLogId);
-			} else {
-				windowsSearch.SendKeys("Ctrl+A", "!" + combatLogId);
-			}
-			wait.ms(200);
+			if (idTargetJbd.Contains("Міна")) {
+				// Пошук папки з унікальним ID з жбд,
+				string foundFolderPath = FindFolderById(pathToServerFiles, idTargetJbd);
+				
+				// Якщо папка знайдена, відкрити її у File Explorer
+				if (foundFolderPath != null) {
+					Process.Start("explorer.exe", foundFolderPath);
+				} else {
+					MessageBox.Show($"Папку з ID {idTargetJbd} не знайдено.");
+				}
+			} else if (combatLogId.Length > 6) {
+				// Пошук папки з унікальним ID, виключаючи #recycle
+				string foundFolderPath = FindFolderById(pathTo_combatLogId, combatLogId);
+				
+				// Якщо папка знайдена, відкрити її у File Explorer
+				if (foundFolderPath != null) {
+					Process.Start("explorer.exe", foundFolderPath);
+				} else {
+					MessageBox.Show($"Папку з ID {combatLogId} не знайдено.");
+				}
+			} /*else {
+				// Пошук папки з унікальним ID з жбд,
+				string foundFolderPath = FindFolderById(pathToServerFiles, idTargetJbd);
+				
+				// Якщо папка знайдена, відкрити її у File Explorer
+				Console.WriteLine(foundFolderPath);
+				if (foundFolderPath != null) {
+					Process.Start("explorer.exe", foundFolderPath);
+				} else {
+					MessageBox.Show($"Папку з ID {idTargetJbd} не знайдено.");
+				}
+			}*/
 			
 		}
 		static void goToMain() {
 			// основне вікно
 			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1").Activate();
 			// повернення на основне вікно
-			wait.ms(200);
+			wait.ms(250);
 			var mainFilds = w.Elm["web:GROUPING", prop: new("desc=Основні поля", "@title=Основні поля")].Find(1);
 			mainFilds.PostClick();
-			wait.ms(200);
+			wait.ms(250);
 		}
 		// обрізка до 19 символів в рядку
 		static string TrimString(string str, int maxLength) {
@@ -595,6 +600,43 @@ namespace CSLight {
 			}
 			return str;
 		}
-		
+		// Метод для пошуку папки за іменем folderId серед усіх папок, крім #recycle
+		static string FindFolderById(string rootPath, string folderId) {
+			try {
+				// Отримати всі підкаталоги за вказаним шляхом, виключаючи #recycle
+				var directories = Directory.GetDirectories(rootPath, "*", SearchOption.TopDirectoryOnly)
+										   .Where(d => Path.GetFileName(d) != "#recycle") // Виключаємо #recycle
+										   .OrderByDescending(d => d) // Сортуємо з кінця
+										   .ToArray();
+				
+				// Перевіряємо кожну з підкаталогів
+				foreach (string specificFolderPath in directories) {
+					// Перевіряємо наявність підкаталогів всередині папок (крім #recycle)
+					var subDirectories = Directory.GetDirectories(specificFolderPath, "*", SearchOption.AllDirectories)
+												  .OrderByDescending(d => d) // Сортуємо з кінця
+												  .ToArray();
+					
+					// Перевірка кожної підкаталогової папки
+					foreach (string directory in subDirectories) {
+						// Перевірка, чи назва папки збігається з folderId
+						if (Path.GetFileName(directory).Contains(folderId)) {
+							return directory; // Повертає шлях до знайденої папки
+						}
+					}
+				}
+			}
+			catch (UnauthorizedAccessException) {
+				MessageBox.Show("Немає доступу до деяких підкаталогів на сервері.");
+			}
+			catch (DirectoryNotFoundException) {
+				MessageBox.Show("Шлях до серверної директорії не знайдено.");
+			}
+			catch (IOException ex) {
+				MessageBox.Show($"Помилка доступу до файлової системи: {ex.Message}");
+			}
+			
+			// Повернути null, якщо папку не знайдено
+			return null;
+		}
 	}
 }

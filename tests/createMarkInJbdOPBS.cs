@@ -1,5 +1,5 @@
 
-/* 08,09,2024_v1.7g
+/* 11,09,2024_v1.7.1
 - міна, залежно від статусу заповнюється та оновлюється(назва, дата\час, боєздатність, коментар)
 - укриття, залежно від заповнення, заповнюється та оновлюється "без ід"(назва,  дата\час, ідентифікатор, коментар)[якщо виявлено, бере комент, ураження-знищення бере статус, ]
 - техніка, окремий масив зі таким самим інтерфейсом
@@ -46,9 +46,9 @@ namespace CSLight {
 			string combatLogId = parts[33]; // 1725666514064
 			
 			// шлях для ід цілі
-			string pathToServerFiles = @" \\Sng-4\аеророзвідка\(2) Результативні вильоти + нарізки";
+			string pathToServerFiles = @"\\Sng-4\аеророзвідка\(2) Результативні вильоти + нарізки";
 			// шлях для ід повідомлення
-			string pathTo_combatLogId = @" \\SNG-8-sh\CombatLog";
+			string pathTo_combatLogId = @"\\SNG-8-sh\CombatLog";
 			
 			//перетворення дати до формату дельти
 			string dateDeltaFormat = dateJbd.Replace('.', '/');
@@ -79,14 +79,15 @@ namespace CSLight {
 			wait.ms(200);
 			deltaGeografPlace(targetClassJbd, establishedJbd, commentJbd);
 			wait.ms(200);
-			if (combatLogId.Length > 6) {
-				deltaImportFiles(idTargetJbd, pathToServerFiles, combatLogId, pathTo_combatLogId);
-			}
-			goToMain();
 			if (targetClassJbd.Contains("Міна")) {
 				wait.ms(200);
 				deltaImportFiles(idTargetJbd, pathToServerFiles, combatLogId, pathTo_combatLogId);
+			} else if (combatLogId.Length > 6) {
+				deltaImportFiles(idTargetJbd, pathToServerFiles, combatLogId, pathTo_combatLogId);
+			} else {
+				goToMain();
 			}
+			
 		}
 		static string datePlasDays(string date) {
 			// Перетворюємо рядок дати у DateTime
@@ -557,32 +558,39 @@ namespace CSLight {
 			var deltaStickWindow = w.Elm["web:GROUPING", prop: new("desc=Прикріплення", "@title=Прикріплення")].Find(1);
 			deltaStickWindow.PostClick();
 			wait.ms(200);
-			var deltaUploadButton = w.Elm["web:BUTTON", prop: "@data-testid=files-upload-button"].Find(1);
-			deltaUploadButton.PostClick();
-			wait.ms(200);
 			
-			// попап віндовса
-			var w2 = wnd.find(1, "Відкриття файлу", null, "chrome.exe").Activate();
-			
-			// поле адресси
-			var adressBar = w2.Elm["WINDOW", prop: "class=Address Band Root"].Find(1);
-			adressBar.PostClick();
-			wait.ms(200);
-			if (combatLogId.Length > 6) {
-				adressBar.SendKeys("!" + pathTo_combatLogId, "Enter");
-			} else {
-				adressBar.SendKeys("!" + pathToServerFiles, "Enter");
-			}
-			
-			// поле пошуку
-			var windowsSearch = w2.Elm["WINDOW", prop: "class=UniversalSearchBand"].Find(1);
-			windowsSearch.PostClick(100);
-			if (combatLogId.Length > 6) {
-				windowsSearch.SendKeys("Ctrl+A", "!" + combatLogId);
-			} else {
-				windowsSearch.SendKeys("Ctrl+A", "!" + combatLogId);
-			}
-			wait.ms(200);
+			if (idTargetJbd.Contains("Міна")) {
+				// Пошук папки з унікальним ID з жбд,
+				string foundFolderPath = FindFolderById(pathToServerFiles, idTargetJbd);
+				
+				// Якщо папка знайдена, відкрити її у File Explorer
+				if (foundFolderPath != null) {
+					Process.Start("explorer.exe", foundFolderPath);
+				} else {
+					MessageBox.Show($"Папку з ID {idTargetJbd} не знайдено.");
+				}
+			} else if (combatLogId.Length > 6) {
+				// Пошук папки з унікальним ID, виключаючи #recycle
+				string foundFolderPath = FindFolderById(pathTo_combatLogId, combatLogId);
+				
+				// Якщо папка знайдена, відкрити її у File Explorer
+				if (foundFolderPath != null) {
+					Process.Start("explorer.exe", foundFolderPath);
+				} else {
+					MessageBox.Show($"Папку з ID {combatLogId} не знайдено.");
+				}
+			} /*else {
+				// Пошук папки з унікальним ID з жбд,
+				string foundFolderPath = FindFolderById(pathToServerFiles, idTargetJbd);
+				
+				// Якщо папка знайдена, відкрити її у File Explorer
+				Console.WriteLine(foundFolderPath);
+				if (foundFolderPath != null) {
+					Process.Start("explorer.exe", foundFolderPath);
+				} else {
+					MessageBox.Show($"Папку з ID {idTargetJbd} не знайдено.");
+				}
+			}*/
 			
 		}
 		static void goToMain() {
@@ -609,6 +617,43 @@ namespace CSLight {
 			}
 			return str;
 		}
-		
+		// Метод для пошуку папки за іменем folderId серед усіх папок, крім #recycle
+		static string FindFolderById(string rootPath, string folderId) {
+			try {
+				// Отримати всі підкаталоги за вказаним шляхом, виключаючи #recycle
+				var directories = Directory.GetDirectories(rootPath, "*", SearchOption.TopDirectoryOnly)
+										   .Where(d => Path.GetFileName(d) != "#recycle") // Виключаємо #recycle
+										   .OrderByDescending(d => d) // Сортуємо з кінця
+										   .ToArray();
+				
+				// Перевіряємо кожну з підкаталогів
+				foreach (string specificFolderPath in directories) {
+					// Перевіряємо наявність підкаталогів всередині папок (крім #recycle)
+					var subDirectories = Directory.GetDirectories(specificFolderPath, "*", SearchOption.AllDirectories)
+												  .OrderByDescending(d => d) // Сортуємо з кінця
+												  .ToArray();
+					
+					// Перевірка кожної підкаталогової папки
+					foreach (string directory in subDirectories) {
+						// Перевірка, чи назва папки збігається з folderId
+						if (Path.GetFileName(directory).Contains(folderId)) {
+							return directory; // Повертає шлях до знайденої папки
+						}
+					}
+				}
+			}
+			catch (UnauthorizedAccessException) {
+				MessageBox.Show("Немає доступу до деяких підкаталогів на сервері.");
+			}
+			catch (DirectoryNotFoundException) {
+				MessageBox.Show("Шлях до серверної директорії не знайдено.");
+			}
+			catch (IOException ex) {
+				MessageBox.Show($"Помилка доступу до файлової системи: {ex.Message}");
+			}
+			
+			// Повернути null, якщо папку не знайдено
+			return null;
+		}
 	}
 }
