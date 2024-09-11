@@ -1,5 +1,5 @@
 
-/* 11,09,2024_v1.7.1*/
+/* 12,09,2024_v1.7.1*/
 using System.Windows;
 using System.Windows.Controls;
 
@@ -8,6 +8,7 @@ namespace CSLight {
 		static void Main() {
 			opt.key.KeySpeed = 45;
 			opt.key.TextSpeed = 30;
+			//clipboard.clear(); // чистимо вміст 
 			keys.send("Shift+Space*2"); //виділяємо весь рядок
 			wait.ms(100);
 			keys.send("Ctrl+C"); //копіюємо код
@@ -27,15 +28,14 @@ namespace CSLight {
 			string twoHundredth = parts[25]; // 200
 			string threeHundredth = parts[26]; // 300
 			string combatLogId = parts[33]; // 1725666514064
-			
 			// шлях для ід цілі
 			string pathToServerFiles = @"\\Sng-4\аеророзвідка\(2) Результативні вильоти + нарізки";
 			// шлях для ід повідомлення
 			string pathTo_combatLogId = @"\\SNG-8-sh\CombatLog";
-			
 			//перетворення дати до формату дельти
 			string dateDeltaFormat = dateJbd.Replace('.', '/');
-			
+			// основне вікно
+			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1").Activate();
 			goToMain();
 			wait.ms(250);
 			deltaLayerWindow(targetClassJbd, commentJbd);
@@ -83,7 +83,7 @@ namespace CSLight {
 		}
 		// поле шар
 		static void deltaLayerWindow(string targetClassJbd, string commentJbd) {
-			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1").Activate();
+			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1");
 			// поле шар
 			var layerWindow = w.Elm["web:GROUPING", prop: "@data-testid=select-layer"].Find(3);
 			if (layerWindow != null) {
@@ -578,7 +578,7 @@ namespace CSLight {
 		}
 		static void goToMain() {
 			// основне вікно
-			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1").Activate();
+			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1");
 			// повернення на основне вікно
 			wait.ms(250);
 			var mainFilds = w.Elm["web:GROUPING", prop: new("desc=Основні поля", "@title=Основні поля")].Find(1);
