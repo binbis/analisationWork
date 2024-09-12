@@ -186,40 +186,8 @@ namespace CSLight {
 						} else {
 							markName = targetClassJbd + " ОС";
 						}
-					}
-					break;
-				//..
-				//. Бліндаж
-				case "Бліндаж":
-					if (establishedJbd.Contains("Знищ") || establishedJbd.Contains("знищ")) {
-						markName = targetClassJbd + " (знищ.)";
-					} else if (establishedJbd.Contains("Ураж") || establishedJbd.Contains("ураж")) {
-						markName = targetClassJbd + " (ураж.)";
-					} else if (establishedJbd.Contains("Виявлено") || establishedJbd.Contains("Підтверджено")) {
-						if (commentJbd.ToLower().Contains("знищ")) {
-							markName = targetClassJbd + " (знищ.)";
-						} else if (commentJbd.ToLower().Contains("ураж")) {
-							markName = targetClassJbd + " (ураж.)";
-						} else {
-							markName = targetClassJbd;
-						}
-					}
-					break;
-				//..
-				//. Т. вильоту дронів
-				case "Т. вильоту дронів":
-					if (establishedJbd.Contains("Знищ") || establishedJbd.Contains("знищ")) {
-						markName = targetClassJbd + " (знищ.)";
-					} else if (establishedJbd.Contains("Ураж") || establishedJbd.Contains("ураж")) {
-						markName = targetClassJbd + " (ураж.)";
-					} else if (establishedJbd.Contains("Виявлено") || establishedJbd.Contains("Підтверджено")) {
-						if (commentJbd.ToLower().Contains("знищ")) {
-							markName = targetClassJbd + " (знищ.)";
-						} else if (commentJbd.ToLower().Contains("ураж")) {
-							markName = targetClassJbd + " (ураж.)";
-						} else {
-							markName = targetClassJbd;
-						}
+					} else {
+						markName = targetClassJbd + " ОС";
 					}
 					break;
 				//..
