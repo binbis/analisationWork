@@ -1,5 +1,5 @@
 
-/* 12,09,2024_v1.7.1*/
+/* 12,09,2024_v1.7.2*/
 using System.Windows;
 using System.Windows.Controls;
 
@@ -550,7 +550,14 @@ namespace CSLight {
 				if (foundFolderPath != null) {
 					Process.Start("explorer.exe", foundFolderPath);
 				} else {
-					MessageBox.Show($"Папку з ID {idTargetJbd} не знайдено.");
+					// перші спроби з формаим
+					var b = new wpfBuilder("Window").WinSize(400);
+					b.R.Add(out Label _, $"Папку з ID {idTargetJbd} не знайдено.");
+					b.R.AddOkCancel();
+					b.Window.Topmost = true;
+					b.End();
+					// show dialog. Exit if closed not with the OK button.
+					if (!b.ShowDialog()) return;
 				}
 			} else if (combatLogId.Length > 6) {
 				// Пошук папки з унікальним ID, виключаючи #recycle
@@ -560,7 +567,14 @@ namespace CSLight {
 				if (foundFolderPath != null) {
 					Process.Start("explorer.exe", foundFolderPath);
 				} else {
-					MessageBox.Show($"Папку з ID {combatLogId} не знайдено.");
+					// перші спроби з формаим
+					var b = new wpfBuilder("Window").WinSize(400);
+					b.R.Add(out Label _, $"Папку з ID {combatLogId} не знайдено.");
+					b.R.AddOkCancel();
+					b.Window.Topmost = true;
+					b.End();
+					// show dialog. Exit if closed not with the OK button.
+					if (!b.ShowDialog()) return;
 				}
 			} /*else {
 				// Пошук папки з унікальним ID з жбд,
@@ -626,13 +640,31 @@ namespace CSLight {
 				}
 			}
 			catch (UnauthorizedAccessException) {
-				MessageBox.Show("Немає доступу до деяких підкаталогів на сервері.");
+				// перші спроби з формаим
+				var b = new wpfBuilder("Window").WinSize(400);
+				b.R.Add(out Label _, "Немає доступу до деяких підкаталогів на сервері.");
+				b.R.AddOkCancel();
+				b.End();
+				b.Window.Topmost = true;
+				b.ShowDialog();
 			}
 			catch (DirectoryNotFoundException) {
-				MessageBox.Show("Шлях до серверної директорії не знайдено.");
+				// перші спроби з формаим
+				var b = new wpfBuilder("Window").WinSize(400);
+				b.R.Add(out Label _, "Шлях до серверної директорії не знайдено.");
+				b.R.AddOkCancel();
+				b.End();
+				b.Window.Topmost = true;
+				b.ShowDialog();
 			}
 			catch (IOException ex) {
-				MessageBox.Show($"Помилка доступу до файлової системи: {ex.Message}");
+				// перші спроби з формаим
+				var b = new wpfBuilder("Window").WinSize(400);
+				b.R.Add(out Label _, $"Помилка доступу до файлової системи: {ex.Message}");
+				b.R.AddOkCancel();
+				b.End();
+				b.Window.Topmost = true;
+				b.ShowDialog();
 			}
 			
 			// Повернути null, якщо папку не знайдено
