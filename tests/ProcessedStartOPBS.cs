@@ -4,14 +4,15 @@ using System.Windows.Controls;
 
 class Program {
 	static void Main() {
+		opt.key.KeySpeed = 25;
+		opt.key.TextSpeed = 20;
 		var b = new wpfBuilder("Window").WinSize(400);
-		b.R.Add(out Label _, "Поле ім'я");
-		b.R.Add(out ComboBox recomendName).Editable().Items("Zero|One|Two").Select(2);
-		// 
-		b.R.Add(out Label _, "шматок коментару");
-		b.R.Add(out ComboBox recomendComment).Editable().Items("Zero|One|Two").Select(1);
-		// 
+		//b.R.Add(out Label _, "Поле ім'я");
+		//b.R.Add("Назва",out ComboBox recomendName).Editable().Items("Zero|One|Two").Select(2);
+		b.R.Add("Назва", out ComboBox recomendName).Items("Zero|One|Two").Select(2);
+		b.R.Add("Коммент", out ComboBox recomendComment).Items("Zero|One|Two").Select(1);
 		b.R.AddOkCancel();
+		b.Window.Topmost = true;
 		b.End();
 		// show dialog. Exit if closed not with the OK button.
 		if (!b.ShowDialog()) return;
@@ -50,7 +51,7 @@ class Program {
 			nameOfMarkWindow.SendKeys("!" + nameDeltaFill);
 		}
 	}
-	//
+	// повертає ім'я з прикріплення якщо вони
 	static string nameWithAttachments(string nameAttachmentMessage) {
 		// основне вікно
 		var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1");
@@ -76,7 +77,7 @@ class Program {
 			numberOfnumberWindow.SendKeys("Ctrl+A", "!" + counts);
 		}
 	}
-	//
+	// повертає сьоднішню або ту яка вже є дату
 	static string dateTimeDeltaCombine(string clipData_time) {
 		// основне вікно
 		var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1");
