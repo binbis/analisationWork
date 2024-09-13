@@ -1,4 +1,4 @@
-/*12.09.2024_0.0.1*/
+/*13.09.2024_0.0.1*/
 using System.Windows;
 using System.Windows.Controls;
 
@@ -6,16 +6,69 @@ class Program {
 	static void Main() {
 		opt.key.KeySpeed = 45;
 		opt.key.TextSpeed = 30;
+		string[] examlpeComment = {
+			" спостерігали постріл артилерії. Спостерігали з дрону",
+			" спостерігали постріл артилерії. Спостерігали з крила",
+			" спостерігали з дрону",
+			" спостерігали з крила",
+			" виявлено за допомогою супутникових знімків",
+			" за оперативними даними",
+			" уражено за допомогою FPV. Спостерігали з крила",
+			" уражено за допомогою FPV. Спостерігали з дрону",
+			" знищено за допомогою FPV. Спостерігали з дрону",
+			" знищено ударним коптером. Спостерігали з дрону",
+			" уражено ударним коптером. Спостерігали з дрону",
+			" по гарматі відпрацювала артилерія. Стан невідомий. Спостерігали з крила",
+			" Desertcross",
+			" уражений скидом з мавіка. Спостерігали з дрону",
+			" знищений скидом з мавіка. Спостерігали з дрону",
+			" укриття для техніки. Спостерігали з дрону",
+			" укриття для техніки. Спостерігали з крила",
+		};
+		string[] examlpeNames = {
+			"Пікап (схов.)",
+			"Позашляховик (схов.)",
+			"САУ (схов.)",
+			"Гаубиця (схов.)",
+			"Гаубиця (знищ.)",
+			"Гаубиця (ураж.)",
+			"Гаубиця ? (ураж.)",
+			"Гаубиця ? (знищ.)",
+			"ББМ (схов.)",
+			"ББМ ? (знищ.)",
+			"ББМ ? (ураж.)",
+			"ББМ (знищ.)",
+			"ББМ (ураж.)",
+			"Танк ? (знищ.)",
+			"Танк (знищ.)",
+			"Танк (ураж.)",
+			"Урал (ураж.)",
+			"Урал (знищ.)",
+			"МТ-ЛБ (ураж.)",
+			"МТ-ЛБ (знищ.)",
+			"БМП (ураж.)",
+			"БМП (знищ.)",
+			"БМП ? (знищ.)",
+			"БМП ? (ураж.)",
+			"БТР (ураж.)",
+			"БТР (знищ.)",
+			"БТР ? (знищ.)",
+			"БТР ? (ураж.)",
+			"ВАТ (знищ.)",
+			"ВАТ (ураж.)",
+			"Буханка (знищ.)",
+			"Буханка (ураж.)",
+		};
+		
 		var b = new wpfBuilder("Window").WinSize(400);
-		//b.R.Add(out Label _, "Поле ім'я");
-		//b.R.Add("Назва",out ComboBox recomendName).Editable().Items("Zero|One|Two").Select(2);
-		b.R.Add("Назва", out ComboBox recomendName).Items("Zero|One|Two").Select(2);
-		b.R.Add("Коммент", out ComboBox recomendComment).Items("Zero|One|Two").Select(1);
+		b.R.Add("Назва", out ComboBox recomendName).Items(examlpeNames).Select(9);
+		b.R.Add("Комент", out ComboBox recomendComment).Items(examlpeComment).Select(3);
 		b.R.AddOkCancel();
 		b.Window.Topmost = true;
 		b.End();
 		// show dialog. Exit if closed not with the OK button.
 		if (!b.ShowDialog()) return;
+		
 		string nameDeltaFill = recomendName.Text;
 		string commentDeltaFill = recomendComment.Text;
 		string nameAttachmentMessage = string.Empty;
@@ -48,7 +101,7 @@ class Program {
 		var nameOfMarkWindow = w.Elm["web:TEXT", prop: new("@data-testid=T")].Find();
 		if (nameOfMarkWindow != null) {
 			nameOfMarkWindow.PostClick(scroll: 250);
-			nameOfMarkWindow.SendKeys("!" + nameDeltaFill);
+			nameOfMarkWindow.SendKeys("Ctrl+A","!" + nameDeltaFill);
 		}
 	}
 	// повертає ім'я з прикріплення якщо вони
@@ -118,23 +171,18 @@ class Program {
 			typeOfSourceWindow.SendKeys("!" + flyeye, "Tab");
 		}
 	}
+	// поле коментар
 	static void commentDeltaAreaFill(string clipData_time, string commentDeltaFill, string nameAttachmentMessage) {
 		string commentNew = string.Empty;
 		// основне вікно
 		var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1");
-		
 		// поле - коментар
 		var deltaCommentWindow = w.Elm["web:TEXT", prop: "@data-testid=comment-editing__textarea"].Find(1);
-		deltaCommentWindow.ScrollTo();
-		wait.ms(250);
 		deltaCommentWindow.PostClick(scroll: 250);
 		
 		// формую комент
-		commentNew += clipData_time + " - " + commentDeltaFill + " " + nameAttachmentMessage;
+		commentNew += $"{clipData_time} - {commentDeltaFill} - {nameAttachmentMessage}";
 		deltaCommentWindow.SendKeys("Ctrl+A", "!" + commentNew);
-		// Assept кнопка коменту
-		var asseptButtonComment = w.Elm["web:BUTTON", prop: "@data-testid=comment-editing__button-save"].Find(1);
-		asseptButtonComment.PostClick(scroll: 250);
 	}
 	static void goToMain() {
 		// основне вікно
