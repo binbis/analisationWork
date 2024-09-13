@@ -352,7 +352,7 @@ namespace CSLight {
 		}
 		// коментар
 		static void deltaCommentContents(string targetClassJbd, string dateJbd, string timeJbd, string crewTeamJbd, string establishedJbd, string commentJbd) {
-			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1");
+			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1").Activate();
 			// коментар
 			var commentWindow = w.Elm["web:TEXT", prop: new("@data-testid=comment-editing__textarea", "@name=text")].Find();
 			if (commentWindow != null) {
@@ -493,13 +493,6 @@ namespace CSLight {
 					break;
 				}
 			}
-			// колір голубий - дружній
-			/* заготовка під майбутнє
-			var placeColorBlueButton = w.Elm["web:BUTTON", "#00bcd4", "@title=#00bcd4"].Find(1);
-			placeColorBlueButton.PostClick();
-			wait.ms(250);
-			*/
-			
 		}
 		// пошук файлів за ід для прикріплення (поки що не використовується)
 		static void deltaImportFiles(string idTargetJbd, string pathToServerFiles, string combatLogId, string pathTo_combatLogId) {
@@ -544,19 +537,7 @@ namespace CSLight {
 					// show dialog. Exit if closed not with the OK button.
 					if (!b.ShowDialog()) return;
 				}
-			} /*else {
-				// Пошук папки з унікальним ID з жбд,
-				string foundFolderPath = FindFolderById(pathToServerFiles, idTargetJbd);
-				
-				// Якщо папка знайдена, відкрити її у File Explorer
-				Console.WriteLine(foundFolderPath);
-				if (foundFolderPath != null) {
-					Process.Start("explorer.exe", foundFolderPath);
-				} else {
-					MessageBox.Show($"Папку з ID {idTargetJbd} не знайдено.");
-				}
-			}*/
-			
+			} 
 		}
 		static void goToMain() {
 			// основне вікно

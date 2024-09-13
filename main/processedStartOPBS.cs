@@ -101,7 +101,7 @@ class Program {
 		var nameOfMarkWindow = w.Elm["web:TEXT", prop: new("@data-testid=T")].Find();
 		if (nameOfMarkWindow != null) {
 			nameOfMarkWindow.PostClick(scroll: 250);
-			nameOfMarkWindow.SendKeys("Ctrl+A","!" + nameDeltaFill);
+			nameOfMarkWindow.SendKeys("Ctrl+A", "!" + nameDeltaFill);
 		}
 	}
 	// повертає ім'я з прикріплення якщо вони
@@ -175,7 +175,7 @@ class Program {
 	static void commentDeltaAreaFill(string clipData_time, string commentDeltaFill, string nameAttachmentMessage) {
 		string commentNew = string.Empty;
 		// основне вікно
-		var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1");
+		var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1").Activate();
 		// поле - коментар
 		var deltaCommentWindow = w.Elm["web:TEXT", prop: "@data-testid=comment-editing__textarea"].Find(1);
 		deltaCommentWindow.PostClick(scroll: 250);
@@ -183,6 +183,9 @@ class Program {
 		// формую комент
 		commentNew += $"{clipData_time} - {commentDeltaFill} - {nameAttachmentMessage}";
 		deltaCommentWindow.SendKeys("Ctrl+A", "!" + commentNew);
+		// кнопка коментаря
+		var commentAsseptButton = w.Elm["web:BUTTON", prop: "@data-testid=comment-editing__button-save"].Find(1);
+		commentAsseptButton.PostClick(scroll: 250);
 	}
 	static void goToMain() {
 		// основне вікно
