@@ -70,7 +70,7 @@ namespace CSLight {
 			} else {
 				goToMain();
 			}
-			
+			clipboard.clear();
 		}
 		static string datePlasDays(string date) {
 			// Перетворюємо рядок дати у DateTime

@@ -92,7 +92,7 @@ class Program {
 		deltaFlyeye();
 		wait.ms(250);
 		commentDeltaAreaFill(clipData_time, commentDeltaFill, nameAttachmentMessage);
-		
+		clipboard.clear();
 	}
 	// поле назва
 	static void deltaMarkName(string nameDeltaFill) {

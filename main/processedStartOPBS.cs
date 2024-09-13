@@ -1,4 +1,4 @@
-/*13.09.2024_0.0.1*/
+/*12.09.2024_0.0.1*/
 using System.Windows;
 using System.Windows.Controls;
 
@@ -92,7 +92,7 @@ class Program {
 		deltaFlyeye();
 		wait.ms(250);
 		commentDeltaAreaFill(clipData_time, commentDeltaFill, nameAttachmentMessage);
-		
+		clipboard.clear();
 	}
 	// поле назва
 	static void deltaMarkName(string nameDeltaFill) {
