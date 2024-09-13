@@ -220,8 +220,6 @@ namespace CSLight {
 							markName = targetClassJbd + " (схов.)";
 						} else if (commentJbd.ToLower().Contains("стоїт")) {
 							markName = targetClassJbd + " (стоїть)";
-						} else {
-							markName = targetClassJbd;
 						}
 					} else {
 						markName = targetClassJbd;

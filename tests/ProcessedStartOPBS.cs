@@ -1,4 +1,4 @@
-/*12.09.2024_0.0.1*/
+/*13.09.2024_0.0.1*/
 using System.Windows;
 using System.Windows.Controls;
 
@@ -87,12 +87,15 @@ class Program {
 		wait.ms(250);
 		deltaNumberOfnumberWindow();
 		wait.ms(250);
+		deltaCombatCapabilityWindow(nameDeltaFill);
+		wait.ms(250);
 		deltaReliabilityWindow();
 		wait.ms(250);
 		deltaFlyeye();
 		wait.ms(250);
 		commentDeltaAreaFill(clipData_time, commentDeltaFill, nameAttachmentMessage);
 		clipboard.clear();
+		
 	}
 	// поле назва
 	static void deltaMarkName(string nameDeltaFill) {
@@ -128,6 +131,25 @@ class Program {
 			int counts = 1;
 			numberOfnumberWindow.PostClick(scroll: 250);
 			numberOfnumberWindow.SendKeys("Ctrl+A", "!" + counts);
+		}
+	}
+	// поле боєздатність
+	static void deltaCombatCapabilityWindow(string nameDeltaFill) {
+		// основне вікно
+		var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1");
+		string fullaim = string.Empty;
+		// поле боєздатність
+		var combatCapabilityWindow = w.Elm["web:GROUPING", prop: "@data-testid=operational-condition-select"].Find();
+		if (combatCapabilityWindow != null) {
+			if (nameDeltaFill.ToLower().Contains("знищ")) {
+				fullaim = "небо";
+			} else if (nameDeltaFill.ToLower().Contains("ураж")) {
+				fullaim = "част";
+			} else {
+				fullaim = "повніс";
+			}
+			combatCapabilityWindow.PostClick(scroll: 250);
+			combatCapabilityWindow.SendKeys("Ctrl+A", "!" + fullaim, "Enter");
 		}
 	}
 	// повертає сьоднішню або ту яка вже є дату
@@ -183,9 +205,6 @@ class Program {
 		// формую комент
 		commentNew += $"{clipData_time} - {commentDeltaFill} - {nameAttachmentMessage}";
 		deltaCommentWindow.SendKeys("Ctrl+A", "!" + commentNew);
-		// кнопка коментаря
-		var commentAsseptButton = w.Elm["web:BUTTON", prop: "@data-testid=comment-editing__button-save"].Find(1);
-		commentAsseptButton.PostClick(scroll: 250);
 	}
 	static void goToMain() {
 		// основне вікно
