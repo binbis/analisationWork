@@ -23,7 +23,7 @@ using System.Windows.Controls;
 
 
 class Program {
-	static void Main() {
+	static int Main() {
 		// Список дисків, які можуть бути флешками
 		string[] removableDrives = Directory.GetLogicalDrives();
 		
@@ -33,7 +33,7 @@ class Program {
 		b.Window.Topmost = true;
 		b.End();
 		// show dialog. Exit if closed not with the OK button.
-		if (!b.ShowDialog()) return;
+		if (!b.ShowDialog()) return 0;
 		// Шлях до папки, куди будуть копіюватися файли
 		string destinationBasePath = recomendedPath.Text;
 		
@@ -57,8 +57,8 @@ class Program {
 						br.R.AddOkCancel();
 						br.End();
 						br.Window.Topmost = true;
-						if (!br.ShowDialog()) return;
-						
+						if (!br.ShowDialog()) return 0;
+						return 0;
 					} else {
 						CopyDirectory(sourceDir, destinationPath);
 						driveNumber++;
@@ -72,7 +72,7 @@ class Program {
 				br.R.AddOkCancel();
 				br.End();
 				br.Window.Topmost = true;
-				if (!br.ShowDialog()) return;
+				if (!br.ShowDialog()) return 0;
 			}
 		}
 		
@@ -82,7 +82,8 @@ class Program {
 		brr.R.AddOkCancel();
 		brr.End();
 		brr.Window.Topmost = true;
-		if (!brr.ShowDialog()) return;
+		if (!brr.ShowDialog()) return 0;
+		return 0;
 	}
 	
 	// Функція для перевірки, чи достатньо вільного місця для копіювання
