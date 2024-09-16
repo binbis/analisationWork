@@ -1,19 +1,8 @@
 
-/* 12,09,2024_v1.7.2
-- міна, залежно від статусу заповнюється та оновлюється(назва, дата\час, боєздатність, коментар)
-- укриття, залежно від заповнення, заповнюється та оновлюється "без ід"(назва,  дата\час, ідентифікатор, коментар)[якщо виявлено, бере комент, ураження-знищення бере статус, ]
-- техніка, окремий масив зі таким самим інтерфейсом
-- САУ, довелось зробити окремо, бо немає боєздатності, Скупчення ОС (200/300)
-- Антена, запихнув як техніка, бо інтерфейс співпадає
-- Т. вильоту дронів
-- Бліндаж (підземне, наземне, укриття)
-- Склад майна, Польовий склад БК, Склад БК (без кількості та розвідки)
-- мережеве обладнання (генератор)
-- камера відеоспостереження
-- Міномет
-- Вор. розвід. крило / Вор. FPV-крило / Розв. крило / Ударні крила
-- Загородження (шипи)
-- вонева позиція
+/* 16,09,2024_v1.7.2
+* id обрізаються, щоб поміститись в рядок 
+* функція додавання до дати дні(60) підходить для мін
+* 200 та 300 рахуються та вписуються самі
 
 */
 using System.Windows;
@@ -24,14 +13,13 @@ namespace CSLight {
 		static void Main() {
 			opt.key.KeySpeed = 25;
 			opt.key.TextSpeed = 20;
-			//clipboard.clear(); // чистимо вміст 
+			
 			keys.send("Shift+Space*2"); //виділяємо весь рядок
 			wait.ms(100);
 			keys.send("Ctrl+C"); //копіюємо код
 			wait.ms(100);
 			string clipboardData = clipboard.copy(); // зчитуємо буфер обміну
 			string[] parts = clipboardData.Split('\t'); // Розділяємо рядок на частини
-			
 			// Присвоюємо змінним відповідні значення
 			string dateJbd = parts[0]; // 27.07.2024
 			string timeJbd = parts[1]; //00:40
@@ -44,11 +32,11 @@ namespace CSLight {
 			string twoHundredth = parts[25]; // 200
 			string threeHundredth = parts[26]; // 300
 			string combatLogId = parts[33]; // 1725666514064
-			// шлях для ід цілі
+			// шлях до папки з ід цілі
 			string pathToServerFiles = @"\\Sng-4\аеророзвідка\(2) Результативні вильоти + нарізки";
-			// шлях для ід повідомлення
+			// шлях до папки з ід повідомленням
 			string pathTo_combatLogId = @"\\SNG-8-sh\CombatLog";
-			//перетворення дати до формату дельти
+			// перетворення дати до формату дельти
 			string dateDeltaFormat = dateJbd.Replace('.', '/');
 			// основне вікно
 			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1").Activate();
@@ -137,7 +125,7 @@ namespace CSLight {
 					layerWindow.SendKeys("Ctrl+A", "!09", "Enter");
 					break;
 				default:
-					if (targetClassJbd.Contains("Склад майна") || targetClassJbd.Contains("Польовий склад БК") || targetClassJbd.Contains("Склад БК")) {
+					if (targetClassJbd.ToLower().Contains("cклад")) {
 						layerWindow.SendKeys("Ctrl+A", "!Пост", "Enter");
 					} else if (commentJbd.ToLower().Contains("рус") || commentJbd.ToLower().Contains("рух")) {
 						layerWindow.SendKeys("Ctrl+A", "!06", "Enter");
@@ -160,6 +148,7 @@ namespace CSLight {
 				string markName = string.Empty;
 				//. формування, перевірка
 				switch (targetClassJbd) {
+				//. Міна
 				case "Міна":
 					if (establishedJbd.Contains("Авар. скид") || establishedJbd.Contains("Розміновано") || establishedJbd.Contains("Підтв. ураж.") || establishedJbd.Contains("Тільки розрив")) {
 						markName = "ПТМ-3 (" + dateJbd + ")";
@@ -167,6 +156,7 @@ namespace CSLight {
 						markName = "ПТМ-3 до (" + datePlasDays(dateJbd) + ")";
 					}
 					break;
+				//..
 				//. Шипи - район загородження
 				case "Загородження":
 					markName = "Шипи (" + dateJbd + ")";
@@ -551,7 +541,7 @@ namespace CSLight {
 					// show dialog. Exit if closed not with the OK button.
 					if (!b.ShowDialog()) return;
 				}
-			} 
+			}
 			
 		}
 		static void goToMain() {

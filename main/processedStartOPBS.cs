@@ -1,4 +1,8 @@
-/*13.09.2024_0.0.1*/
+/*16.09.2024_0.0.1
+* на основі обраної назви виставляється боєздатність
+* якщо дата відсутня ставить поточну
+* якщо є прикріплення додасть перше ім'я в кінець коментару
+*/
 using System.Windows;
 using System.Windows.Controls;
 
@@ -107,7 +111,7 @@ class Program {
 			nameOfMarkWindow.SendKeys("Ctrl+A", "!" + nameDeltaFill);
 		}
 	}
-	// повертає ім'я з прикріплення якщо вони
+	// повертає ім'я з прикріплення якщо є
 	static string nameWithAttachments(string nameAttachmentMessage) {
 		// основне вікно
 		var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1");
@@ -152,7 +156,7 @@ class Program {
 			combatCapabilityWindow.SendKeys("Ctrl+A", "!" + fullaim, "Enter");
 		}
 	}
-	// повертає сьоднішню або ту яка вже є дату
+	// вписує сьоднішню дату або бере ту яка вже є 
 	static string dateTimeDeltaCombine(string clipData_time) {
 		// основне вікно
 		var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1");
@@ -201,9 +205,8 @@ class Program {
 		// поле - коментар
 		var deltaCommentWindow = w.Elm["web:TEXT", prop: "@data-testid=comment-editing__textarea"].Find(1);
 		deltaCommentWindow.PostClick(scroll: 250);
-		
 		// формую комент
-		commentNew += $"{clipData_time} - {commentDeltaFill} - {nameAttachmentMessage}";
+		commentNew += $"{clipData_time} -{commentDeltaFill} {nameAttachmentMessage}";
 		deltaCommentWindow.SendKeys("Ctrl+A", "!" + commentNew);
 	}
 	static void goToMain() {

@@ -1,9 +1,5 @@
 
-/**
-вставляєш в свій пк будь-яку кількість флешок
-вказуєш шлях в коді, повний шлях до папки куди хочеш 
-жмеш скрить
-він послідовно вивантажить, кожну флешку в окрему папку, щей підпише хї 
+/** 16.09.2024
 
 * Для кожної флешки унікальна назва
 * пропонує місце, куди вказати шлях для вивантаження папок (можна вписати самому та пропонується за замовчуваннм)
@@ -12,9 +8,8 @@
 * Приблизну швидкість викачки
 * Перевірка файлів на цілісність після завершення викачки;
 * перевірка вільного місця для поточної флешки, якщо його недостатньо зупиняє копіювання та викликає діалогове вікно
+- loadbar про завантаження(реалізовано в конлоних логах)
 
-
-2) loadbar про завантаження;
 4) Відсоток від 100% скільки воно вже вивантажили
 6) "Темна тема"
 */
@@ -23,6 +18,13 @@ using System.Windows.Controls;
 
 
 class Program {
+	[DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+	[return: MarshalAs(UnmanagedType.Bool)]
+	static extern bool GetDiskFreeSpaceEx(string lpDirectoryName,
+		out ulong lpFreeBytesAvailable,
+		out ulong lpTotalNumberOfBytes,
+		out ulong lpTotalNumberOfFreeBytes);
+	
 	static int Main() {
 		// Список дисків, які можуть бути флешками
 		string[] removableDrives = Directory.GetLogicalDrives();
@@ -50,14 +52,14 @@ class Program {
 					
 					Console.WriteLine($"Копіювання з {sourceDir} в {destinationPath}...");
 					
-					if (!HasEnoughSpaceForCopy(driveInfo, sourceDir)) {
+					if (!HasEnoughSpaceForCopy(destinationBasePath, sourceDir)) {
 						// перші спроби з формаим
 						var br = new wpfBuilder("Window").WinSize(500);
-						br.R.Add(out Label _, $"Недостатньо місця на диску для копіювання з {sourceDir}.");
+						br.R.Add(out Label _, $"Недостатньо місця на диску для копіювання в {destinationBasePath}.");
 						br.R.AddOkCancel();
 						br.End();
 						br.Window.Topmost = true;
-						if (!br.ShowDialog()) return 0;
+						br.ShowDialog();
 						return 0;
 					} else {
 						CopyDirectory(sourceDir, destinationPath);
@@ -87,14 +89,19 @@ class Program {
 	}
 	
 	// Функція для перевірки, чи достатньо вільного місця для копіювання
-	private static bool HasEnoughSpaceForCopy(DriveInfo driveInfo, string sourceDir) {
+	private static bool HasEnoughSpaceForCopy(string destinationBasePath, string sourceDir) {
 		long totalSizeToCopy = GetDirectorySize(sourceDir);
-		long availableSpace = driveInfo.AvailableFreeSpace;
-		
-		Console.WriteLine($"Загальний розмір файлів для копіювання: {FormatSize(totalSizeToCopy)}");
-		Console.WriteLine($"Доступний простір на диску: {FormatSize(availableSpace)}");
-		
-		return availableSpace >= totalSizeToCopy;
+		double freeSpaceInGB = 0.0;
+		if (GetDiskFreeSpaceEx(destinationBasePath, out ulong freeBytesAvailable, out _, out _)) {
+			// Перетворюємо байти в гігабайти
+			freeSpaceInGB = freeBytesAvailable / (1024.0 * 1024 * 1024);
+			Console.WriteLine($"Загальний розмір файлів для копіювання поточної флешки: {FormatSize(totalSizeToCopy)}");
+			Console.WriteLine($"Доступний простір на диску: {freeSpaceInGB:F2} GB");
+			return freeSpaceInGB <= totalSizeToCopy;
+		} else {
+			Console.WriteLine("Error retrieving disk space information.");
+			return false;
+		}
 	}
 	
 	// Функція для обчислення загального розміру директорії
