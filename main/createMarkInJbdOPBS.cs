@@ -1,5 +1,5 @@
 
-/* 16,09,2024_v1.7.2
+/* 21,09,2024_v1.7.2
 * id обрізаються, щоб поміститись в рядок 
 * функція додавання до дати дні(60) підходить для мін
 * 200 та 300 рахуються та вписуються самі
@@ -88,29 +88,38 @@ namespace CSLight {
 		// поле шар
 		static void deltaLayerWindow(string targetClassJbd, string commentJbd) {
 			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1");
+			// (01) постійні схов. і укриття
+			string[] permanentStorage = {
+					"Укриття","Склад майна","Склад БК","Склад ПММ",
+					"Польовий склад майна","Польовий склад БК","Польовий склад ПММ"
+				};
+			// (02) антени, камери...
+			string[] antennaCamera = {
+					"Мережеве обладнання","Камера","Антена"9
+				};
 			// поле шар
 			var layerWindow = w.Elm["web:GROUPING", prop: "@data-testid=select-layer"].Find(3);
 			if (layerWindow != null) {
 				layerWindow.PostClick(scroll: 250);
 				//. перевірка, запис
+				for (int i = 0; i < permanentStorage.Length; i++) {
+					if (permanentStorage[i].Contains(targetClassJbd)) {
+						layerWindow.SendKeys("Ctrl+A", "!Пост", "Enter");
+						return;
+					}
+				}
+				for (int i = 0; i < antennaCamera.Length; i++) {
+					if (antennaCamera[i].Contains(targetClassJbd)) {
+						layerWindow.SendKeys("Ctrl+A", "!антени", "Enter");
+						return;
+					}
+				}
 				switch (targetClassJbd) {
 				case "Міна":
 					layerWindow.SendKeys("Ctrl+A", "!11", "Enter");
 					break;
 				case "Загородження":
 					layerWindow.SendKeys("Ctrl+A", "!11", "Enter");
-					break;
-				case "Укриття":
-					layerWindow.SendKeys("Ctrl+A", "!Пост", "Enter");
-					break;
-				case "Мережеве обладнання":
-					layerWindow.SendKeys("Ctrl+A", "!антени", "Enter");
-					break;
-				case "Камера":
-					layerWindow.SendKeys("Ctrl+A", "!антени", "Enter");
-					break;
-				case "Антена":
-					layerWindow.SendKeys("Ctrl+A", "!антени", "Enter");
 					break;
 				case "Бліндаж":
 					layerWindow.SendKeys("Ctrl+A", "!07", "Enter");
@@ -136,9 +145,10 @@ namespace CSLight {
 					}
 					break;
 				}
-				//..
 			}
+			//..
 		}
+		
 		// поле назва
 		static void deltaMarkName(string targetClassJbd, string dateJbd, string establishedJbd, string commentJbd, string twoHundredth, string threeHundredth) {
 			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1");
