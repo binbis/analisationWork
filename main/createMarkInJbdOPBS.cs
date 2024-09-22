@@ -1,5 +1,5 @@
 
-/* 21,09,2024_v1.7.2
+/* 23,09,2024_v1.7.2
 * id обрізаються, щоб поміститись в рядок 
 * функція додавання до дати дні(60) підходить для мін
 * 200 та 300 рахуються та вписуються самі
@@ -11,8 +11,8 @@ using System.Windows.Controls;
 namespace CSLight {
 	class Program {
 		static void Main() {
-			opt.key.KeySpeed = 45;
-			opt.key.TextSpeed = 30;
+			opt.key.KeySpeed = 65;
+			opt.key.TextSpeed = 45;
 			
 			keys.send("Shift+Space*2"); //виділяємо весь рядок
 			wait.ms(100);
@@ -32,49 +32,47 @@ namespace CSLight {
 			string twoHundredth = parts[25]; // 200
 			string threeHundredth = parts[26]; // 300
 			string combatLogId = parts[33]; // 1725666514064
-			// шлях до папки з ід цілі
-			string pathToServerFiles = @"\\Sng-4\аеророзвідка\(2) Результативні вильоти + нарізки";
 			// шлях до папки з ід повідомленням
-			string pathTo_combatLogId = @"\\SNG-8-sh\CombatLog";
+			//string pathTo_combatLogId = @"\\SNG-8-sh\CombatLog";
 			// перетворення дати до формату дельти
 			string dateDeltaFormat = dateJbd.Replace('.', '/');
 			// основне вікно
+			clipboard.clear();
 			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1").Activate();
 			goToMain();
-			wait.ms(250);
+			wait.ms(600);
 			deltaLayerWindow(targetClassJbd, commentJbd);
-			wait.ms(250);
+			wait.ms(600);
 			deltaMarkName(targetClassJbd, dateJbd, establishedJbd, commentJbd, twoHundredth, threeHundredth);
-			wait.ms(250);
+			wait.ms(600);
 			deltaDateLTimeWindow(dateDeltaFormat, timeJbd);
-			wait.ms(250);
+			wait.ms(600);
 			deltaNumberOfnumberWindow(twoHundredth, threeHundredth);
-			wait.ms(250);
+			wait.ms(600);
 			deltaCombatCapabilityWindow(targetClassJbd, establishedJbd, commentJbd);
-			wait.ms(250);
+			wait.ms(600);
 			deltaIdentificationWindow(targetClassJbd, establishedJbd, commentJbd);
-			wait.ms(250);
+			wait.ms(600);
 			deltaReliabilityWindow();
-			wait.ms(250);
+			wait.ms(600);
 			deltaFlyeye();
-			wait.ms(250);
+			wait.ms(600);
 			deltaIdPurchaseText(idTargetJbd);
-			wait.ms(250);
+			wait.ms(600);
 			deltaCommentContents(targetClassJbd, dateJbd, timeJbd, crewTeamJbd, establishedJbd, commentJbd);
-			wait.ms(250);
+			wait.ms(950);
 			deltaAdditionalFields(idTargetJbd, targetClassJbd);
-			wait.ms(250);
+			wait.ms(950);
 			deltaGeografPlace(targetClassJbd, establishedJbd, commentJbd);
-			wait.ms(250);
-			if (targetClassJbd.Contains("Міна")) {
-				wait.ms(250);
-				deltaImportFiles(idTargetJbd, pathToServerFiles, combatLogId, pathTo_combatLogId);
-			} else if (combatLogId.Length > 6) {
-				deltaImportFiles(idTargetJbd, pathToServerFiles, combatLogId, pathTo_combatLogId);
+			wait.ms(600);
+			/*
+			if (combatLogId.Length > 6) {
+				deltaImportFiles(combatLogId, pathTo_combatLogId);
 			} else {
 				goToMain();
 			}
-			clipboard.clear();
+			*/
+			goToMain();
 		}
 		static string datePlasDays(string date) {
 			// Перетворюємо рядок дати у DateTime
@@ -95,7 +93,7 @@ namespace CSLight {
 				};
 			// (02) антени, камери...
 			string[] antennaCamera = {
-					"Мережеве обладнання","Камера","Антена"9
+					"Мережеве обладнання","Камера","Антена"
 				};
 			// поле шар
 			var layerWindow = w.Elm["web:GROUPING", prop: "@data-testid=select-layer"].Find(3);
@@ -148,7 +146,6 @@ namespace CSLight {
 			}
 			//..
 		}
-		
 		// поле назва
 		static void deltaMarkName(string targetClassJbd, string dateJbd, string establishedJbd, string commentJbd, string twoHundredth, string threeHundredth) {
 			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1");
@@ -228,7 +225,7 @@ namespace CSLight {
 				}
 				//..
 				nameOfMarkWindow.PostClick(scroll: 250);
-				nameOfMarkWindow.SendKeys("Ctrl+A", "!" + markName);
+				keys.sendL("Ctrl+A", "!" + markName);
 			}
 			
 		}
@@ -239,12 +236,14 @@ namespace CSLight {
 			var dateDeltaWindow = w.Elm["web:TEXT", prop: "@data-testid=W"].Find();
 			if (dateDeltaWindow != null) {
 				dateDeltaWindow.PostClick(scroll: 250);
-				dateDeltaWindow.SendKeys("Ctrl+A", "!" + dateDeltaFormat);
+				keys.sendL("Ctrl+A", "!" + dateDeltaFormat);
 			}
+			wait.ms(400);
 			var timeDeltaWindow = w.Elm["web:TEXT", prop: "@data-testid=W-time-input"].Find();
 			if (dateDeltaWindow != null) {
 				timeDeltaWindow.PostClick(scroll: 250);
-				timeDeltaWindow.SendKeys("Ctrl+A", "!" + timeJbd, "Enter*2");
+				keys.sendL("Ctrl+A", "!" + timeJbd);
+				
 			}
 		}
 		// поле кількість
@@ -258,7 +257,7 @@ namespace CSLight {
 					counts = (twoHundredth.ToInt() + threeHundredth.ToInt());
 				}
 				numberOfnumberWindow.PostClick(scroll: 250);
-				numberOfnumberWindow.SendKeys("Ctrl+A", "!" + counts);
+				keys.sendL("Ctrl+A", "!" + counts);
 			}
 		}
 		// поле боєздатність
@@ -301,7 +300,7 @@ namespace CSLight {
 				}
 				//..
 				combatCapabilityWindow.PostClick(scroll: 250);
-				combatCapabilityWindow.SendKeys("Ctrl+A", "!" + fullaim, "Enter");
+				keys.sendL("Ctrl+A", "!" + fullaim, "Enter");
 			}
 		}
 		// ідетнифікація
@@ -316,7 +315,7 @@ namespace CSLight {
 					friendly = "дружній";
 					break;
 				case "Укриття":
-					if (establishedJbd.Contains("Знищ") || establishedJbd.Contains("знищ") || commentJbd.Contains("знищ")) {
+					if (establishedJbd.ToLower().Contains("Знищ") || commentJbd.ToLower().Contains("знищ")) {
 						friendly = "відом";
 					} else {
 						friendly = "воро";
@@ -327,7 +326,7 @@ namespace CSLight {
 					break;
 				}
 				identificationWindow.PostClick(scroll: 250);
-				identificationWindow.SendKeys("Ctrl+A", "!" + friendly, "Enter");
+				keys.sendL("Ctrl+A", "!" + friendly, "Enter");
 			}
 		}
 		// достовірність
@@ -338,6 +337,7 @@ namespace CSLight {
 			if (reliabilityWindow != null) {
 				reliabilityWindow.PostClick(scroll: 250);
 			}
+			wait.ms(400);
 			var certaintyWindow = w.Elm["web:RADIOBUTTON", "2", "@data-testid=reliability-key-2"].Find();
 			if (certaintyWindow != null) {
 				certaintyWindow.PostClick(scroll: 250);
@@ -351,7 +351,7 @@ namespace CSLight {
 			var typeOfSourceWindow = w.Elm["web:GROUPING", prop: "@data-testid=AD"].Find();
 			if (typeOfSourceWindow != null) {
 				typeOfSourceWindow.PostClick(scroll: 250);
-				typeOfSourceWindow.SendKeys("!" + flyeye, "Tab");
+				keys.sendL("!" + flyeye, "Tab");
 			}
 		}
 		// зауваження штабу - ід
@@ -361,7 +361,7 @@ namespace CSLight {
 			var idPurchaseWindow = w.Elm["web:TEXT", prop: "@data-testid=G", flags: EFFlags.HiddenToo].Find();
 			if (idPurchaseWindow != null) {
 				idPurchaseWindow.PostClick(scroll: 250);
-				idPurchaseWindow.SendKeys("Ctrl+A", "!" + idTargetJbd, "Enter");
+				keys.sendL("Ctrl+A", "!" + idTargetJbd, "Enter");
 			}
 		}
 		// коментар
@@ -425,7 +425,7 @@ namespace CSLight {
 				}
 				//..
 				commentWindow.PostClick(scroll: 250);
-				commentWindow.SendKeys("Ctrl+A", "!" + commentContents);
+				keys.sendL("Ctrl+A", "!" + commentContents);
 				// кнопка коментаря
 				var commentAsseptButton = w.Elm["web:BUTTON", prop: "@data-testid=comment-editing__button-save"].Find(1);
 				commentAsseptButton.PostClick(scroll: 250);
@@ -442,7 +442,7 @@ namespace CSLight {
 			var notesWindow = w.Elm["web:TEXT", prop: "@name=Примітки штабу"].Find(-1);
 			if (notesWindow != null) {
 				notesWindow.PostClick(scroll: 250);
-				notesWindow.SendKeys("Ctrl+A", "!" + idTargetJbd, "Enter");
+				keys.sendL("Ctrl+A", "!" + idTargetJbd, "Enter");
 			};
 			
 		}
@@ -462,44 +462,44 @@ namespace CSLight {
 						// колір жовтий - знищ
 						var placeColorYellowButton = w.Elm["web:BUTTON", prop: "@title=#ffeb3b"].Find(1);
 						placeColorYellowButton.PostClick(scroll: 250);
-						wait.ms(250);
+						wait.ms(600);
 						// відсоток прозрачності
 						var transpatentColorRange = w.Elm["web:SLIDER", prop: "@data-testid=slider"].Find(1);
 						transpatentColorRange.PostClick(scroll: 250);
 						transpatentColorRange.SendKeys("Left*5");
-						wait.ms(250);
+						wait.ms(600);
 					} else if (establishedJbd.Contains("Виявлено") || establishedJbd.Contains("Підтверджено") || establishedJbd.Contains("Спростовано")) {
 						if (commentJbd.ToLower().Contains("знищ") || commentJbd.ToLower().Contains("ураж")) {
 							// колір жовтий - знищ
 							var placeColorYellowButton = w.Elm["web:BUTTON", prop: "@title=#ffeb3b"].Find(1);
 							placeColorYellowButton.PostClick(scroll: 250);
-							wait.ms(250);
+							wait.ms(600);
 							// відсоток прозрачності
 							var transpatentColorRange = w.Elm["web:SLIDER", prop: "@data-testid=slider"].Find(1);
 							transpatentColorRange.PostClick(scroll: 250);
 							transpatentColorRange.SendKeys("Left*5");
-							wait.ms(250);
+							wait.ms(600);
 						} else {
 							//колір червоний - ворож
 							var placeColorRedButton = w.Elm["web:BUTTON", prop: "@title=#f44336"].Find(1);
 							placeColorRedButton.PostClick(scroll: 250);
-							wait.ms(250);
+							wait.ms(600);
 							// відсоток прозрачності
 							var transpatentColorRange = w.Elm["web:SLIDER", prop: "@data-testid=slider"].Find(1);
 							transpatentColorRange.PostClick(scroll: 250);
 							transpatentColorRange.SendKeys("Left*5");
-							wait.ms(250);
+							wait.ms(600);
 						}
 					} else {
 						//колір червоний - ворож
 						var placeColorRedButton = w.Elm["web:BUTTON", prop: "@title=#f44336"].Find(1);
 						placeColorRedButton.PostClick(scroll: 250);
-						wait.ms(250);
+						wait.ms(600);
 						// відсоток прозрачності
 						var transpatentColorRange = w.Elm["web:SLIDER", prop: "@data-testid=slider"].Find(1);
 						transpatentColorRange.PostClick(scroll: 250);
 						transpatentColorRange.SendKeys("Left*5");
-						wait.ms(250);
+						wait.ms(600);
 					}
 					break;
 				//..
@@ -509,32 +509,15 @@ namespace CSLight {
 			}
 		}
 		// пошук файлів за ід для прикріплення (поки що не використовується)
-		static void deltaImportFiles(string idTargetJbd, string pathToServerFiles, string combatLogId, string pathTo_combatLogId) {
+		static void deltaImportFiles(string combatLogId, string pathTo_combatLogId) {
 			// основне вікно
 			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1");
 			// кнопка прикріплення
 			var deltaStickWindow = w.Elm["web:GROUPING", prop: new("desc=Прикріплення", "@title=Прикріплення")].Find(1);
 			deltaStickWindow.PostClick();
-			wait.ms(250);
+			wait.ms(600);
 			
-			if (idTargetJbd.Contains("Міна")) {
-				// Пошук папки з унікальним ID з жбд,
-				string foundFolderPath = FindFolderById(pathToServerFiles, idTargetJbd);
-				
-				// Якщо папка знайдена, відкрити її у File Explorer
-				if (foundFolderPath != null) {
-					Process.Start("explorer.exe", foundFolderPath);
-				} else {
-					// перші спроби з формаим
-					var b = new wpfBuilder("Window").WinSize(400);
-					b.R.Add(out Label _, $"Папку з ID {idTargetJbd} не знайдено.");
-					b.R.AddOkCancel();
-					b.Window.Topmost = true;
-					b.End();
-					// show dialog. Exit if closed not with the OK button.
-					if (!b.ShowDialog()) return;
-				}
-			} else if (combatLogId.Length > 6) {
+			if (combatLogId.Length > 6) {
 				// Пошук папки з унікальним ID, виключаючи #recycle
 				string foundFolderPath = FindFolderById(pathTo_combatLogId, combatLogId);
 				
@@ -552,16 +535,15 @@ namespace CSLight {
 					if (!b.ShowDialog()) return;
 				}
 			}
-			
 		}
 		static void goToMain() {
 			// основне вікно
 			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1");
 			// повернення на основне вікно
-			wait.ms(250);
+			wait.ms(600);
 			var mainFilds = w.Elm["web:GROUPING", prop: new("desc=Основні поля", "@title=Основні поля")].Find(1);
 			mainFilds.PostClick();
-			wait.ms(250);
+			wait.ms(600);
 		}
 		// обрізка до 19 символів в рядку
 		static string TrimString(string str, int maxLength) {
