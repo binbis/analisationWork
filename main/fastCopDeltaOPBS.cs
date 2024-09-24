@@ -1,5 +1,5 @@
 /**
-11,09,2024_v3.1.1
+25,09,2024_v3.1.2
 0. відкрий дельту в окремій вкладці та вікні, (!не міняй вкладку!), можеш звернути це вікно
 1. виділяєш текст де є координати mgrs, типу delta-google, google-maps без букв, уск-2000
 - спершу шукає mgrs, якщо не знаходить, прибирає усе окрім цифр, ком та крапок
@@ -38,10 +38,9 @@ namespace CSLight {
 				e.PostClick(100);
 				e.SendKeys("Ctrl+A", "!" + clipTextTry, "Enter");
 			} else {
-				// прибрати усе окрім цифр крапки та коми
-				clipText = Regex.Replace(clipText, @"[^0-9,.]", "");
+				// прибрати усе окрім цифр крапки, коми та пробілів
+				clipText = Regex.Replace(clipText.Trim(), @"[^0-9,. ]", "");
 				// додати пробіл між половиною рядка
-				//clipText = clipText.Insert(clipText.Length / 2, " ");
 				Clipboard.SetText(clipText);
 				// Знаходить та активує вікно якщо воно звернуте 
 				var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1").Activate();
