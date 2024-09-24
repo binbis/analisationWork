@@ -1,5 +1,5 @@
 
-/* 23,09,2024_v1.7.2
+/* 25,09,2024_v1.7.2
 * id обрізаються, щоб поміститись в рядок 
 * функція додавання до дати дні(60) підходить для мін
 * 200 та 300 рахуються та вписуються самі
@@ -33,7 +33,7 @@ namespace CSLight {
 			string threeHundredth = parts[26]; // 300
 			string combatLogId = parts[33]; // 1725666514064
 			// шлях до папки з ід повідомленням
-			//string pathTo_combatLogId = @"\\SNG-8-sh\CombatLog";
+			string pathTo_combatLogId = @"\\SNG-8-sh\CombatLog";
 			// перетворення дати до формату дельти
 			string dateDeltaFormat = dateJbd.Replace('.', '/');
 			// основне вікно
@@ -65,14 +65,13 @@ namespace CSLight {
 			wait.ms(950);
 			deltaGeografPlace(targetClassJbd, establishedJbd, commentJbd);
 			wait.ms(600);
-			/*
 			if (combatLogId.Length > 6) {
 				deltaImportFiles(combatLogId, pathTo_combatLogId);
 			} else {
 				goToMain();
 			}
-			*/
-			goToMain();
+			
+			//goToMain();
 		}
 		static string datePlasDays(string date) {
 			// Перетворюємо рядок дати у DateTime
@@ -93,7 +92,7 @@ namespace CSLight {
 				};
 			// (02) антени, камери...
 			string[] antennaCamera = {
-					"Мережеве обладнання","Камера","Антена"
+					"Мережеве обладнання","Камера","Антена","РЕБ (окопні)"
 				};
 			// поле шар
 			var layerWindow = w.Elm["web:GROUPING", prop: "@data-testid=select-layer"].Find(3);
@@ -217,6 +216,8 @@ namespace CSLight {
 							markName = targetClassJbd + " (схов.)";
 						} else if (commentJbd.ToLower().Contains("стоїт")) {
 							markName = targetClassJbd + " (стоїть)";
+						} else {
+							markName = targetClassJbd;
 						}
 					} else {
 						markName = targetClassJbd;
@@ -238,7 +239,7 @@ namespace CSLight {
 				dateDeltaWindow.PostClick(scroll: 250);
 				keys.sendL("Ctrl+A", "!" + dateDeltaFormat);
 			}
-			wait.ms(400);
+			wait.ms(800);
 			var timeDeltaWindow = w.Elm["web:TEXT", prop: "@data-testid=W-time-input"].Find();
 			if (dateDeltaWindow != null) {
 				timeDeltaWindow.PostClick(scroll: 250);
@@ -427,6 +428,7 @@ namespace CSLight {
 				commentWindow.PostClick(scroll: 250);
 				keys.sendL("Ctrl+A", "!" + commentContents);
 				// кнопка коментаря
+				wait.ms(400);
 				var commentAsseptButton = w.Elm["web:BUTTON", prop: "@data-testid=comment-editing__button-save"].Find(1);
 				commentAsseptButton.PostClick(scroll: 250);
 			}
@@ -518,6 +520,16 @@ namespace CSLight {
 			wait.ms(600);
 			
 			if (combatLogId.Length > 6) {
+				// злови помилку
+				Process.Start("explorer.exe", pathTo_combatLogId);
+				wait.ms(450);
+				var explorerWindow = wnd.find(1, null, "CabinetWClass").Activate();
+				var searchWindowsLine = explorerWindow.Elm["TEXT", prop: "class=Microsoft.UI.Content.DesktopChildSiteBridge", navig: "parent next3"].Find(1);
+				wait.ms(3000);
+				searchWindowsLine.PostClick();
+				searchWindowsLine.SendKeys("!", combatLogId);
+				//keys.sendL("!", combatLogId);
+				/*
 				// Пошук папки з унікальним ID, виключаючи #recycle
 				string foundFolderPath = FindFolderById(pathTo_combatLogId, combatLogId);
 				
@@ -534,6 +546,7 @@ namespace CSLight {
 					// show dialog. Exit if closed not with the OK button.
 					if (!b.ShowDialog()) return;
 				}
+				*/
 			}
 		}
 		static void goToMain() {
