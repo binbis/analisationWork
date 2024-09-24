@@ -1,4 +1,4 @@
-/*16.09.2024_0.0.1
+/*25.09.2024_0.0.2
 * на основі обраної назви виставляється боєздатність
 * якщо дата відсутня ставить поточну
 * якщо є прикріплення додасть перше ім'я в кінець коментару
@@ -80,23 +80,23 @@ class Program {
 		
 		// основне вікно
 		var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1").Activate();
-		wait.ms(250);
+		wait.ms(600);
 		nameAttachmentMessage = nameWithAttachments(nameAttachmentMessage);
-		wait.ms(250);
+		wait.ms(600);
 		goToMain();
-		wait.ms(250);
+		wait.ms(600);
 		deltaMarkName(nameDeltaFill);
-		wait.ms(250);
+		wait.ms(600);
 		clipData_time = dateTimeDeltaCombine(clipData_time);
-		wait.ms(250);
+		wait.ms(600);
 		deltaNumberOfnumberWindow();
-		wait.ms(250);
+		wait.ms(600);
 		deltaCombatCapabilityWindow(nameDeltaFill);
-		wait.ms(250);
+		wait.ms(600);
 		deltaReliabilityWindow();
-		wait.ms(250);
+		wait.ms(600);
 		deltaFlyeye();
-		wait.ms(250);
+		wait.ms(600);
 		commentDeltaAreaFill(clipData_time, commentDeltaFill, nameAttachmentMessage);
 		clipboard.clear();
 		
@@ -108,7 +108,7 @@ class Program {
 		var nameOfMarkWindow = w.Elm["web:TEXT", prop: new("@data-testid=T")].Find();
 		if (nameOfMarkWindow != null) {
 			nameOfMarkWindow.PostClick(scroll: 250);
-			nameOfMarkWindow.SendKeys("Ctrl+A", "!" + nameDeltaFill);
+			keys.sendL("Ctrl+A", "!" + nameDeltaFill);
 		}
 	}
 	// повертає ім'я з прикріплення якщо є
@@ -134,7 +134,7 @@ class Program {
 		if (numberOfnumberWindow != null) {
 			int counts = 1;
 			numberOfnumberWindow.PostClick(scroll: 250);
-			numberOfnumberWindow.SendKeys("Ctrl+A", "!" + counts);
+			keys.sendL("Ctrl+A", "!" + counts);
 		}
 	}
 	// поле боєздатність
@@ -153,7 +153,7 @@ class Program {
 				fullaim = "повніс";
 			}
 			combatCapabilityWindow.PostClick(scroll: 250);
-			combatCapabilityWindow.SendKeys("Ctrl+A", "!" + fullaim, "Enter");
+			keys.sendL("Ctrl+A", "!" + fullaim, "Enter");
 		}
 	}
 	// вписує сьоднішню дату або бере ту яка вже є 
@@ -166,7 +166,7 @@ class Program {
 			clipData_time = copyDeltaDate.Value;
 		} else {
 			copyDeltaDate.PostClick(250);
-			copyDeltaDate.SendKeys("!" + clipData_time);
+			keys.sendL("!" + clipData_time);
 		}
 		clipData_time = clipData_time.Replace("/", ".");
 		// час
@@ -181,6 +181,7 @@ class Program {
 		if (reliabilityWindow != null) {
 			reliabilityWindow.PostClick(scroll: 250);
 		}
+		wait.ms(400);
 		var certaintyWindow = w.Elm["web:RADIOBUTTON", "2", "@data-testid=reliability-key-2"].Find();
 		if (certaintyWindow != null) {
 			certaintyWindow.PostClick(scroll: 250);
@@ -194,28 +195,28 @@ class Program {
 		var typeOfSourceWindow = w.Elm["web:GROUPING", prop: "@data-testid=AD"].Find();
 		if (typeOfSourceWindow != null) {
 			typeOfSourceWindow.PostClick(scroll: 250);
-			typeOfSourceWindow.SendKeys("!" + flyeye, "Tab");
+			keys.sendL("!" + flyeye, "Tab");
 		}
 	}
 	// поле коментар
 	static void commentDeltaAreaFill(string clipData_time, string commentDeltaFill, string nameAttachmentMessage) {
+		// формую комент
 		string commentNew = string.Empty;
+		commentNew += $"{clipData_time} -{commentDeltaFill} {nameAttachmentMessage}";
 		// основне вікно
 		var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1");
 		// поле - коментар
 		var deltaCommentWindow = w.Elm["web:TEXT", prop: "@data-testid=comment-editing__textarea"].Find(1);
 		deltaCommentWindow.PostClick(scroll: 250);
-		// формую комент
-		commentNew += $"{clipData_time} -{commentDeltaFill} {nameAttachmentMessage}";
-		deltaCommentWindow.SendKeys("Ctrl+A", "!" + commentNew);
+		keys.sendL("Ctrl+A", "!" + commentNew);
 	}
 	static void goToMain() {
 		// основне вікно
 		var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1").Activate();
 		// повернення на основне вікно
-		wait.ms(250);
+		wait.ms(600);
 		var mainFilds = w.Elm["web:GROUPING", prop: new("desc=Основні поля", "@title=Основні поля")].Find(1);
 		mainFilds.PostClick();
-		wait.ms(250);
+		wait.ms(600);
 	}
 };
