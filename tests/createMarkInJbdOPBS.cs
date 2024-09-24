@@ -131,9 +131,7 @@ namespace CSLight {
 					layerWindow.SendKeys("Ctrl+A", "!09", "Enter");
 					break;
 				default:
-					if (targetClassJbd.ToLower().Contains("cклад")) {
-						layerWindow.SendKeys("Ctrl+A", "!Пост", "Enter");
-					} else if (commentJbd.ToLower().Contains("рус") || commentJbd.ToLower().Contains("рух")) {
+					if (commentJbd.ToLower().Contains("рус") || commentJbd.ToLower().Contains("рух")) {
 						layerWindow.SendKeys("Ctrl+A", "!06", "Enter");
 					} else if (commentJbd.ToLower().Contains("виходи") || commentJbd.ToLower().Contains("вогнева позиція")) {
 						layerWindow.SendKeys("Ctrl+A", "!05", "Enter");
