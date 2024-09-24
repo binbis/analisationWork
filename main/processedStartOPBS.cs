@@ -8,8 +8,8 @@ using System.Windows.Controls;
 
 class Program {
 	static void Main() {
-		opt.key.KeySpeed = 65;
-		opt.key.TextSpeed = 45;
+		opt.key.KeySpeed = 25;
+		opt.key.TextSpeed = 20;
 		string[] examlpeComment = {
 			" спостерігали постріл артилерії. Спостерігали з дрону",
 			" спостерігали постріл артилерії. Спостерігали з крила",
@@ -33,39 +33,35 @@ class Program {
 			"Пікап (схов.)",
 			"Позашляховик (схов.)",
 			"САУ (схов.)",
-			"Гаубиця (схов.)",
-			"Гаубиця (знищ.)",
-			"Гаубиця (ураж.)",
-			"Гаубиця ? (ураж.)",
-			"Гаубиця ? (знищ.)",
-			"ББМ (схов.)",
-			"ББМ ? (знищ.)",
-			"ББМ ? (ураж.)",
-			"ББМ (знищ.)",
-			"ББМ (ураж.)",
-			"Танк ? (знищ.)",
-			"Танк (знищ.)",
-			"Танк (ураж.)",
-			"Урал (ураж.)",
-			"Урал (знищ.)",
-			"МТ-ЛБ (ураж.)",
-			"МТ-ЛБ (знищ.)",
-			"БМП (ураж.)",
-			"БМП (знищ.)",
-			"БМП ? (знищ.)",
-			"БМП ? (ураж.)",
-			"БТР (ураж.)",
-			"БТР (знищ.)",
-			"БТР ? (знищ.)",
-			"БТР ? (ураж.)",
-			"ВАТ (знищ.)",
-			"ВАТ (ураж.)",
-			"Буханка (знищ.)",
-			"Буханка (ураж.)",
+			"Гаубиця (схов.)","Гаубиця (знищ.)","Гаубиця (ураж.)","Гаубиця ? (ураж.)","Гаубиця ? (знищ.)",
+			"ББМ (схов.)","ББМ ? (знищ.)","ББМ ? (ураж.)","ББМ (знищ.)","ББМ (ураж.)",
+			"Танк (схов.)","Танк ? (знищ.)","Танк (знищ.)","Танк (ураж.)",
+			"Урал (схов.)","Урал (ураж.)","Урал (знищ.)",
+			"МТ-ЛБ (схов.)","МТ-ЛБ (ураж.)","МТ-ЛБ (знищ.)",
+			"БМП (схов.)","БМП (ураж.)","БМП (знищ.)","БМП ? (знищ.)","БМП ? (ураж.)",
+			"БТР (схов.)","БТР (ураж.)","БТР (знищ.)","БТР ? (знищ.)","БТР ? (ураж.)",
+			"ВАТ (схов.)","ВАТ (знищ.)","ВАТ (ураж.)",
+			"Буханка (схов.)","Буханка (знищ.)","Буханка (ураж.)",
+			"Укриття (схов.)","Укриття (ураж.)","Укриття (знищ.)",
+			"Склад майна","Склад майна (ураж.)","Склад майна (знищ.)",
+			"Склад БК","Склад БК (ураж.)","Склад БК (знищ.)",
+			"Склад ПММ","Склад ПММ (ураж.)","Склад ПММ (знищ.)",
+			"Польовий склад майна","Польовий склад майна (знищ.)",
+			"Польовий склад БК","Польовий склад БК (знищ.)",
+			"Польовий склад ПММ",
+			"Мережеве обладнання",
+			"Камера","Камера (знищ.)",
+			"Антена","Антена (знищ.)",
+			"РЕБ (окопні)","РЕБ (окопні) (ураж.)","РЕБ (окопні) (знищ.)",
+			"Міна","Загородження",
+			"Бліндаж","Бліндаж (ураж.)","Бліндаж (знищ.)",
+			"Т. вильоту дронів","Т. вильоту дронів (ураж.)","Т. вильоту дронів (знищ.)",
+			"Скупчення ОС",
+			"Міномет","Міномет (ураж.)","Міномет (знищ.)",
 		};
 		
 		var b = new wpfBuilder("Window").WinSize(400);
-		b.R.Add("Назва", out ComboBox recomendName).Items(examlpeNames).Select(9);
+		b.R.Add("Назва", out ComboBox recomendName).Items(examlpeNames).Editable().Select(9);
 		b.R.Add("Комент", out ComboBox recomendComment).Items(examlpeComment).Select(3);
 		b.R.AddOkCancel();
 		b.Window.Topmost = true;
@@ -85,6 +81,8 @@ class Program {
 		wait.ms(600);
 		goToMain();
 		wait.ms(600);
+		deltaLayerWindow(nameDeltaFill);
+		wait.ms(600);
 		deltaMarkName(nameDeltaFill);
 		wait.ms(600);
 		clipData_time = dateTimeDeltaCombine(clipData_time);
@@ -100,6 +98,68 @@ class Program {
 		commentDeltaAreaFill(clipData_time, commentDeltaFill, nameAttachmentMessage);
 		clipboard.clear();
 		
+	}
+	static void deltaLayerWindow(string nameDeltaFill) {
+		var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1");
+		// (01) постійні схов. і укриття
+		string[] permanentStorage = {
+					"Укриття","Склад майна","Склад БК","Склад ПММ",
+					"Польовий склад майна","Польовий склад БК","Польовий склад ПММ"
+				};
+		// (02) антени, камери...
+		string[] antennaCamera = {
+					"Мережеве обладнання","Камера","Антена","РЕБ (окопні)"
+				};
+		// поле шар
+		var layerWindow = w.Elm["web:GROUPING", prop: "@data-testid=select-layer"].Find(3);
+		if (layerWindow != null) {
+			layerWindow.PostClick(scroll: 250);
+			//. перевірка, запис
+			for (int i = 0; i < permanentStorage.Length; i++) {
+				if (permanentStorage[i].Contains(nameDeltaFill)) {
+					layerWindow.SendKeys("Ctrl+A", "!Пост", "Enter");
+					return;
+				}
+			}
+			for (int i = 0; i < antennaCamera.Length; i++) {
+				if (antennaCamera[i].Contains(nameDeltaFill)) {
+					layerWindow.SendKeys("Ctrl+A", "!антени", "Enter");
+					return;
+				}
+			}
+			switch (nameDeltaFill) {
+			case "Міна":
+				layerWindow.SendKeys("Ctrl+A", "!11", "Enter");
+				break;
+			case "Загородження":
+				layerWindow.SendKeys("Ctrl+A", "!11", "Enter");
+				break;
+			case "Бліндаж":
+				layerWindow.SendKeys("Ctrl+A", "!07", "Enter");
+				break;
+			case "Т. вильоту дронів":
+				layerWindow.SendKeys("Ctrl+A", "!08", "Enter");
+				break;
+			case "Скупчення ОС":
+				layerWindow.SendKeys("Ctrl+A", "!10", "Enter");
+				break;
+			case "Міномет":
+				layerWindow.SendKeys("Ctrl+A", "!09", "Enter");
+				break;
+			default:
+				/*
+				if (commentJbd.ToLower().Contains("рус") || commentJbd.ToLower().Contains("рух")) {
+					layerWindow.SendKeys("Ctrl+A", "!06", "Enter");
+				} else if (commentJbd.ToLower().Contains("виходи") || commentJbd.ToLower().Contains("вогнева позиція")) {
+					layerWindow.SendKeys("Ctrl+A", "!05", "Enter");
+				} else {
+					layerWindow.SendKeys("Ctrl+A", "!04", "Enter");
+				}
+				*/
+				break;
+			}
+		}
+		//..
 	}
 	// поле назва
 	static void deltaMarkName(string nameDeltaFill) {
