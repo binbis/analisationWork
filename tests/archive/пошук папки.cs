@@ -58,3 +58,45 @@ static string FindFolderById(string rootPath, string folderId) {
 	return null;
 }
 //..
+
+//. швидке відкриття папки по ід повідомлення
+
+using System.Windows;
+using System.Windows.Controls;
+
+namespace CSLight {
+	class Program {
+		static void Main() {
+			opt.key.KeySpeed = 25;
+			opt.key.TextSpeed = 30;
+			
+			keys.send("Shift+Space*2"); //виділяємо весь рядок
+			wait.ms(100);
+			keys.send("Ctrl+C"); //копіюємо код
+			wait.ms(100);
+			string clipboardData = clipboard.copy(); // зчитуємо буфер обміну
+			string[] parts = clipboardData.Split('\t'); // Розділяємо рядок на частини
+			// Присвоюємо змінним відповідні значення
+			
+			string combatLogId = parts[33]; // 1725666514064
+			// шлях до папки з ід повідомленням
+			string pathTo_combatLogId = @"\\SNG-8-sh\CombatLog\Donbas_Combat_Log";
+			
+			if (combatLogId.Length > 6) {
+				deltaImportFiles(combatLogId, pathTo_combatLogId);
+			}
+		}
+		// пошук файлів за ід для прикріплення (поки що не використовується)
+		static void deltaImportFiles(string combatLogId, string pathTo_combatLogId) {
+			
+			if (combatLogId.Length > 6) {
+				
+				Process.Start("explorer.exe", Path.Combine(pathTo_combatLogId, combatLogId));
+				wait.ms(450);
+				
+				
+			}
+		}
+	}
+}
+//..

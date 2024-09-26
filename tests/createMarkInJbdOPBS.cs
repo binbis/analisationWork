@@ -243,7 +243,7 @@ namespace CSLight {
 			var timeDeltaWindow = w.Elm["web:TEXT", prop: "@data-testid=W-time-input"].Find();
 			if (dateDeltaWindow != null) {
 				timeDeltaWindow.PostClick(scroll: 250);
-				keys.sendL("Ctrl+A", "!" + timeJbd);
+				keys.sendL("Ctrl+A", "!" + timeJbd, "Enter");
 				
 			}
 		}
@@ -374,14 +374,14 @@ namespace CSLight {
 		// мобільність
 		static void deltaMobilityLine(string targetClassJbd) {
 			// Обмеженої прохідності
-			string[] limitedAccess = { "Авто", "Вантажівка" };
+			string[] limitedAccess = { "Авто", "Вантажівка", "Паливозаправник" };
 			string obmezheno = "обмежено";
 			// Позашляховик
-			string[] pozashlyakhovyk = { "Мотоцикл", "ББМ / МТ-ЛБ", "БМП", "РЕБ (техніка)" };
+			string[] pozashlyakhovyk = { "Мотоцикл", "ББМ / МТ-ЛБ", "БМП", "РЕБ (техніка)", "БТР", "Військ. баггі" };
 			string suv = "позашлях";
-			// Гусеничний
-			string[] caterpillar = { "Танк", "ЗРК", "РСЗВ", "САУ" };
-			string husenychnyy = "гусеничний";
+			// Гусеничний - колісний
+			string[] caterpillar = { "Танк", "ЗРК", "РСЗВ", "САУ", "КШМ", "Інж. техніка" };
+			string husenychnyy = "комбінов";
 			//На буксирі
 			string[] towTruck = { "Гармата", "Гаубиця" };
 			string buksyri = "буксир";

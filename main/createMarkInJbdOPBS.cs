@@ -12,7 +12,7 @@ using System.Windows.Controls;
 namespace CSLight {
 	class Program {
 		static void Main() {
-			opt.key.KeySpeed = 75;
+			opt.key.KeySpeed = 65;
 			opt.key.TextSpeed = 45;
 			
 			keys.send("Shift+Space*2"); //виділяємо весь рядок
@@ -41,33 +41,33 @@ namespace CSLight {
 			clipboard.clear();
 			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1").Activate();
 			goToMain();
-			wait.ms(900);
+			wait.ms(875);
 			deltaLayerWindow(targetClassJbd, commentJbd);
-			wait.ms(900);
+			wait.ms(875);
 			deltaMarkName(targetClassJbd, dateJbd, establishedJbd, commentJbd, twoHundredth, threeHundredth);
-			wait.ms(900);
+			wait.ms(875);
 			deltaDateLTimeWindow(dateDeltaFormat, timeJbd);
-			wait.ms(900);
+			wait.ms(875);
 			deltaNumberOfnumberWindow(twoHundredth, threeHundredth);
-			wait.ms(900);
+			wait.ms(875);
 			deltaCombatCapabilityWindow(targetClassJbd, establishedJbd, commentJbd);
-			wait.ms(900);
+			wait.ms(875);
 			deltaIdentificationWindow(targetClassJbd, establishedJbd, commentJbd);
-			wait.ms(900);
+			wait.ms(875);
 			deltaReliabilityWindow();
-			wait.ms(900);
+			wait.ms(875);
 			deltaFlyeye();
-			wait.ms(900);
+			wait.ms(875);
 			deltaIdPurchaseText(idTargetJbd);
-			wait.ms(900);
+			wait.ms(875);
 			deltaMobilityLine(targetClassJbd);
-			wait.ms(900);
+			wait.ms(875);
 			deltaCommentContents(targetClassJbd, dateJbd, timeJbd, crewTeamJbd, establishedJbd, commentJbd);
 			wait.ms(950);
 			deltaAdditionalFields(idTargetJbd, targetClassJbd);
 			wait.ms(950);
 			deltaGeografPlace(targetClassJbd, establishedJbd, commentJbd);
-			wait.ms(900);
+			wait.ms(875);
 			
 			if (combatLogId.Length > 6) {
 				deltaImportFiles(combatLogId, pathTo_combatLogId);
@@ -243,7 +243,7 @@ namespace CSLight {
 			var timeDeltaWindow = w.Elm["web:TEXT", prop: "@data-testid=W-time-input"].Find();
 			if (dateDeltaWindow != null) {
 				timeDeltaWindow.PostClick(scroll: 250);
-				keys.sendL("Ctrl+A", "!" + timeJbd);
+				keys.sendL("Ctrl+A", "!" + timeJbd, "Enter");
 				
 			}
 		}
@@ -374,14 +374,14 @@ namespace CSLight {
 		// мобільність
 		static void deltaMobilityLine(string targetClassJbd) {
 			// Обмеженої прохідності
-			string[] limitedAccess = { "Авто", "Вантажівка" };
+			string[] limitedAccess = { "Авто", "Вантажівка", "Паливозаправник" };
 			string obmezheno = "обмежено";
 			// Позашляховик
-			string[] pozashlyakhovyk = { "Мотоцикл", "ББМ / МТ-ЛБ", "БМП", "РЕБ (техніка)" };
+			string[] pozashlyakhovyk = { "Мотоцикл", "ББМ / МТ-ЛБ", "БМП", "РЕБ (техніка)", "БТР", "Військ. баггі" };
 			string suv = "позашлях";
-			// Гусеничний
-			string[] caterpillar = { "Танк", "ЗРК", "РСЗВ", "САУ" };
-			string husenychnyy = "гусеничний";
+			// Гусеничний - колісний
+			string[] caterpillar = { "Танк", "ЗРК", "РСЗВ", "САУ", "КШМ", "Інж. техніка" };
+			string husenychnyy = "комбінов";
 			//На буксирі
 			string[] towTruck = { "Гармата", "Гаубиця" };
 			string buksyri = "буксир";
@@ -520,44 +520,44 @@ namespace CSLight {
 						// колір жовтий - знищ
 						var placeColorYellowButton = w.Elm["web:BUTTON", prop: "@title=#ffeb3b"].Find(1);
 						placeColorYellowButton.PostClick(scroll: 250);
-						wait.ms(900);
+						wait.ms(875);
 						// відсоток прозрачності
 						var transpatentColorRange = w.Elm["web:SLIDER", prop: "@data-testid=slider"].Find(1);
 						transpatentColorRange.PostClick(scroll: 250);
 						transpatentColorRange.SendKeys("Left*5");
-						wait.ms(900);
+						wait.ms(875);
 					} else if (establishedJbd.Contains("Виявлено") || establishedJbd.Contains("Підтверджено") || establishedJbd.Contains("Спростовано")) {
 						if (commentJbd.ToLower().Contains("знищ") || commentJbd.ToLower().Contains("ураж")) {
 							// колір жовтий - знищ
 							var placeColorYellowButton = w.Elm["web:BUTTON", prop: "@title=#ffeb3b"].Find(1);
 							placeColorYellowButton.PostClick(scroll: 250);
-							wait.ms(900);
+							wait.ms(875);
 							// відсоток прозрачності
 							var transpatentColorRange = w.Elm["web:SLIDER", prop: "@data-testid=slider"].Find(1);
 							transpatentColorRange.PostClick(scroll: 250);
 							transpatentColorRange.SendKeys("Left*5");
-							wait.ms(900);
+							wait.ms(875);
 						} else {
 							//колір червоний - ворож
 							var placeColorRedButton = w.Elm["web:BUTTON", prop: "@title=#f44336"].Find(1);
 							placeColorRedButton.PostClick(scroll: 250);
-							wait.ms(900);
+							wait.ms(875);
 							// відсоток прозрачності
 							var transpatentColorRange = w.Elm["web:SLIDER", prop: "@data-testid=slider"].Find(1);
 							transpatentColorRange.PostClick(scroll: 250);
 							transpatentColorRange.SendKeys("Left*5");
-							wait.ms(900);
+							wait.ms(875);
 						}
 					} else {
 						//колір червоний - ворож
 						var placeColorRedButton = w.Elm["web:BUTTON", prop: "@title=#f44336"].Find(1);
 						placeColorRedButton.PostClick(scroll: 250);
-						wait.ms(900);
+						wait.ms(875);
 						// відсоток прозрачності
 						var transpatentColorRange = w.Elm["web:SLIDER", prop: "@data-testid=slider"].Find(1);
 						transpatentColorRange.PostClick(scroll: 250);
 						transpatentColorRange.SendKeys("Left*5");
-						wait.ms(900);
+						wait.ms(875);
 					}
 					break;
 				//..
@@ -573,7 +573,7 @@ namespace CSLight {
 			// кнопка прикріплення
 			var deltaStickWindow = w.Elm["web:GROUPING", prop: new("desc=Прикріплення", "@title=Прикріплення")].Find(1);
 			deltaStickWindow.PostClick();
-			wait.ms(900);
+			wait.ms(875);
 			if (combatLogId.Length > 6) {
 				// злови помилку
 				Process.Start("explorer.exe", Path.Combine(pathTo_combatLogId, combatLogId));
@@ -583,10 +583,10 @@ namespace CSLight {
 			// основне вікно
 			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1");
 			// повернення на основне вікно
-			wait.ms(900);
+			wait.ms(875);
 			var mainFilds = w.Elm["web:GROUPING", prop: new("desc=Основні поля", "@title=Основні поля")].Find(1);
 			mainFilds.PostClick();
-			wait.ms(900);
+			wait.ms(875);
 		}
 		// обрізка до 19 символів в рядку
 		static string TrimString(string str, int maxLength) {
