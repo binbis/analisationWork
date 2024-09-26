@@ -1,4 +1,4 @@
-/** 19.09.2024
+/** 27.09.2024
 створення для створення папок з Планування excel
 1. вибираєш ячейку
 2. жмеш скрипт
@@ -48,30 +48,32 @@ class Program {
 			
 			// Формування кінцевого рядка
 			string folderName = $"{crew} - {point} ({formattedTeam})";
-			
-			// Створити повний шлях до кореневої папки на робочому столі
-			string parentFolderPath = Path.Combine(desktopPath, date);
-			
-			// Перевірити, чи існує батьківська папка
-			if (!Directory.Exists(parentFolderPath)) {
-				// Створити нову батьківську папку
-				Directory.CreateDirectory(parentFolderPath);
-				Console.WriteLine("Коренева папка створена успішно.");
-			} else {
-				Console.WriteLine("Коренева папка вже існує.");
+			if (folderName.Length > 16) {
+				// Створити повний шлях до кореневої папки на робочому столі
+				string parentFolderPath = Path.Combine(desktopPath, date);
+				
+				// Перевірити, чи існує батьківська папка
+				if (!Directory.Exists(parentFolderPath)) {
+					// Створити нову батьківську папку
+					Directory.CreateDirectory(parentFolderPath);
+					Console.WriteLine("Коренева папка створена успішно.");
+				} else {
+					Console.WriteLine("Коренева папка вже існує.");
+				}
+				
+				// Створити повний шлях до вкладеної папки
+				string childFolderPath = Path.Combine(parentFolderPath, folderName);
+				
+				// Перевірити, чи існує вкладена папка
+				if (!Directory.Exists(childFolderPath)) {
+					// Створити нову вкладену папку
+					Directory.CreateDirectory(childFolderPath);
+					Console.WriteLine("Вкладена папка створена успішно.");
+				} else {
+					Console.WriteLine("Вкладена папка вже існує.");
+				}
 			}
 			
-			// Створити повний шлях до вкладеної папки
-			string childFolderPath = Path.Combine(parentFolderPath, folderName);
-			
-			// Перевірити, чи існує вкладена папка
-			if (!Directory.Exists(childFolderPath)) {
-				// Створити нову вкладену папку
-				Directory.CreateDirectory(childFolderPath);
-				Console.WriteLine("Вкладена папка створена успішно.");
-			} else {
-				Console.WriteLine("Вкладена папка вже існує.");
-			}
 		}
 	}
 }
