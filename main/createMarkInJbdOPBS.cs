@@ -1,8 +1,9 @@
 
-/* 25,09,2024_v1.7.2
+/* 26,09,2024_v1.7.3
 * id обрізаються, щоб поміститись в рядок 
 * функція додавання до дати дні(60) підходить для мін
 * 200 та 300 рахуються та вписуються самі
+* відкриття апаки за ід повідомлення 1-3 секунди
 
 */
 using System.Windows;
@@ -11,8 +12,8 @@ using System.Windows.Controls;
 namespace CSLight {
 	class Program {
 		static void Main() {
-			opt.key.KeySpeed = 65;
-			opt.key.TextSpeed = 40;
+			opt.key.KeySpeed = 75;
+			opt.key.TextSpeed = 45;
 			
 			keys.send("Shift+Space*2"); //виділяємо весь рядок
 			wait.ms(100);
@@ -33,7 +34,7 @@ namespace CSLight {
 			string threeHundredth = parts[26]; // 300
 			string combatLogId = parts[33]; // 1725666514064
 			// шлях до папки з ід повідомленням
-			string pathTo_combatLogId = @"\\SNG-8-sh\CombatLog";
+			string pathTo_combatLogId = @"\\SNG-8-sh\CombatLog\Donbas_Combat_Log";
 			// перетворення дати до формату дельти
 			string dateDeltaFormat = dateJbd.Replace('.', '/');
 			// основне вікно
@@ -59,19 +60,20 @@ namespace CSLight {
 			wait.ms(900);
 			deltaIdPurchaseText(idTargetJbd);
 			wait.ms(900);
+			deltaMobilityLine(targetClassJbd);
+			wait.ms(900);
 			deltaCommentContents(targetClassJbd, dateJbd, timeJbd, crewTeamJbd, establishedJbd, commentJbd);
 			wait.ms(950);
 			deltaAdditionalFields(idTargetJbd, targetClassJbd);
 			wait.ms(950);
 			deltaGeografPlace(targetClassJbd, establishedJbd, commentJbd);
 			wait.ms(900);
+			
 			if (combatLogId.Length > 6) {
 				deltaImportFiles(combatLogId, pathTo_combatLogId);
 			} else {
 				goToMain();
 			}
-			
-			//goToMain();
 		}
 		static string datePlasDays(string date) {
 			// Перетворюємо рядок дати у DateTime
@@ -280,9 +282,9 @@ namespace CSLight {
 					break;
 				//..
 				default:
-					if (establishedJbd.Contains("Знищ") || establishedJbd.Contains("знищ")) {
+					if (establishedJbd.ToLower().Contains("знищ")) {
 						fullaim = "небо";
-					} else if (establishedJbd.Contains("Ураж") || establishedJbd.Contains("ураж")) {
+					} else if (establishedJbd.ToLower().Contains("ураж")) {
 						fullaim = "част";
 					} else if (establishedJbd.Contains("Виявлено")) {
 						if (commentJbd.ToLower().Contains("знищ")) {
@@ -293,7 +295,13 @@ namespace CSLight {
 							fullaim = "повніс";
 						}
 					} else {
-						fullaim = "повніс";
+						if (commentJbd.ToLower().Contains("знищ")) {
+							fullaim = "небо";
+						} else if (commentJbd.ToLower().Contains("ураж")) {
+							fullaim = "част";
+						} else {
+							fullaim = "повніс";
+						}
 					}
 					break;
 				}
@@ -314,7 +322,7 @@ namespace CSLight {
 					friendly = "дружній";
 					break;
 				case "Укриття":
-					if (establishedJbd.ToLower().Contains("Знищ") || commentJbd.ToLower().Contains("знищ")) {
+					if (establishedJbd.ToLower().Contains("знищ") || commentJbd.ToLower().Contains("знищ")) {
 						friendly = "відом";
 					} else {
 						friendly = "воро";
@@ -361,6 +369,56 @@ namespace CSLight {
 			if (idPurchaseWindow != null) {
 				idPurchaseWindow.PostClick(scroll: 250);
 				keys.sendL("Ctrl+A", "!" + idTargetJbd, "Enter");
+			}
+		}
+		// мобільність
+		static void deltaMobilityLine(string targetClassJbd) {
+			// Обмеженої прохідності
+			string[] limitedAccess = { "Авто", "Вантажівка" };
+			string obmezheno = "обмежено";
+			// Позашляховик
+			string[] pozashlyakhovyk = { "Мотоцикл", "ББМ / МТ-ЛБ", "БМП", "РЕБ (техніка)" };
+			string suv = "позашлях";
+			// Гусеничний
+			string[] caterpillar = { "Танк", "ЗРК", "РСЗВ", "САУ" };
+			string husenychnyy = "гусеничний";
+			//На буксирі
+			string[] towTruck = { "Гармата", "Гаубиця" };
+			string buksyri = "буксир";
+			
+			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1");
+			var mobileLine = w.Elm["web:GROUPING", prop: "@data-testid=select-ADR"].Find(-1);
+			if (mobileLine != null) {
+				mobileLine.PostClick(scroll: 250);
+				wait.ms(500);
+				// Обмеженої прохідності
+				for (int i = 0; i < limitedAccess.Length; i++) {
+					if (limitedAccess.Contains(targetClassJbd)) {
+						keys.sendL("Ctrl+A", "!" + obmezheno, "Enter");
+						return;
+					}
+				}
+				// Позашляховик
+				for (int i = 0; i < pozashlyakhovyk.Length; i++) {
+					if (pozashlyakhovyk.Contains(targetClassJbd)) {
+						keys.sendL("Ctrl+A", "!" + suv, "Enter");
+						return;
+					}
+				}
+				// Гусеничний
+				for (int i = 0; i < caterpillar.Length; i++) {
+					if (caterpillar.Contains(targetClassJbd)) {
+						keys.sendL("Ctrl+A", "!" + husenychnyy, "Enter");
+						return;
+					}
+				}
+				// На буксирі
+				for (int i = 0; i < towTruck.Length; i++) {
+					if (towTruck.Contains(targetClassJbd)) {
+						keys.sendL("Ctrl+A", "!" + buksyri, "Enter");
+						return;
+					}
+				}
 			}
 		}
 		// коментар
@@ -508,7 +566,7 @@ namespace CSLight {
 				}
 			}
 		}
-		// пошук файлів за ід для прикріплення (поки що не використовується)
+		// пошук файлів за ід для прикріплення
 		static void deltaImportFiles(string combatLogId, string pathTo_combatLogId) {
 			// основне вікно
 			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1");
@@ -516,35 +574,9 @@ namespace CSLight {
 			var deltaStickWindow = w.Elm["web:GROUPING", prop: new("desc=Прикріплення", "@title=Прикріплення")].Find(1);
 			deltaStickWindow.PostClick();
 			wait.ms(900);
-			
 			if (combatLogId.Length > 6) {
 				// злови помилку
-				Process.Start("explorer.exe", pathTo_combatLogId);
-				wait.ms(450);
-				var explorerWindow = wnd.find(1, null, "CabinetWClass").Activate();
-				var searchWindowsLine = explorerWindow.Elm["TEXT", prop: "class=Microsoft.UI.Content.DesktopChildSiteBridge", navig: "parent next3"].Find(1);
-				wait.ms(3000);
-				searchWindowsLine.PostClick();
-				searchWindowsLine.SendKeys("!", combatLogId);
-				//keys.sendL("!", combatLogId);
-				/*
-				// Пошук папки з унікальним ID, виключаючи #recycle
-				string foundFolderPath = FindFolderById(pathTo_combatLogId, combatLogId);
-				
-				// Якщо папка знайдена, відкрити її у File Explorer
-				if (foundFolderPath != null) {
-					Process.Start("explorer.exe", foundFolderPath);
-				} else {
-					// перші спроби з формаим
-					var b = new wpfBuilder("Window").WinSize(400);
-					b.R.Add(out Label _, $"Папку з ID {combatLogId} не знайдено.");
-					b.R.AddOkCancel();
-					b.Window.Topmost = true;
-					b.End();
-					// show dialog. Exit if closed not with the OK button.
-					if (!b.ShowDialog()) return;
-				}
-				*/
+				Process.Start("explorer.exe", Path.Combine(pathTo_combatLogId, combatLogId));
 			}
 		}
 		static void goToMain() {
@@ -571,61 +603,6 @@ namespace CSLight {
 			}
 			return str;
 		}
-		// Метод для пошуку папки за іменем folderId серед усіх папок, крім #recycle
-		static string FindFolderById(string rootPath, string folderId) {
-			try {
-				// Отримати всі підкаталоги за вказаним шляхом, виключаючи #recycle
-				var directories = Directory.GetDirectories(rootPath, "*", SearchOption.TopDirectoryOnly)
-										   .Where(d => Path.GetFileName(d) != "#recycle") // Виключаємо #recycle
-										   .OrderByDescending(d => d) // Сортуємо з кінця
-										   .ToArray();
-				
-				// Перевіряємо кожну з підкаталогів
-				foreach (string specificFolderPath in directories) {
-					// Перевіряємо наявність підкаталогів всередині папок (крім #recycle)
-					var subDirectories = Directory.GetDirectories(specificFolderPath, "*", SearchOption.AllDirectories)
-												  .OrderByDescending(d => d) // Сортуємо з кінця
-												  .ToArray();
-					
-					// Перевірка кожної підкаталогової папки
-					foreach (string directory in subDirectories) {
-						// Перевірка, чи назва папки збігається з folderId
-						if (Path.GetFileName(directory).Contains(folderId)) {
-							return directory; // Повертає шлях до знайденої папки
-						}
-					}
-				}
-			}
-			catch (UnauthorizedAccessException) {
-				// перші спроби з формаим
-				var b = new wpfBuilder("Window").WinSize(400);
-				b.R.Add(out Label _, "Немає доступу до деяких підкаталогів на сервері.");
-				b.R.AddOkCancel();
-				b.End();
-				b.Window.Topmost = true;
-				b.ShowDialog();
-			}
-			catch (DirectoryNotFoundException) {
-				// перші спроби з формаим
-				var b = new wpfBuilder("Window").WinSize(400);
-				b.R.Add(out Label _, "Шлях до серверної директорії не знайдено.");
-				b.R.AddOkCancel();
-				b.End();
-				b.Window.Topmost = true;
-				b.ShowDialog();
-			}
-			catch (IOException ex) {
-				// перші спроби з формаим
-				var b = new wpfBuilder("Window").WinSize(400);
-				b.R.Add(out Label _, $"Помилка доступу до файлової системи: {ex.Message}");
-				b.R.AddOkCancel();
-				b.End();
-				b.Window.Topmost = true;
-				b.ShowDialog();
-			}
-			
-			// Повернути null, якщо папку не знайдено
-			return null;
-		}
+		
 	}
 }
