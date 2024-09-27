@@ -1,4 +1,4 @@
-/**27.09.2024
+/** 19.09.2024
 створення для створення папок з Планування excel
 1. вибираєш ячейку
 2. жмеш скрипт
@@ -48,7 +48,7 @@ class Program {
 			string formattedTeam = string.Join(", ", teamMembers);
 			
 			// Змінна, що змінюється після кожної операції
-			string textName = $"{crew}\t Т.в. {point}\t {area} \n\n\t {formattedTeam}\n";
+			string textName = $"{crew}\t {point}\t {area}\t {formattedTeam}\n";
 			if (textName.Length > 16) {
 				minimalEcspashClipbload += textName;
 			}
