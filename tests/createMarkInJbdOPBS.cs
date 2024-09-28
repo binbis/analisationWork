@@ -1,10 +1,10 @@
 
-/* 26,09,2024_v1.7.3
+/* 29,09,2024_v1.7.4
 * id обрізаються, щоб поміститись в рядок 
 * функція додавання до дати дні(60) підходить для мін
 * 200 та 300 рахуються та вписуються самі
 * відкриття апаки за ід повідомлення 1-3 секунди
-
+* координата в коментар та в географічне розташування з жбд
 */
 using System.Windows;
 using System.Windows.Controls;
@@ -29,6 +29,7 @@ namespace CSLight {
 			string whatDidJbd = parts[5]; // Мінування (можливо його видалю)
 			string targetClassJbd = parts[7]; // Міна/Вантажівка/...
 			string idTargetJbd = TrimString(parts[9], 19); // Міна 270724043
+			string mgrsCoords = parts[18]; // 37U CP 76420 45222
 			string establishedJbd = parts[24]; // Встановлено/Уражено/Промах/...
 			string twoHundredth = parts[25]; // 200
 			string threeHundredth = parts[26]; // 300
@@ -62,11 +63,11 @@ namespace CSLight {
 			wait.ms(600);
 			deltaMobilityLine(targetClassJbd);
 			wait.ms(600);
-			deltaCommentContents(targetClassJbd, dateJbd, timeJbd, crewTeamJbd, establishedJbd, commentJbd);
+			deltaCommentContents(targetClassJbd, dateJbd, timeJbd, crewTeamJbd, establishedJbd, commentJbd, mgrsCoords);
 			wait.ms(950);
 			deltaAdditionalFields(idTargetJbd, targetClassJbd);
 			wait.ms(950);
-			deltaGeografPlace(targetClassJbd, establishedJbd, commentJbd);
+			deltaGeografPlace(targetClassJbd, establishedJbd, commentJbd, mgrsCoords);
 			wait.ms(600);
 			
 			if (combatLogId.Length > 6) {
@@ -236,13 +237,13 @@ namespace CSLight {
 			// поле дата / час
 			var dateDeltaWindow = w.Elm["web:TEXT", prop: "@data-testid=W"].Find();
 			if (dateDeltaWindow != null) {
-				dateDeltaWindow.PostClick(scroll: 250);
+				dateDeltaWindow.PostClick();
 				keys.sendL("Ctrl+A", "!" + dateDeltaFormat);
 			}
-			wait.ms(800);
+			wait.ms(600);
 			var timeDeltaWindow = w.Elm["web:TEXT", prop: "@data-testid=W-time-input"].Find();
 			if (dateDeltaWindow != null) {
-				timeDeltaWindow.PostClick(scroll: 250);
+				timeDeltaWindow.PostClick();
 				keys.sendL("Ctrl+A", "!" + timeJbd, "Enter");
 				
 			}
@@ -422,12 +423,12 @@ namespace CSLight {
 			}
 		}
 		// коментар
-		static void deltaCommentContents(string targetClassJbd, string dateJbd, string timeJbd, string crewTeamJbd, string establishedJbd, string commentJbd) {
+		static void deltaCommentContents(string targetClassJbd, string dateJbd, string timeJbd, string crewTeamJbd, string establishedJbd, string commentJbd, string mgrsCoords) {
 			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1").Activate();
 			// коментар
-			var commentWindow = w.Elm["web:TEXT", prop: new("@data-testid=comment-editing__textarea", "@name=text")].Find();
+			var commentWindow = w.Elm["web:TEXT", prop: new("@data-testid=comment-editing__textarea", "@name=text")].Find(-1);
 			if (commentWindow != null) {
-				string commentContents = dateJbd + " " + timeJbd + " - ";
+				string commentContents = $"{dateJbd} {timeJbd} - (  {mgrsCoords}  ) - ";
 				//. перевірка
 				switch (targetClassJbd) {
 				//. Міна
@@ -505,12 +506,13 @@ namespace CSLight {
 			
 		}
 		// Георафічне розташування
-		static void deltaGeografPlace(string targetClassJbd, string establishedJbd, string commentJbd) {
+		static void deltaGeografPlace(string targetClassJbd, string establishedJbd, string commentJbd, string mgrsCoords) {
 			//основне вікно
 			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1");
 			// Георафічне розташування
 			var geografPlaceWindow = w.Elm["web:GROUPING", prop: "@title=Географічне розташування"].Find();
 			geografPlaceWindow.PostClick(scroll: 250);
+			// Колір заливки
 			var deltaColorFills = w.Elm["web:STATICTEXT", "Колір заливки"].Find(-1);
 			if (deltaColorFills != null) {
 				switch (targetClassJbd) {
@@ -564,6 +566,13 @@ namespace CSLight {
 				default:
 					break;
 				}
+			}
+			// координата
+			var coordDeltaWindow = w.Elm["web:TEXT", prop: new("@data-testid=coordinates-input", "@name=point-coordinates")].Find(-1);
+			if (coordDeltaWindow != null) {
+				coordDeltaWindow.PostClick(scroll: 250);
+				keys.send("Ctrl+A", "!" + coordDeltaWindow);
+				keys.sendL();
 			}
 		}
 		// пошук файлів за ід для прикріплення
