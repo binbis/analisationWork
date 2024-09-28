@@ -359,7 +359,7 @@ namespace CSLight {
 			var typeOfSourceWindow = w.Elm["web:GROUPING", prop: "@data-testid=AD"].Find();
 			if (typeOfSourceWindow != null) {
 				typeOfSourceWindow.PostClick(scroll: 250);
-				keys.sendL("!" + flyeye, "Tab");
+				keys.sendL("Ctrl+A", "!" + flyeye, "Enter");
 			}
 		}
 		// зауваження штабу - ід
@@ -369,7 +369,7 @@ namespace CSLight {
 			var idPurchaseWindow = w.Elm["web:TEXT", prop: "@data-testid=G", flags: EFFlags.HiddenToo].Find();
 			if (idPurchaseWindow != null) {
 				idPurchaseWindow.PostClick(scroll: 250);
-				keys.sendL("Ctrl+A", "!" + idTargetJbd, "Enter");
+				keys.sendL("Ctrl+A", "!" + idTargetJbd);
 			}
 		}
 		// мобільність
@@ -388,8 +388,13 @@ namespace CSLight {
 			string buksyri = "буксир";
 			
 			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1");
+			w.Elm["web:GROUPING", prop: "@data-testid=select-ADR", navig: "pr"].Find(1);
 			var mobileLine = w.Elm["web:GROUPING", prop: "@data-testid=select-ADR"].Find(-1);
 			if (mobileLine != null) {
+				var checking = w.Elm["web:GROUPING", prop: "@data-testid=select-ADR", navig: "pr child"].Find(1);
+				if (checking.Name != "Мобільність") {
+					return;
+				}
 				mobileLine.PostClick(scroll: 250);
 				wait.ms(500);
 				// Обмеженої прохідності
@@ -426,7 +431,7 @@ namespace CSLight {
 		static void deltaCommentContents(string targetClassJbd, string dateJbd, string timeJbd, string crewTeamJbd, string establishedJbd, string commentJbd, string mgrsCoords) {
 			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1").Activate();
 			// коментар
-			var commentWindow = w.Elm["web:TEXT", prop: new("@data-testid=comment-editing__textarea", "@name=text")].Find(-1);
+			var commentWindow = w.Elm["web:TEXT", prop: "@data-testid=comment-editing__textarea"].Find(-1);
 			if (commentWindow != null) {
 				string commentContents = $"{dateJbd} {timeJbd} - (  {mgrsCoords}  ) - ";
 				//. перевірка
