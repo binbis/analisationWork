@@ -388,18 +388,18 @@ namespace CSLight {
 			string buksyri = "буксир";
 			
 			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1");
-			w.Elm["web:GROUPING", prop: "@data-testid=select-ADR", navig: "pr"].Find(1);
+			w.Elm["web:GROUPING", prop: "@data-testid=select-ADR", navig: "pr"].Find(-1);
 			var mobileLine = w.Elm["web:GROUPING", prop: "@data-testid=select-ADR"].Find(-1);
 			if (mobileLine != null) {
-				var checking = w.Elm["web:GROUPING", prop: "@data-testid=select-ADR", navig: "pr child"].Find(1);
+				var checking = w.Elm["web:GROUPING", prop: "@data-testid=select-ADR", navig: "pr child"].Find(-1);
 				if (checking.Name != "Мобільність") {
 					return;
 				}
-				mobileLine.PostClick(scroll: 250);
 				wait.ms(500);
 				// Обмеженої прохідності
 				for (int i = 0; i < limitedAccess.Length; i++) {
 					if (limitedAccess.Contains(targetClassJbd)) {
+						mobileLine.PostClick(scroll: 250);
 						keys.sendL("Ctrl+A", "!" + obmezheno, "Enter");
 						return;
 					}
@@ -407,6 +407,7 @@ namespace CSLight {
 				// Позашляховик
 				for (int i = 0; i < pozashlyakhovyk.Length; i++) {
 					if (pozashlyakhovyk.Contains(targetClassJbd)) {
+						mobileLine.PostClick(scroll: 250);
 						keys.sendL("Ctrl+A", "!" + suv, "Enter");
 						return;
 					}
@@ -414,6 +415,7 @@ namespace CSLight {
 				// Гусеничний
 				for (int i = 0; i < caterpillar.Length; i++) {
 					if (caterpillar.Contains(targetClassJbd)) {
+						mobileLine.PostClick(scroll: 250);
 						keys.sendL("Ctrl+A", "!" + husenychnyy, "Enter");
 						return;
 					}
@@ -421,6 +423,7 @@ namespace CSLight {
 				// На буксирі
 				for (int i = 0; i < towTruck.Length; i++) {
 					if (towTruck.Contains(targetClassJbd)) {
+						mobileLine.PostClick(scroll: 250);
 						keys.sendL("Ctrl+A", "!" + buksyri, "Enter");
 						return;
 					}
