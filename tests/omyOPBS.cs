@@ -43,11 +43,11 @@ class Program {
 		searchWindow.PostClick();
 		keys.sendL("Ctrl+A", "!" + mgsrCoord, "Enter");
 		//.. 
-		wait.ms(6000);
+		wait.ms(1000);
 		//. ставимо мітку
 		var createButton =  w.Elm["web:LISTITEM", prop: "@data-testid=create-object"].Find(1);
 		createButton.PostClick(scroll: 250);
-		wait.ms(6000);
+		wait.ms(1000);
 		// обираємо мітку
 		var categorySearch = w.Elm["web:GROUPING", prop: "@data-testid=map-page", navig: "child2 child2 child2"].Find(1);
 		categorySearch.PostClick();
@@ -55,7 +55,7 @@ class Program {
 		wait.ms(800);
 		var bplaMark = w.Elm["web:LISTITEM", "Військовий повітряний засіб БПЛА вертикального зльоту / посадки (VT-UAV)"].Find(1);
 		bplaMark.PostClick();
-		wait.ms(8000);
+		wait.ms(1500);
 		//..
 		
 		//. шар

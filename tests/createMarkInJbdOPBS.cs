@@ -1,10 +1,9 @@
-
-/* 29,09,2024_v1.7.4
+/* 30,09,2024_v1.7.4
 * id обрізаються, щоб поміститись в рядок 
 * функція додавання до дати дні(60) підходить для мін
 * 200 та 300 рахуються та вписуються самі
 * відкриття апаки за ід повідомлення 1-3 секунди
-* координата в коментар та в географічне розташування з жбд
+* координата в коментар для укриття
 */
 using System.Windows;
 using System.Windows.Controls;
@@ -436,7 +435,7 @@ namespace CSLight {
 			// коментар
 			var commentWindow = w.Elm["web:TEXT", prop: "@data-testid=comment-editing__textarea"].Find(-1);
 			if (commentWindow != null) {
-				string commentContents = $"{dateJbd} {timeJbd} - (  {mgrsCoords}  ) - ";
+				string commentContents = $"{dateJbd} {timeJbd} - ";
 				//. перевірка
 				switch (targetClassJbd) {
 				//. Міна
@@ -456,6 +455,7 @@ namespace CSLight {
 				//..
 				//. Укриття
 				case "Укриття":
+					commentContents = $"{dateJbd} {timeJbd} - (  {mgrsCoords}  ) - ";
 					if (establishedJbd.ToLower().Contains("знищ")) {
 						commentContents += establishedJbd.ToLower() + " за допомогою " + crewTeamJbd;
 					} else if (establishedJbd.ToLower().Contains("ураж")) {
