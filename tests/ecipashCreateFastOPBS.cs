@@ -1,4 +1,4 @@
-/** 27.09.2024
+/** 30.09.2024
 створення для створення папок з Планування excel
 1. вибираєш ячейку
 2. жмеш скрипт
@@ -18,13 +18,11 @@ class Program {
 		//копіюємо код
 		keys.send("Ctrl+C");
 		wait.ms(200);
-		// Зчитуємо вміст з буферу обміну
+		// Зчитуємо вміст з буферу обміну та видаляємо усі лапки, переходи на нові рядки
 		string initialString = clipboard.copy().Replace("\"", "").Replace("'", "").Replace("\n", "").Replace("\r", "");
 		wait.ms(200);
 		keys.send("Up");
 		
-		// Видалення всіх лапок (подвійних та одинарних) та видалення переходів на нові рядки
-		//initialString = initialString.Replace("\"", "").Replace("'", "").Replace("\n", "").Replace("\r", "");
 		// Розбиваємо текст на масив чергувань
 		string[] shifts = initialString.Split(new[] { "ЧЕРГУВАННЯ" }, StringSplitOptions.RemoveEmptyEntries);
 		
@@ -57,8 +55,6 @@ class Program {
 					// Створити нову батьківську папку
 					Directory.CreateDirectory(parentFolderPath);
 					Console.WriteLine("Коренева папка створена успішно.");
-				} else {
-					Console.WriteLine("Коренева папка вже існує.");
 				}
 				
 				// Створити повний шлях до вкладеної папки
@@ -69,11 +65,8 @@ class Program {
 					// Створити нову вкладену папку
 					Directory.CreateDirectory(childFolderPath);
 					Console.WriteLine("Вкладена папка створена успішно.");
-				} else {
-					Console.WriteLine("Вкладена папка вже існує.");
 				}
 			}
-			
 		}
 	}
 }
