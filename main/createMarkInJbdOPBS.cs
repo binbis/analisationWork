@@ -12,8 +12,8 @@ using System.Windows.Controls;
 namespace CSLight {
 	class Program {
 		static void Main() {
-			opt.key.KeySpeed = 65;
-			opt.key.TextSpeed = 45;
+			opt.key.KeySpeed = 20;
+			opt.key.TextSpeed = 20;
 			
 			keys.send("Shift+Space*2"); //виділяємо весь рядок
 			wait.ms(100);
@@ -64,9 +64,9 @@ namespace CSLight {
 			deltaMobilityLine(targetClassJbd);
 			wait.ms(875);
 			deltaCommentContents(targetClassJbd, dateJbd, timeJbd, crewTeamJbd, establishedJbd, commentJbd, mgrsCoords);
-			wait.ms(950);
+			wait.ms(1500);
 			deltaAdditionalFields(idTargetJbd, targetClassJbd);
-			wait.ms(950);
+			wait.ms(1500);
 			deltaGeografPlace(targetClassJbd, establishedJbd, commentJbd, mgrsCoords);
 			wait.ms(875);
 			
@@ -345,7 +345,7 @@ namespace CSLight {
 			if (reliabilityWindow != null) {
 				reliabilityWindow.PostClick(scroll: 250);
 			}
-			wait.ms(400);
+			wait.ms(875);
 			var certaintyWindow = w.Elm["web:RADIOBUTTON", "2", "@data-testid=reliability-key-2"].Find();
 			if (certaintyWindow != null) {
 				certaintyWindow.PostClick(scroll: 250);
@@ -493,7 +493,7 @@ namespace CSLight {
 				commentWindow.PostClick(scroll: 250);
 				keys.sendL("Ctrl+A", "!" + commentContents);
 				// кнопка коментаря
-				wait.ms(400);
+				wait.ms(875);
 				var commentAsseptButton = w.Elm["web:BUTTON", prop: "@data-testid=comment-editing__button-save"].Find(1);
 				commentAsseptButton.PostClick(scroll: 250);
 			}
@@ -574,13 +574,6 @@ namespace CSLight {
 				default:
 					break;
 				}
-			}
-			// координата
-			var coordDeltaWindow = w.Elm["web:TEXT", prop: new("@data-testid=coordinates-input", "@name=point-coordinates")].Find(-1);
-			if (coordDeltaWindow != null) {
-				coordDeltaWindow.PostClick(scroll: 250);
-				keys.send("Ctrl+A", "!" + coordDeltaWindow);
-				keys.sendL();
 			}
 		}
 		// пошук файлів за ід для прикріплення
