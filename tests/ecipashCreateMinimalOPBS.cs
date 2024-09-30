@@ -1,4 +1,4 @@
-/** 19.09.2024
+/** 01.10.2024
 створення для створення папок з Планування excel
 1. вибираєш ячейку
 2. жмеш скрипт
@@ -26,7 +26,7 @@ class Program {
 		initialString = initialString.Replace("\"", "").Replace("'", "").Replace("\n", "").Replace("\r", "");
 		// Розбиваємо текст на масив чергувань
 		string[] shifts = initialString.Split(new[] { "ЧЕРГУВАННЯ" }, StringSplitOptions.RemoveEmptyEntries);
-		
+		minimalEcspashClipbload += Regex.Match(shifts[3], @"(\d{2}\.\d{2}\.\d{4})").Groups[1].Value.Trim()+"\n";
 		foreach (string elemets in shifts) {
 			
 			// Використання регулярних виразів для отримання потрібних частин рядка
