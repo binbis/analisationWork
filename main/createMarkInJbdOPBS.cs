@@ -14,7 +14,7 @@ namespace CSLight {
 	class Program {
 		static void Main() {
 			opt.key.KeySpeed = 60;
-			opt.key.TextSpeed = 35;
+			opt.key.TextSpeed = 30;
 			
 			keys.send("Shift+Space*2"); //виділяємо весь рядок
 			wait.ms(100);
@@ -22,6 +22,7 @@ namespace CSLight {
 			wait.ms(100);
 			string clipboardData = clipboard.copy(); // зчитуємо буфер обміну
 			string[] examlpelesItem = { "1. Заповнення мітки", "2. Створення РЕБ та РЕР мітки" };
+			// вікно діалогу
 			var b = new wpfBuilder("Window").WinSize(400);
 			b.R.Add("Назва", out ComboBox itemSelect).Items(examlpelesItem);
 			b.R.AddOkCancel();
@@ -123,11 +124,11 @@ namespace CSLight {
 			searchWindow.PostClick();
 			keys.sendL("Ctrl+A", "!" + mgsrCoord, "Enter");
 			//.. 
-			wait.ms(1000);
+			wait.ms(5000);
 			//. ставимо мітку
 			var createButton = w.Elm["web:LISTITEM", prop: "@data-testid=create-object"].Find(1);
 			createButton.PostClick(scroll: 250);
-			wait.ms(1000);
+			wait.ms(5000);
 			// обираємо мітку
 			var categorySearch = w.Elm["web:GROUPING", prop: "@data-testid=map-page", navig: "child2 child2 child2"].Find(1);
 			categorySearch.PostClick();
@@ -135,7 +136,7 @@ namespace CSLight {
 			wait.ms(800);
 			var bplaMark = w.Elm["web:LISTITEM", "Військовий повітряний засіб БПЛА вертикального зльоту / посадки (VT-UAV)"].Find(1);
 			bplaMark.PostClick();
-			wait.ms(1000);
+			wait.ms(5000);
 			//..
 			
 			//. шар
@@ -143,43 +144,43 @@ namespace CSLight {
 			layerWindow.PostClick(scroll: 300);
 			keys.sendL("Ctrl+A", "!" + layerName, "Enter");
 			//..
-			wait.ms(875);
+			wait.ms(400);
 			
 			//. назва
 			var nameWindow = w.Elm["web:TEXT", prop: "@data-testid=T"].Find(-1);
 			nameWindow.PostClick(scroll: 300);
 			keys.sendL("Ctrl+A", "!" + name, "Enter");
 			//..
-			wait.ms(875);
+			wait.ms(400);
 			//. час виявлення
 			// дата
 			var dateWindow = w.Elm["web:TEXT", prop: "@data-testid=W"].Find(-1);
 			dateWindow.PostClick();
 			keys.sendL("Ctrl+A", "!" + dateDeltaFormat);
-			wait.ms(875);
+			wait.ms(400);
 			// час
 			var dtimeWindow = w.Elm["web:TEXT", prop: "@data-testid=W-time-input"].Find(-1);
 			dtimeWindow.PostClick();
 			keys.sendL("Ctrl+A", "!" + timeJbd, "Enter");
 			//..
-			wait.ms(875);
+			wait.ms(400);
 			//. боєздатність
 			var capabilityWindow = w.Elm["web:GROUPING", prop: "@data-testid=operational-condition-select"].Find(-1);
 			capabilityWindow.PostClick(scroll: 250);
 			keys.sendL("Ctrl+A", "!" + capability, "Enter*2");
 			//..
-			wait.ms(875);
+			wait.ms(400);
 			//. ідентифікація
-			var identyficationWindow = w.Elm["web:GROUPING", prop: "@data-testid=select-HO"].Find(-1);
+			var identyficationWindow = w.Elm["STATICTEXT", "Ідентифікація", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA, navig: "next2"].Find(-1);/*image:WkJNG30IAAQib/e/D18VodkEkm7zSdEkLQAnHA8Ygyzg5AB+cDzYGWMMX6sVNHG+E01UHq2CISWzbtvW6NwdpP5G+JwaAA==*/
 			identyficationWindow.PostClick(scroll: 250);
 			keys.sendL("Ctrl+A", "!" + identyfication, "Enter");
 			//..
-			wait.ms(875);
+			wait.ms(400);
 			//. коментар
 			var commentWindow = w.Elm["web:TEXT", prop: "@data-testid=comment-editing__textarea"].Find(-1);
 			commentWindow.PostClick(scroll: 250);
 			keys.sendL("Ctrl+A", "!" + comment);
-			wait.ms(875);
+			wait.ms(400);
 			var acceptButton = w.Elm["web:BUTTON", prop: new("@data-testid=comment-editing__button-save", "@type=button")].Find(-1);
 			acceptButton.PostClick(scroll: 250);
 			//..
@@ -208,7 +209,7 @@ namespace CSLight {
 					"Мережеве обладнання","Камера","Антена","РЕБ (окопні)"
 				};
 			// поле шар
-			var layerWindow = w.Elm["web:GROUPING", prop: "@data-testid=select-layer"].Find(3);
+			var layerWindow = w.Elm["web:GROUPING", prop: "@data-testid=select-layer"].Find(-1);
 			if (layerWindow != null) {
 				layerWindow.PostClick(scroll: 250);
 				//. перевірка, запис
@@ -260,7 +261,7 @@ namespace CSLight {
 		static void deltaMarkName(string targetClassJbd, string dateJbd, string establishedJbd, string commentJbd, string twoHundredth, string threeHundredth) {
 			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1");
 			// поле назва
-			var nameOfMarkWindow = w.Elm["web:TEXT", prop: new("@data-testid=T")].Find();
+			var nameOfMarkWindow = w.Elm["web:TEXT", prop: new("@data-testid=T")].Find(-1);
 			if (nameOfMarkWindow != null) {
 				string markName = string.Empty;
 				//. формування, перевірка
@@ -302,18 +303,12 @@ namespace CSLight {
 				case "Скупчення ОС":
 					if (twoHundredth.Length > 0) {
 						markName = twoHundredth + " - 200";
-					} else {
-						markName = "Скупчення ОС";
-					};
+					}
 					if (threeHundredth.Length > 0) {
 						markName = threeHundredth + " - 300";
-					} else {
-						markName = "Скупчення ОС";
-					};
+					}
 					if (twoHundredth.Length > 0 && threeHundredth.Length > 0) {
 						markName = twoHundredth + " - 200, " + threeHundredth + " - 300";
-					} else {
-						markName = "Скупчення ОС";
 					}
 					break;
 				//..
@@ -351,13 +346,13 @@ namespace CSLight {
 		static void deltaDateLTimeWindow(string dateDeltaFormat, string timeJbd) {
 			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1");
 			// поле дата / час
-			var dateDeltaWindow = w.Elm["web:TEXT", prop: "@data-testid=W"].Find();
+			var dateDeltaWindow = w.Elm["web:TEXT", prop: "@data-testid=W"].Find(-1);
 			if (dateDeltaWindow != null) {
 				dateDeltaWindow.PostClick();
 				keys.sendL("Ctrl+A", "!" + dateDeltaFormat);
 			}
 			wait.ms(875);
-			var timeDeltaWindow = w.Elm["web:TEXT", prop: "@data-testid=W-time-input"].Find();
+			var timeDeltaWindow = w.Elm["web:TEXT", prop: "@data-testid=W-time-input"].Find(-1);
 			if (dateDeltaWindow != null) {
 				timeDeltaWindow.PostClick();
 				keys.sendL("Ctrl+A", "!" + timeJbd, "Enter");
@@ -368,7 +363,7 @@ namespace CSLight {
 		static void deltaNumberOfnumberWindow(string twoHundredth, string threeHundredth) {
 			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1");
 			// поле кількість
-			var numberOfnumberWindow = w.Elm["web:SPINBUTTON", prop: new("@data-testid=C", "@type=number")].Find();
+			var numberOfnumberWindow = w.Elm["web:SPINBUTTON", prop: new("@data-testid=C", "@type=number")].Find(-1);
 			if (numberOfnumberWindow != null) {
 				int counts = 1;
 				if (twoHundredth.Length > 0 || threeHundredth.Length > 0) {
@@ -382,7 +377,7 @@ namespace CSLight {
 		static void deltaCombatCapabilityWindow(string targetClassJbd, string establishedJbd, string commentJbd) {
 			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1");
 			// поле боєздатність
-			var combatCapabilityWindow = w.Elm["web:GROUPING", prop: "@data-testid=operational-condition-select"].Find();
+			var combatCapabilityWindow = w.Elm["web:GROUPING", prop: "@data-testid=operational-condition-select"].Find(-1);
 			//. перевірка
 			if (combatCapabilityWindow != null) {
 				string fullaim = string.Empty;
@@ -427,11 +422,11 @@ namespace CSLight {
 				keys.sendL("Ctrl+A", "!" + fullaim, "Enter");
 			}
 		}
-		// ідетнифікація
+		// ідентифікація
 		static void deltaIdentificationWindow(string targetClassJbd, string establishedJbd, string commentJbd) {
 			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1");
 			// ідетнифікація
-			var identificationWindow = w.Elm["web:GROUPING", prop: "@data-testid=select-HO"].Find();
+			var identificationWindow = w.Elm["STATICTEXT", "Ідентифікація", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA, navig: "next2"].Find(-1);/*image:WkJNG30IAAQib/e/D18VodkEkm7zSdEkLQAnHA8Ygyzg5AB+cDzYGWMMX6sVNHG+E01UHq2CISWzbtvW6NwdpP5G+JwaAA==*/
 			if (identificationWindow != null) {
 				string friendly = string.Empty;
 				switch (targetClassJbd) {
@@ -457,12 +452,12 @@ namespace CSLight {
 		static void deltaReliabilityWindow() {
 			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1");
 			// достовірність
-			var reliabilityWindow = w.Elm["web:RADIOBUTTON", "A", "@data-testid=reliability-key-A"].Find();
+			var reliabilityWindow = w.Elm["web:RADIOBUTTON", "A", "@data-testid=reliability-key-A"].Find(-1);
 			if (reliabilityWindow != null) {
 				reliabilityWindow.PostClick(scroll: 250);
 			}
 			wait.ms(875);
-			var certaintyWindow = w.Elm["web:RADIOBUTTON", "2", "@data-testid=reliability-key-2"].Find();
+			var certaintyWindow = w.Elm["web:RADIOBUTTON", "2", "@data-testid=reliability-key-2"].Find(-1);
 			if (certaintyWindow != null) {
 				certaintyWindow.PostClick(scroll: 250);
 			};
@@ -472,7 +467,7 @@ namespace CSLight {
 			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1");
 			// тип джерела
 			string flyeye = "пові";
-			var typeOfSourceWindow = w.Elm["web:GROUPING", prop: "@data-testid=AD"].Find();
+			var typeOfSourceWindow = w.Elm["web:GROUPING", prop: "@data-testid=AD"].Find(-1);
 			if (typeOfSourceWindow != null) {
 				typeOfSourceWindow.PostClick(scroll: 250);
 				keys.sendL("Ctrl+A", "!" + flyeye, "Enter");
@@ -482,7 +477,7 @@ namespace CSLight {
 		static void deltaIdPurchaseText(string idTargetJbd) {
 			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1");
 			// завйваження штабу ід
-			var idPurchaseWindow = w.Elm["web:TEXT", prop: "@data-testid=G", flags: EFFlags.HiddenToo].Find();
+			var idPurchaseWindow = w.Elm["web:TEXT", prop: "@data-testid=G", flags: EFFlags.HiddenToo].Find(-1);
 			if (idPurchaseWindow != null) {
 				idPurchaseWindow.PostClick(scroll: 250);
 				keys.sendL("Ctrl+A", "!" + idTargetJbd);
@@ -491,58 +486,48 @@ namespace CSLight {
 		// мобільність
 		static void deltaMobilityLine(string targetClassJbd) {
 			// Обмеженої прохідності
-			string[] limitedAccess = { "Авто", "Вантажівка", "Паливозаправник" };
+			string limitedAccess = "Авто Вантажівка Паливозаправник";
 			string obmezheno = "обмежено";
 			// Позашляховик
-			string[] pozashlyakhovyk = { "Мотоцикл", "ББМ / МТ-ЛБ", "БМП", "РЕБ (техніка)", "БТР", "Військ. баггі" };
+			string pozashlyakhovyk = "Мотоцикл ББМ / МТ-ЛБ БМП РЕБ (техніка) БТР Військ. баггі";
 			string suv = "позашлях";
 			// Гусеничний - колісний
-			string[] caterpillar = { "Танк", "ЗРК", "РСЗВ", "САУ", "КШМ", "Інж. техніка" };
+			string caterpillar = "Танк ЗРК РСЗВ САУ КШМ Інж. техніка";
 			string husenychnyy = "комбінов";
 			//На буксирі
-			string[] towTruck = { "Гармата", "Гаубиця" };
+			string towTruck = "Гармата Гаубиця";
 			string buksyri = "буксир";
 			
 			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1");
-			w.Elm["web:GROUPING", prop: "@data-testid=select-ADR", navig: "pr"].Find(-1);
-			var mobileLine = w.Elm["web:GROUPING", prop: "@data-testid=select-ADR"].Find(-1);
+			var mobileLine = w.Elm["STATICTEXT", "Мобільність", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA, navig: "next3"].Find(-1);/*image:WkJNG30IAAQib/e/D18VodkEkm4jE1SbVIETjgeMQRZwcgA/uB30jDGGr9UKmrm/E3VkLqWCISmybttGq7yzCP1N4HPqAA==*/
 			if (mobileLine != null) {
-				var checking = w.Elm["web:GROUPING", prop: "@data-testid=select-ADR", navig: "pr child"].Find(-1);
+				var checking = w.Elm["STATICTEXT", "Мобільність", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA].Find(-1);/*image:WkJNG30IAAQib/e/D18VodkEkm4jE1SbVIETjgeMQRZwcgA/uB30jDGGr9UKmrm/E3VkLqWCISmybttGq7yzCP1N4HPqAA==*/
 				if (checking.Name != "Мобільність") {
 					return;
 				}
-				wait.ms(500);
 				// Обмеженої прохідності
-				for (int i = 0; i < limitedAccess.Length; i++) {
-					if (limitedAccess.Contains(targetClassJbd)) {
-						mobileLine.PostClick(scroll: 250);
-						keys.sendL("Ctrl+A", "!" + obmezheno, "Enter");
-						return;
-					}
+				if (limitedAccess.Contains(targetClassJbd)) {
+					mobileLine.PostClick(scroll: 250);
+					keys.sendL("Ctrl+A", "!" + obmezheno, "Enter");
+					return;
 				}
 				// Позашляховик
-				for (int i = 0; i < pozashlyakhovyk.Length; i++) {
-					if (pozashlyakhovyk.Contains(targetClassJbd)) {
-						mobileLine.PostClick(scroll: 250);
-						keys.sendL("Ctrl+A", "!" + suv, "Enter");
-						return;
-					}
+				if (pozashlyakhovyk.Contains(targetClassJbd)) {
+					mobileLine.PostClick(scroll: 250);
+					keys.sendL("Ctrl+A", "!" + suv, "Enter");
+					return;
 				}
 				// Гусеничний
-				for (int i = 0; i < caterpillar.Length; i++) {
-					if (caterpillar.Contains(targetClassJbd)) {
-						mobileLine.PostClick(scroll: 250);
-						keys.sendL("Ctrl+A", "!" + husenychnyy, "Enter");
-						return;
-					}
+				if (caterpillar.Contains(targetClassJbd)) {
+					mobileLine.PostClick(scroll: 250);
+					keys.sendL("Ctrl+A", "!" + husenychnyy, "Enter");
+					return;
 				}
 				// На буксирі
-				for (int i = 0; i < towTruck.Length; i++) {
-					if (towTruck.Contains(targetClassJbd)) {
-						mobileLine.PostClick(scroll: 250);
-						keys.sendL("Ctrl+A", "!" + buksyri, "Enter");
-						return;
-					}
+				if (towTruck.Contains(targetClassJbd)) {
+					mobileLine.PostClick(scroll: 250);
+					keys.sendL("Ctrl+A", "!" + buksyri, "Enter");
+					return;
 				}
 			}
 		}
