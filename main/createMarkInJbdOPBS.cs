@@ -1,10 +1,11 @@
 
-/* 30,09,2024_v1.7.4
+/* 01,10,2024_v1.7.5
 * id обрізаються, щоб поміститись в рядок 
 * функція додавання до дати дні(60) підходить для мін
 * 200 та 300 рахуються та вписуються самі
-* відкриття апаки за ід повідомлення 1-3 секунди
+* відкриття папки за ід повідомлення 1-3 секунди (бабмасік)
 * координата в коментар для укриття
+* розділено функціонал, заповнення мітки окремо від створення та заповнення мітки для реб-рер
 */
 using System.Windows;
 using System.Windows.Controls;
@@ -12,14 +13,33 @@ using System.Windows.Controls;
 namespace CSLight {
 	class Program {
 		static void Main() {
-			opt.key.KeySpeed = 50;
-			opt.key.TextSpeed = 30;
+			opt.key.KeySpeed = 60;
+			opt.key.TextSpeed = 35;
 			
 			keys.send("Shift+Space*2"); //виділяємо весь рядок
 			wait.ms(100);
 			keys.send("Ctrl+C"); //копіюємо код
 			wait.ms(100);
 			string clipboardData = clipboard.copy(); // зчитуємо буфер обміну
+			string[] examlpelesItem = { "1. Заповнення мітки", "2. Створення РЕБ та РЕР мітки" };
+			var b = new wpfBuilder("Window").WinSize(400);
+			b.R.Add("Назва", out ComboBox itemSelect).Items(examlpelesItem);
+			b.R.AddOkCancel();
+			b.Window.Topmost = true;
+			b.End();
+			// show dialog. Exit if closed not with the OK button.
+			if (!b.ShowDialog()) return;
+			
+			if (itemSelect.Text.Contains("1.")) {
+				fillMarkWithJBD(clipboardData);
+			}
+			if (itemSelect.Text.Contains("2.")) {
+				createREBandRER(clipboardData);
+			}
+		}
+		// тіло для заповнення мітки
+		static void fillMarkWithJBD(string clipboardData) {
+			
 			string[] parts = clipboardData.Split('\t'); // Розділяємо рядок на частини
 			// Присвоюємо змінним відповідні значення
 			string dateJbd = parts[0]; // 27.07.2024
@@ -76,6 +96,96 @@ namespace CSLight {
 				goToMain();
 			}
 		}
+		// тіло для створення мітки з подавленням від РЕБ та РЕР
+		static void createREBandRER(string clipboardData) {
+			string[] parts = clipboardData.Split('\t'); // Розділяємо рядок на частини
+			
+			// Присвоюємо змінним відповідні значення
+			string dateJbd = parts[4]; // 27.07.2024
+			// перетворення дати до формату дельти
+			string dateDeltaFormat = dateJbd.Replace('.', '/');
+			string timeJbd = parts[5]; // 00:40
+			string mgrsX = parts[8];
+			string mgrsY = parts[9];
+			string mgsrCoord = $"{mgrsX}{mgrsY}";
+			string layerName = "схована техніка";
+			string name = "FPV (Подавлено)";
+			string capability = "небо";
+			string identyfication = "ворож";
+			string comment = $"{dateJbd} {timeJbd} - подавлено та знищено засобами роти РЕБ 414 ОПБС";
+			string bplaName = "вертикального зльоту";
+			
+			// основне вікно
+			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1").Activate();
+			
+			//. перехід по корам
+			var searchWindow = w.Elm["web:COMBOBOX", prop: new("@aria-label=Пошук", "@placeholder=Знайти адресу або координату")].Find(1);
+			searchWindow.PostClick();
+			keys.sendL("Ctrl+A", "!" + mgsrCoord, "Enter");
+			//.. 
+			wait.ms(1000);
+			//. ставимо мітку
+			var createButton = w.Elm["web:LISTITEM", prop: "@data-testid=create-object"].Find(1);
+			createButton.PostClick(scroll: 250);
+			wait.ms(1000);
+			// обираємо мітку
+			var categorySearch = w.Elm["web:GROUPING", prop: "@data-testid=map-page", navig: "child2 child2 child2"].Find(1);
+			categorySearch.PostClick();
+			keys.sendL("Ctrl+A", "!" + bplaName);
+			wait.ms(800);
+			var bplaMark = w.Elm["web:LISTITEM", "Військовий повітряний засіб БПЛА вертикального зльоту / посадки (VT-UAV)"].Find(1);
+			bplaMark.PostClick();
+			wait.ms(1000);
+			//..
+			
+			//. шар
+			var layerWindow = w.Elm["web:GROUPING", prop: "@data-testid=select-layer"].Find(-1);
+			layerWindow.PostClick(scroll: 300);
+			keys.sendL("Ctrl+A", "!" + layerName, "Enter");
+			//..
+			wait.ms(875);
+			
+			//. назва
+			var nameWindow = w.Elm["web:TEXT", prop: "@data-testid=T"].Find(-1);
+			nameWindow.PostClick(scroll: 300);
+			keys.sendL("Ctrl+A", "!" + name, "Enter");
+			//..
+			wait.ms(875);
+			//. час виявлення
+			// дата
+			var dateWindow = w.Elm["web:TEXT", prop: "@data-testid=W"].Find(-1);
+			dateWindow.PostClick();
+			keys.sendL("Ctrl+A", "!" + dateDeltaFormat);
+			wait.ms(875);
+			// час
+			var dtimeWindow = w.Elm["web:TEXT", prop: "@data-testid=W-time-input"].Find(-1);
+			dtimeWindow.PostClick();
+			keys.sendL("Ctrl+A", "!" + timeJbd, "Enter");
+			//..
+			wait.ms(875);
+			//. боєздатність
+			var capabilityWindow = w.Elm["web:GROUPING", prop: "@data-testid=operational-condition-select"].Find(-1);
+			capabilityWindow.PostClick(scroll: 250);
+			keys.sendL("Ctrl+A", "!" + capability, "Enter*2");
+			//..
+			wait.ms(875);
+			//. ідентифікація
+			var identyficationWindow = w.Elm["web:GROUPING", prop: "@data-testid=select-HO"].Find(-1);
+			identyficationWindow.PostClick(scroll: 250);
+			keys.sendL("Ctrl+A", "!" + identyfication, "Enter");
+			//..
+			wait.ms(875);
+			//. коментар
+			var commentWindow = w.Elm["web:TEXT", prop: "@data-testid=comment-editing__textarea"].Find(-1);
+			commentWindow.PostClick(scroll: 250);
+			keys.sendL("Ctrl+A", "!" + comment);
+			wait.ms(875);
+			var acceptButton = w.Elm["web:BUTTON", prop: new("@data-testid=comment-editing__button-save", "@type=button")].Find(-1);
+			acceptButton.PostClick(scroll: 250);
+			//..
+			
+		}
+		// додає вказану кількість днів до дати
 		static string datePlasDays(string date) {
 			// Перетворюємо рядок дати у DateTime
 			DateTime originalDate = DateTime.ParseExact(date, "dd.MM.yyyy", CultureInfo.InvariantCulture);
@@ -192,12 +302,18 @@ namespace CSLight {
 				case "Скупчення ОС":
 					if (twoHundredth.Length > 0) {
 						markName = twoHundredth + " - 200";
-					}
+					} else {
+						markName = "Скупчення ОС";
+					};
 					if (threeHundredth.Length > 0) {
 						markName = threeHundredth + " - 300";
-					}
+					} else {
+						markName = "Скупчення ОС";
+					};
 					if (twoHundredth.Length > 0 && threeHundredth.Length > 0) {
 						markName = twoHundredth + " - 200, " + threeHundredth + " - 300";
+					} else {
+						markName = "Скупчення ОС";
 					}
 					break;
 				//..
