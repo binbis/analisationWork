@@ -124,19 +124,19 @@ namespace CSLight {
 			searchWindow.PostClick();
 			keys.sendL("Ctrl+A", "!" + mgsrCoord, "Enter");
 			//.. 
-			wait.ms(1000);
+			wait.ms(2000);
 			//. ставимо мітку
 			var createButton = w.Elm["web:LISTITEM", prop: "@data-testid=create-object"].Find(1);
 			createButton.PostClick(scroll: 250);
-			wait.ms(1000);
+			wait.ms(2000);
 			// обираємо мітку
-			var categorySearch = w.Elm["web:GROUPING", prop: "@data-testid=map-page", navig: "child2 child2 child2"].Find(1);
+			var categorySearch = w.Elm["web:TEXT", "Пошук об'єктів", "@placeholder=Пошук об'єктів"].Find(1);/*image:WkJNG30IAAQib/e/D18VodkEU3Qz/YNqUgY6OJ7L1Q+3gJNILEgpxhjD12oFzY7vxBOVS2vBUCWLbk9njc47QWXpevusAg==*/
 			categorySearch.PostClick();
 			keys.sendL("Ctrl+A", "!" + bplaName);
-			wait.ms(800);
+			wait.ms(3000);
 			var bplaMark = w.Elm["web:LISTITEM", "Військовий повітряний засіб БПЛА вертикального зльоту / посадки (VT-UAV)"].Find(1);
 			bplaMark.PostClick();
-			wait.ms(1000);
+			wait.ms(2000);
 			//..
 			
 			//. шар

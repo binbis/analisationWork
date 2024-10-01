@@ -130,7 +130,7 @@ namespace CSLight {
 			createButton.PostClick(scroll: 250);
 			wait.ms(5000);
 			// обираємо мітку
-			var categorySearch = w.Elm["web:GROUPING", prop: "@data-testid=map-page", navig: "child2 child2 child2"].Find(1);
+			var categorySearch = w.Elm["web:TEXT", "Пошук об'єктів", "@placeholder=Пошук об'єктів"].Find(1);/*image:WkJNG30IAAQib/e/D18VodkEU3Qz/YNqUgY6OJ7L1Q+3gJNILEgpxhjD12oFzY7vxBOVS2vBUCWLbk9njc47QWXpevusAg==*/
 			categorySearch.PostClick();
 			keys.sendL("Ctrl+A", "!" + bplaName);
 			wait.ms(800);

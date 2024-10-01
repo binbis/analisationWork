@@ -24,14 +24,8 @@
 - відкрий ексель табличку `Планування ...`
 - перейди на сторінку `Звіт`
 - обери необхідну дату (опціонально)
-- обери 8-й рядок(клітинку)
+- обери 8-й рядок(клітинку) під колонкою А
 - жмеш `Ctrl+Alt+T`, магія почне працювати
-`дивись відео для наглядності`
-
-## _fastZonaHiroOPBS_
-    те, що так і не реалізували розробники дельти, швидке створення нової зони
-- деактивуєш усі вікна в дельті
-- жмеш `Alt+Shift+F`, магія почне працювати
 `дивись відео для наглядності`
 
 ## _flashDriveArchiverOPBS_
@@ -49,17 +43,9 @@
 - магія почне працювати
 `без відео(поки що) є ідеї для покращення й схема може змінитися`
 
-## _ecipashCreateMinimalOPBS_
-    Для оперативників, проходиться по ексель таблички "Планування" та в буфер обміну (після закінчення) 
-	сформує мінімалістичні записи екіпажів.
-- те саме  що й _ecipashCreateFastOPBS_ але з відмінностями
-- жмеш `Alt+Space`, магія почне працювати
-
 HotKeys:
 
 	hk["Alt+X"] = o => script.run(@"\analisationWork-main\main\fastCopDeltaOPBS.cs");
 	hk["Alt+Z"] = o => script.run(@"\analisationWork-main\main\createMarkInJbdOPBS.cs");
-	hk["Ctrl+Alt+T"] = o => script.run(@"\analisationWork-main\main\ecipashCreateFastOPBS.cs");
-	hk["Alt+Shift+F"] = o => script.run(@"\analisationWork-main\main\fastZonaHiroOPBS.cs");
-	hk["Alt+Shift+I"] = o => script.run(@"\analisationWork-main\main\processedStartOPBS.cs");
-	hk["Alt+Space"] = o => script.run(@"\analisationWork-main\main\ecipashCreateMinimalOPBS.cs");
+	hk["Ctrl+Alt+T"] = o => script.run(@"\analisationWork-main\main\ecipashCreateFastOPBS.cs");	
+	hk["Alt+Shift+I"] = o => script.run(@"\analisationWork-main\main\processedStartOPBS.cs");	
