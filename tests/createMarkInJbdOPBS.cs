@@ -550,6 +550,9 @@ namespace CSLight {
 						commentContents += "тільки розрив, спостерігали з " + crewTeamJbd;
 					} else if (establishedJbd.Contains("Підтв. ураж.")) {
 						commentContents += "підрив на міні, кори ( id ), спостерігали з " + crewTeamJbd;
+						commentWindow.PostClick(scroll: 250);
+						keys.sendL("Ctrl+A", "!" + commentContents);
+						script.end();
 					} else {
 						commentContents += " встановлено за допомогою ударного коптера " + crewTeamJbd;
 					}

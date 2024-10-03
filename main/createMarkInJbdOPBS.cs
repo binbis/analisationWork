@@ -13,8 +13,8 @@ using System.Windows.Controls;
 namespace CSLight {
 	class Program {
 		static void Main() {
-			opt.key.KeySpeed = 60;
-			opt.key.TextSpeed = 30;
+			opt.key.KeySpeed = 65;
+			opt.key.TextSpeed = 35;
 			
 			keys.send("Shift+Space*2"); //виділяємо весь рядок
 			wait.ms(100);
@@ -63,7 +63,7 @@ namespace CSLight {
 			clipboard.clear();
 			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1").Activate();
 			goToMain();
-			wait.ms(875);
+			wait.ms(400);
 			deltaLayerWindow(targetClassJbd, commentJbd);
 			wait.ms(875);
 			deltaMarkName(targetClassJbd, dateJbd, establishedJbd, commentJbd, twoHundredth, threeHundredth);
@@ -124,19 +124,19 @@ namespace CSLight {
 			searchWindow.PostClick();
 			keys.sendL("Ctrl+A", "!" + mgsrCoord, "Enter");
 			//.. 
-			wait.ms(5000);
+			wait.ms(2000);
 			//. ставимо мітку
 			var createButton = w.Elm["web:LISTITEM", prop: "@data-testid=create-object"].Find(1);
 			createButton.PostClick(scroll: 250);
-			wait.ms(5000);
+			wait.ms(2000);
 			// обираємо мітку
 			var categorySearch = w.Elm["web:TEXT", "Пошук об'єктів", "@placeholder=Пошук об'єктів"].Find(1);/*image:WkJNG30IAAQib/e/D18VodkEU3Qz/YNqUgY6OJ7L1Q+3gJNILEgpxhjD12oFzY7vxBOVS2vBUCWLbk9njc47QWXpevusAg==*/
 			categorySearch.PostClick();
 			keys.sendL("Ctrl+A", "!" + bplaName);
-			wait.ms(800);
+			wait.ms(3000);
 			var bplaMark = w.Elm["web:LISTITEM", "Військовий повітряний засіб БПЛА вертикального зльоту / посадки (VT-UAV)"].Find(1);
 			bplaMark.PostClick();
-			wait.ms(5000);
+			wait.ms(2000);
 			//..
 			
 			//. шар
@@ -550,6 +550,9 @@ namespace CSLight {
 						commentContents += "тільки розрив, спостерігали з " + crewTeamJbd;
 					} else if (establishedJbd.Contains("Підтв. ураж.")) {
 						commentContents += "підрив на міні, кори ( id ), спостерігали з " + crewTeamJbd;
+						commentWindow.PostClick(scroll: 250);
+						keys.sendL("Ctrl+A", "!" + commentContents);
+						script.end();
 					} else {
 						commentContents += " встановлено за допомогою ударного коптера " + crewTeamJbd;
 					}
