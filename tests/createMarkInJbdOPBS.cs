@@ -54,7 +54,7 @@ namespace CSLight {
 			string establishedJbd = parts[24]; // Встановлено/Уражено/Промах/...
 			string twoHundredth = parts[25]; // 200
 			string threeHundredth = parts[26]; // 300
-			string combatLogId = parts[33]; // 1725666514064
+			string combatLogId = parts[34]; // 1725666514064
 			// шлях до папки з ід повідомленням
 			string pathTo_combatLogId = @"\\SNG-8-sh\CombatLog\Donbas_Combat_Log";
 			// перетворення дати до формату дельти
