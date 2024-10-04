@@ -492,11 +492,14 @@ namespace CSLight {
 			string pozashlyakhovyk = "Мотоцикл ББМ / МТ-ЛБ БМП РЕБ (техніка) БТР Військ. баггі";
 			string suv = "позашлях";
 			// Гусеничний - колісний
-			string caterpillar = "Танк ЗРК РСЗВ САУ КШМ Інж. техніка";
+			string caterpillar = "ЗРК РСЗВ САУ КШМ Інж. техніка";
 			string husenychnyy = "комбінов";
 			//На буксирі
 			string towTruck = "Гармата Гаубиця";
 			string buksyri = "буксир";
+			// Гусинечний
+			string gusankaList = "Танк";
+			string gusanka = "Гусеничн";
 			
 			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1");
 			var mobileLine = w.Elm["STATICTEXT", "Мобільність", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA, navig: "next3"].Find(-1);/*image:WkJNG30IAAQib/e/D18VodkEkm4jE1SbVIETjgeMQRZwcgA/uB30jDGGr9UKmrm/E3VkLqWCISmybttGq7yzCP1N4HPqAA==*/
@@ -527,6 +530,12 @@ namespace CSLight {
 				if (towTruck.Contains(targetClassJbd)) {
 					mobileLine.PostClick(scroll: 250);
 					keys.sendL("Ctrl+A", "!" + buksyri, "Enter");
+					return;
+				}
+				// Гусинечний
+				if (gusankaList.Contains(targetClassJbd)) {
+					mobileLine.PostClick(scroll: 250);
+					keys.sendL("Ctrl+A", "!" + gusanka, "Enter");
 					return;
 				}
 			}
