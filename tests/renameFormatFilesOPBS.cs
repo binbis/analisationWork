@@ -35,7 +35,7 @@ namespace CSLight {
 			string timeJbd = parts[1].Replace(":", "."); // 00:40 - 00.40
 			string commentJbd = parts[2].Replace("\n", " "); //коментар
 			string numberOFlying = parts[3]; // 5
-			string crewTeamJbd = TrimAfterDot(parts[4]); // R-18-1 (Мавка) .Replace("\n\t", " ")
+			string crewTeamJbd = TrimAfterDot(parts[4].Replace("\n\t", " ")); // R-18-1 (Мавка) 
 			string whatDidJbd = parts[5]; // Мінування (можливо його видалю)
 			string targetClassJbd = parts[7]; // Міна/Вантажівка/...
 			string idTargetJbd = parts[9].Replace("/", ""); // Міна 270724043
@@ -48,17 +48,26 @@ namespace CSLight {
 			string pathFilesOpen = Path.Combine(pathDonbasFolder, messageId);
 			// спроба перейменувати назву
 			var filesInDirectory = Directory.EnumerateFiles(pathFilesOpen, "*").Where(name => !name.EndsWith(".db")).ToArray();
+			
+			// підготовка
+			if (establishedJbd.ToLower().Contains("ураж")) {
+				establishedJbd = "ураж";
+			}
+			
 			// перейменування кожного файлу в папці
 			for (int i = 0; i < filesInDirectory.Length; i++) {
 				
-				string dir = Path.GetDirectoryName(filesInDirectory[i]); //ім'я директорії
-				string fileName = Path.GetFileName(filesInDirectory[i]); //ім'я файлу
+				string dir = Path.GetDirectoryName(filesInDirectory[i]); // ім'я директорії
+				string fileName = Path.GetFileName(filesInDirectory[i]); // ім'я файлу
 				string extension = Path.GetExtension(filesInDirectory[i]); // розширення
 				string newPath = string.Empty;
+				if (extension.Length < 2) {
+					extension = "";
+				}
 				if (crewTeamJbd.Contains("FPV")) {
 					newPath = Path.Combine(dir, $"{dateJbd} {timeJbd} {crewTeamJbd} В{numberOFlying} {idTargetJbd} - {establishedJbd} {i + 1}{extension}"); // новий шлях з директорії та файлу
 				} else {
-					newPath = Path.Combine(dir, $"{dateJbd} {timeJbd} {crewTeamJbd} {idTargetJbd} - {establishedJbd} {i + 1}{extension}"); // новий шлях з директорії та файлу
+					newPath = Path.Combine(dir, $"{dateJbd} {timeJbd} {crewTeamJbd} {idTargetJbd} {establishedJbd} - {i + 1}{extension}"); // новий шлях з директорії та файлу
 				}
 				// перейменування елементу на те що хочу я
 				File.Move(filesInDirectory[i], newPath);
@@ -67,12 +76,12 @@ namespace CSLight {
 			}
 			
 			wait.ms(200);
-			/*
+			
 			if (messageId.Length > 5) {
 				//string pathFilesOpen = Path.Combine(pathDonbasFolder, messageId);
 				Process.Start("explorer.exe", pathFilesOpen);
 			}
-			*/
+			
 		}
 		// обрізати рядок усе після крапки
 		static string TrimAfterDot(string str) {
