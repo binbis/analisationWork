@@ -11,6 +11,8 @@
 який зараз
 04.10 21.30 М111 (Лелека) Васабі ББМ  МТ-ЛБ 041024073 - виявлено 1
 
+* обійти екіпаж crewTeamJbd з кінця та обрізати усе до )
+
 +(1) знайти та відкрити папку
 
 */
@@ -30,55 +32,57 @@ namespace CSLight {
 			wait.ms(100);
 			string clipboardData = clipboard.copy(); // зчитуємо буфер обміну
 			string[] parts = clipboardData.Split('\t'); // Розділяємо рядок на частини
+			
 			// Присвоюємо змінним відповідні значення
 			string dateJbd = getDDnMM(parts[0]); // 27.07.2024 - 27.07
 			string timeJbd = parts[1].Replace(":", "."); // 00:40 - 00.40
 			string commentJbd = parts[2].Replace("\n", " "); //коментар
 			string numberOFlying = parts[3]; // 5
-			string crewTeamJbd = TrimAfterDot(parts[4].Replace("\n\t", " ")); // R-18-1 (Мавка) 
-			string whatDidJbd = parts[5]; // Мінування (можливо його видалю)
+			string crewTeamJbd = TrimAfterDot(parts[4].Replace("\n", "")); // R-18-1 (Мавка) 
 			string targetClassJbd = parts[7]; // Міна/Вантажівка/...
 			string idTargetJbd = parts[9].Replace("/", ""); // Міна 270724043
 			string establishedJbd = parts[24].ToLower(); // Встановлено/Уражено/Промах/...
 			
 			string messageId = parts[34]; // 1725666514064
 			string pathDonbasFolder = @"\\SNG-8-sh\CombatLog\Donbas_Combat_Log"; // реальний шлях
-			//string pathDonbasFolder = @"C:\Users\User-PM\Desktop\tests";
-			
-			string pathFilesOpen = Path.Combine(pathDonbasFolder, messageId);
-			// спроба перейменувати назву
-			var filesInDirectory = Directory.EnumerateFiles(pathFilesOpen, "*").Where(name => !name.EndsWith(".db")).ToArray();
-			
-			// підготовка
-			if (establishedJbd.ToLower().Contains("ураж")) {
-				establishedJbd = "ураж";
-			}
-			
-			// перейменування кожного файлу в папці
-			for (int i = 0; i < filesInDirectory.Length; i++) {
-				
-				string dir = Path.GetDirectoryName(filesInDirectory[i]); // ім'я директорії
-				string fileName = Path.GetFileName(filesInDirectory[i]); // ім'я файлу
-				string extension = Path.GetExtension(filesInDirectory[i]); // розширення
-				string newPath = string.Empty;
-				if (extension.Length < 2) {
-					extension = "";
-				}
-				if (crewTeamJbd.Contains("FPV")) {
-					newPath = Path.Combine(dir, $"{dateJbd} {timeJbd} {crewTeamJbd} В{numberOFlying} {idTargetJbd} - {establishedJbd} {i + 1}{extension}"); // новий шлях з директорії та файлу
-				} else {
-					newPath = Path.Combine(dir, $"{dateJbd} {timeJbd} {crewTeamJbd} {idTargetJbd} {establishedJbd} - {i + 1}{extension}"); // новий шлях з директорії та файлу
-				}
-				// перейменування елементу на те що хочу я
-				File.Move(filesInDirectory[i], newPath);
-				wait.ms(200);
-				//Console.WriteLine(filesInDirectory[i] + "\n");
-			}
 			
 			wait.ms(200);
 			
 			if (messageId.Length > 5) {
-				//string pathFilesOpen = Path.Combine(pathDonbasFolder, messageId);
+				string pathFilesOpen = Path.Combine(pathDonbasFolder, messageId);
+				// спроба перейменувати назву
+				var filesInDirectory = Directory.EnumerateFiles(pathFilesOpen, "*").Where(name => !name.EndsWith(".db")).ToArray();
+				
+				// підготовка для скорочення
+				if (establishedJbd.ToLower().Contains("ураж")) {
+					establishedJbd = "ураж";
+				}
+				if (establishedJbd.ToLower().Contains("знищ")) {
+					establishedJbd = "знищ";
+				}
+				if (establishedJbd.Contains("Встановлено")) {
+					establishedJbd = "встан";
+				}
+				// перейменування кожного файлу в папці
+				for (int i = 0; i < filesInDirectory.Length; i++) {
+					
+					string dir = Path.GetDirectoryName(filesInDirectory[i]); // ім'я директорії
+					string fileName = Path.GetFileName(filesInDirectory[i]); // ім'я файлу
+					string extension = Path.GetExtension(filesInDirectory[i]); // розширення
+					string newPath = string.Empty;
+					if (extension.Length < 2) {
+						extension = "";
+					}
+					if (crewTeamJbd.Contains("FPV")) {
+						newPath = Path.Combine(dir, $"{dateJbd} {timeJbd} {crewTeamJbd} В{numberOFlying} {idTargetJbd} - {establishedJbd} {i + 1}{extension}"); // новий шлях з директорії та файлу
+					} else {
+						newPath = Path.Combine(dir, $"{dateJbd} {timeJbd} {crewTeamJbd} {idTargetJbd} {establishedJbd} - {i + 1}{extension}"); // новий шлях з директорії та файлу
+					}
+					// перейменування елементу на те що хочу я
+					File.Move(filesInDirectory[i], newPath);
+					wait.ms(200);
+					//Console.WriteLine(filesInDirectory[i] + "\n");
+				}
 				Process.Start("explorer.exe", pathFilesOpen);
 			}
 			
