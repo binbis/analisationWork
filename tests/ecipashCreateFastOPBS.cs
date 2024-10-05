@@ -1,4 +1,4 @@
-/** 01.10.2024
+/** 05.10.2024
 створення короткий запис планування
 1. вибираєш ячейку під колонкою А
 2. жмеш скрипт
@@ -50,17 +50,17 @@ class Program {
 		}
 		
 	}
-	// 
+	// оперативники
 	static void createMinimalEkipash(string[] shifts) {
-		string minimalEcspashClipbload = string.Empty;
-		minimalEcspashClipbload += Regex.Match(shifts[3], @"(\d{2}\.\d{2}\.\d{4})").Groups[1].Value.Trim() + "\n";
+		string minimalEcspashClipbload = Regex.Match(shifts[3], @"(\d{2}\.\d{2}\.\d{4})").Groups[1].Value.Trim() + "\n";
 		foreach (string elemets in shifts) {
 			
 			// Використання регулярних виразів для отримання потрібних частин рядка
 			string datePattern = @"(\d{2}\.\d{2}\.\d{4})";
-			string crewPattern = @"Екіпаж — (.*?)(?=Початок|Точка|Населений|Зона|Завдання|Завершення)";
-			string pointPattern = @"Точка вильоту — (.*?)(?=Населений|Зона|Завдання|Завершення)";
-			string areaPattern = @"Зона інтересів — (.*?)(?=Початок|Точка|Населений|Завдання|Завершення)";
+			string crewPattern = @"Екіпаж — (.*?)(?=Початок|Точка|Населений|Зона|Завдання|Завершення|Склад)";
+			string pointPattern = @"Точка вильоту — (.*?)(?=Населений|Зона|Завдання|Завершення|Склад)";
+			string areaPattern = @"Зона інтересів — (.*?)(?=Початок|Точка|Населений|Завдання|Завершення|Склад)";
+			string cityPattent = @"Населений пункт — (.*?)(?=Завдання|Завершення|Склад)";
 			string teamPattern = @"Склад: — (.+)";
 			
 			// Знаходження частин рядка за допомогою регулярних виразів
@@ -68,6 +68,7 @@ class Program {
 			string crew = Regex.Match(elemets, crewPattern).Groups[1].Value.Trim();
 			string point = Regex.Match(elemets, pointPattern).Groups[1].Value.Trim();
 			string area = Regex.Match(elemets, areaPattern).Groups[1].Value.Trim();
+			string city = Regex.Match(elemets, cityPattent).Groups[1].Value.Trim();
 			
 			// Отримання всіх членів команди
 			string team = Regex.Match(elemets, teamPattern).Groups[1].Value.Trim();
@@ -75,14 +76,20 @@ class Program {
 			string formattedTeam = string.Join(", ", teamMembers);
 			
 			// Змінна, що змінюється після кожної операції
-			string textName = $"{crew}\t {point}\t {area}\t {formattedTeam}\n";
+			string textName = string.Empty;
+			if (crew.Contains("Ев. ")) {
+				textName = $"{crew}\t {point}\t {city}\t {formattedTeam}\n";
+			} else {
+				textName = $"{crew}\t {point}\t {area}\t {formattedTeam}\n";
+			}
+			
 			if (textName.Length > 16) {
 				minimalEcspashClipbload += textName;
 			}
 		}
 		Clipboard.SetText(minimalEcspashClipbload);
 	}
-	//
+	// папки
 	static void createFolderWithFoldersEkipash(string[] shifts) {
 		// Отримати шлях до робочого столу поточного користувача
 		string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
