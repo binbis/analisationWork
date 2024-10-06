@@ -386,7 +386,7 @@ namespace CSLight {
 				case "Міна":
 					if (establishedJbd.Contains("Авар. скид") || establishedJbd.Contains("Розміновано") || establishedJbd.Contains("Підтв. ураж.") || establishedJbd.Contains("Тільки розрив")) {
 						fullaim = "небо";
-					} else if (establishedJbd.Contains("Встановлено")) {
+					} else if (establishedJbd.Contains("Встановлено") || establishedJbd.Contains("Спростовано")) {
 						fullaim = "повніс";
 					} else {
 						fullaim = "част";
@@ -486,10 +486,10 @@ namespace CSLight {
 		// мобільність
 		static void deltaMobilityLine(string targetClassJbd) {
 			// Обмеженої прохідності
-			string limitedAccess = "Авто Вантажівка Паливозаправник";
+			string limitedAccess = "Мотоцикл Вантажівка Паливозаправник";
 			string obmezheno = "обмежено";
 			// Позашляховик
-			string pozashlyakhovyk = "Мотоцикл ББМ / МТ-ЛБ БМП РЕБ (техніка) БТР Військ. баггі";
+			string pozashlyakhovyk = "Авто ББМ / МТ-ЛБ БМП РЕБ (техніка) БТР Військ. баггі";
 			string suv = "позашлях";
 			// Гусеничний - колісний
 			string caterpillar = "ЗРК РСЗВ САУ КШМ Інж. техніка";
@@ -555,7 +555,9 @@ namespace CSLight {
 						commentContents += "аварійно сикнуто з ударного коптера " + crewTeamJbd;
 					} else if (establishedJbd.Contains("Розміновано")) {
 						commentContents += commentJbd + ",розміновано, спостерігали з " + crewTeamJbd;
-					} else if (establishedJbd.Contains("Тільки розрив")) {
+					}else if (establishedJbd.Contains("Спростовано")) {
+						commentContents += commentJbd + ", спостерігали з " + crewTeamJbd;
+					}else if (establishedJbd.Contains("Тільки розрив")) {
 						commentContents += "тільки розрив, спостерігали з " + crewTeamJbd;
 					} else if (establishedJbd.Contains("Підтв. ураж.")) {
 						commentContents += "підрив на міні, кори ( id ), спостерігали з " + crewTeamJbd;
