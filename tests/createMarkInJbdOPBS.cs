@@ -1,11 +1,13 @@
 
-/* 01,10,2024_v1.7.5
+/* 06,10,2024_v1.7.6
 * id обрізаються, щоб поміститись в рядок 
 * функція додавання до дати дні(60) підходить для мін
 * 200 та 300 рахуються та вписуються самі
 * відкриття папки за ід повідомлення 1-3 секунди (бабмасік)
 * координата в коментар для укриття
 * розділено функціонал, заповнення мітки окремо від створення та заповнення мітки для реб-рер
+* до fpv додається тип борту f7
+* перейменування вмісту папки ід повідомлення
 */
 using System.Windows;
 using System.Windows.Controls;
@@ -46,8 +48,9 @@ namespace CSLight {
 			string dateJbd = parts[0]; // 27.07.2024
 			string timeJbd = parts[1]; //00:40
 			string commentJbd = parts[2].Replace("\n", " "); //коментар (для ідентифікації скоріш за все)
-			string crewTeamJbd = TrimAfterDot(parts[4].Replace("\n\t", " ")); // R-18-1 (Мавка)
-			string whatDidJbd = parts[5]; // Мінування (можливо його видалю)
+			string numberOFlying = parts[3]; // 5
+			string crewTeamJbd = TrimAfterDot(parts[4].Replace("\n\t", "")); // R-18-1 (Мавка)
+			string whatDidJbd = parts[5]; // Дорозвідка / Мінування ..
 			string targetClassJbd = parts[7]; // Міна/Вантажівка/...
 			string idTargetJbd = TrimString(parts[9], 19); // Міна 270724043
 			string mgrsCoords = parts[18]; // 37U CP 76420 45222
@@ -55,6 +58,10 @@ namespace CSLight {
 			string twoHundredth = parts[25]; // 200
 			string threeHundredth = parts[26]; // 300
 			string combatLogId = parts[34]; // 1725666514064
+			// додавно для подашої верифікації
+			if (crewTeamJbd.Contains("FPV")) {
+				crewTeamJbd = addTypeForBoard(crewTeamJbd);
+			}
 			// шлях до папки з ід повідомленням
 			string pathTo_combatLogId = @"\\SNG-8-sh\CombatLog\Donbas_Combat_Log";
 			// перетворення дати до формату дельти
@@ -92,7 +99,7 @@ namespace CSLight {
 			wait.ms(200);
 			
 			if (combatLogId.Length > 6) {
-				deltaImportFiles(combatLogId, pathTo_combatLogId);
+				deltaImportFiles(combatLogId, pathTo_combatLogId, establishedJbd, commentJbd, idTargetJbd, whatDidJbd, getDDnMM(dateJbd), timeJbd.Replace(":", "."), GetCutsSTR(crewTeamJbd), numberOFlying);
 			} else {
 				goToMain();
 			}
@@ -555,9 +562,9 @@ namespace CSLight {
 						commentContents += "аварійно сикнуто з ударного коптера " + crewTeamJbd;
 					} else if (establishedJbd.Contains("Розміновано")) {
 						commentContents += commentJbd + ",розміновано, спостерігали з " + crewTeamJbd;
-					}else if (establishedJbd.Contains("Спростовано")) {
+					} else if (establishedJbd.Contains("Спростовано")) {
 						commentContents += commentJbd + ", спостерігали з " + crewTeamJbd;
-					}else if (establishedJbd.Contains("Тільки розрив")) {
+					} else if (establishedJbd.Contains("Тільки розрив")) {
 						commentContents += "тільки розрив, спостерігали з " + crewTeamJbd;
 					} else if (establishedJbd.Contains("Підтв. ураж.")) {
 						commentContents += "підрив на міні, кори ( id ), спостерігали з " + crewTeamJbd;
@@ -693,18 +700,51 @@ namespace CSLight {
 			}
 		}
 		// пошук файлів за ід для прикріплення
-		static void deltaImportFiles(string combatLogId, string pathTo_combatLogId) {
+		static void deltaImportFiles(string combatLogId, string pathTo_combatLogId, string establishedJbd, string commentJbd, string idTargetJbd, string whatToDo, string dateJbd, string timeJbd, string crewTeamJbd, string numberOFlying) {
 			// основне вікно
 			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1");
 			// кнопка прикріплення
 			var deltaStickWindow = w.Elm["web:GROUPING", prop: new("desc=Прикріплення", "@title=Прикріплення")].Find(1);
 			deltaStickWindow.PostClick();
-			wait.ms(875);
-			if (combatLogId.Length > 6) {
-				// злови помилку
-				Process.Start("explorer.exe", Path.Combine(pathTo_combatLogId, combatLogId));
+			wait.ms(500);
+			// банальна пепевірка
+			if (combatLogId.Length > 3) {
+				string pathFilesOpen = Path.Combine(pathTo_combatLogId, combatLogId);
+				// спроба перейменувати назву
+				var filesInDirectory = Directory.EnumerateFiles(pathFilesOpen, "*").Where(name => !name.EndsWith(".db")).ToArray();
+				
+				// підготовка для скорочення
+				// превірка статусу
+				establishedJbd = getTrueEstablished(establishedJbd, commentJbd, whatToDo);
+				if (whatToDo == "Дорозвідка") {
+					establishedJbd = whatToDo.ToLower() + " - " + establishedJbd;
+				}
+				
+				// перейменування кожного файлу в папці
+				for (int i = 0; i < filesInDirectory.Length; i++) {
+					
+					string dir = Path.GetDirectoryName(filesInDirectory[i]); // ім'я директорії
+					string fileName = Path.GetFileName(filesInDirectory[i]); // ім'я файлу
+					string extension = Path.GetExtension(filesInDirectory[i]); // розширення .jpg .mp4 ..
+					string newPath = string.Empty;
+					if (extension.Length < 2) {
+						extension = "";
+					}
+					if (crewTeamJbd.Contains("FPV")) {
+						newPath = Path.Combine(dir, $"{dateJbd} {timeJbd} {crewTeamJbd} В{numberOFlying} - {establishedJbd.ToLower()} {i + 1}{extension}"); // новий шлях з директорії та файлу
+					} else {
+						newPath = Path.Combine(dir, $"{dateJbd} {timeJbd} {crewTeamJbd} {idTargetJbd} - {establishedJbd.ToLower()} {i + 1}{extension}"); // новий шлях з директорії та файлу
+					}
+					// перейменування елементу на те що хочу я
+					File.Move(filesInDirectory[i], newPath);
+					wait.ms(200);
+					//Console.WriteLine(filesInDirectory[i] + "\n");
+				}
+				// відкриття папки за шляхом
+				Process.Start("explorer.exe", pathFilesOpen);
 			}
 		}
+		// повернення на основні поля мітки
 		static void goToMain() {
 			// основне вікно
 			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1");
@@ -729,6 +769,50 @@ namespace CSLight {
 			}
 			return str;
 		}
-		
+		// формат для перейменування відео 27.07.2024 - 27.07
+		static string getDDnMM(string str) {
+			string[] partOfDates = str.Split(".");
+			return $"{partOfDates[0]}.{partOfDates[1]}";
+		}
+		// обрізати назви екіпажів
+		static string GetCutsSTR(string str) {
+			int index = str.LastIndexOf(')');
+			if (index != -1) {
+				return str.Substring(0, index + 1);
+			}
+			return str;
+		}
+		// додавання типу до бортів
+		static string addTypeForBoard(string str) {
+			int index = str.LastIndexOf('(');
+			if (index != -1) {
+				return str.Substring(0, index + 1) + "FPV f7)";
+			}
+			return str;
+		}
+		// перевірка для статусу з жбд
+		static string getTrueEstablished(string establishedJbd, string commentJbd, string whatToDo) {
+			if (establishedJbd == "Підтв. ураж.") {
+				return "зйом.ураж";
+				//return whatToDo;
+			} else if (establishedJbd.ToLower().Contains("ураж")) {
+				return "ураж";
+			}
+			if (establishedJbd.ToLower().Contains("знищ")) {
+				return "знищ";
+			}
+			if (establishedJbd.Contains("Встановлено")) {
+				return "встан";
+			}
+			if (establishedJbd == "Підтверджено") {
+				if (commentJbd.ToLower().Contains("знищ")) {
+					return "знищ";
+				}
+				if (commentJbd.ToLower().Contains("ураж")) {
+					return "ураж";
+				}
+			}
+			return establishedJbd;
+		}
 	}
 }
