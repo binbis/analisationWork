@@ -25,12 +25,14 @@
 2. жмеш скрипт `Ctrl+Alt+T`
 3. обираєш 1. Папка з папками екіпажей - за замовчуванням
 4. створюється папка на робочому столі з папками які маєть відповідні назви екіпажей
+`дивись відео для наглядності`
 
 	створення короткий запис планування
 1. вибираєш ячейку під колонкою А
 2. жмеш скрипт `Ctrl+Alt+T`
 3. обираєш 2. Для оперативників
 3. отримуєш короткий запис, в буфер обміну, екіпажей
+`дивись відео для наглядності`
 
 	проект скрипт для (ексель табличка обробників відео) - розуміння хто працював, а хто ні
 1. вибираєш ячейку під колонкою А
@@ -57,9 +59,17 @@
 - магія почне працювати
 `без відео(поки що) є ідеї для покращення й схема може змінитися`
 
+## _renameFormatFilesOPBS_
+	перейменування папок на основі jbd. Цей ж скрипт інтегрований до _createMarkInJbdOPBS_
+- обераєш необхідний рядок - будь яку клітинку`(аби вона була на необхідному рядку)`
+- жмеш `Alt+Space`
+- відкривається папка з вже перейменованим вмістом
+`дивись відео для наглядності`
+
 HotKeys:
 
 	hk["Alt+X"] = o => script.run(@"\analisationWork-main\main\fastCopDeltaOPBS.cs");
 	hk["Alt+Z"] = o => script.run(@"\analisationWork-main\main\createMarkInJbdOPBS.cs");
 	hk["Ctrl+Alt+T"] = o => script.run(@"\analisationWork-main\main\ecipashCreateFastOPBS.cs");	
-	hk["Alt+Shift+I"] = o => script.run(@"\analisationWork-main\main\processedStartOPBS.cs");	
+	hk["Alt+Shift+I"] = o => script.run(@"\analisationWork-main\main\processedStartOPBS.cs");
+	hk["Alt+Space"] = o => script.run(@"\analisationWork-main\main\renameFormatFilesOPBS.cs");
