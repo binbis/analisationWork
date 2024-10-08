@@ -1,10 +1,11 @@
-/* 05,10,2024
+/* 08,10,2024
 проєкт - переіменування файлів в папці
 
 04.10 21.30 М111 (Лелека) Васабі ББМ  МТ-ЛБ 041024073 - виявлено 1
 
 + знайти перейменувати вміст та відкрити папку
 + обійти екіпаж crewTeamJbd з кінця та обрізати усе до )
++ розділення на готове речення в буфер обміну
 
 */
 
@@ -24,6 +25,16 @@ namespace CSLight {
 			string clipboardData = clipboard.copy(); // зчитуємо буфер обміну
 			string[] parts = clipboardData.Split('\t'); // Розділяємо рядок на частини
 			
+			// вікно діалогу
+			string[] examlpelesItem = { "1. Перейменування в папці", "2. Готове речення в буфер обміну" };
+			var b = new wpfBuilder("Window").WinSize(400);
+			b.R.Add("Назва", out ComboBox itemSelect).Items(examlpelesItem);
+			b.R.AddOkCancel();
+			b.Window.Topmost = true;
+			b.End();
+			// show dialog. Exit if closed not with the OK button.
+			if (!b.ShowDialog()) return;
+			
 			// Присвоюємо змінним відповідні значення
 			string dateJbd = getDDnMM(parts[0]); // 27.07.2024 - 27.07
 			string timeJbd = parts[1].Replace(":", "."); // 00:40 - 00.40
@@ -37,6 +48,16 @@ namespace CSLight {
 			
 			string messageId = parts[34]; // 1725666514064
 			string pathDonbasFolder = @"\\SNG-8-sh\CombatLog\Donbas_Combat_Log"; // реальний шлях
+			
+			if (itemSelect.Text.Contains("2.")) {
+				if (crewTeamJbd.Contains("FPV")) {
+					Clipboard.SetText($"{dateJbd} {timeJbd} {crewTeamJbd} В{numberOFlying} - {establishedJbd.ToLower()}");
+					return;
+				} else {
+					Clipboard.SetText($"{dateJbd} {timeJbd} {crewTeamJbd} {idTargetJbd} - {establishedJbd.ToLower()}");
+					return;
+				}
+			}
 			
 			if (messageId.Length > 3) {
 				string pathFilesOpen = Path.Combine(pathDonbasFolder, messageId);
@@ -57,6 +78,7 @@ namespace CSLight {
 					string fileName = Path.GetFileName(filesInDirectory[i]); // ім'я файлу
 					string extension = Path.GetExtension(filesInDirectory[i]); // розширення .jpg .mp4 ..
 					string newPath = string.Empty;
+					
 					if (extension.Length < 2) {
 						extension = "";
 					}
@@ -70,8 +92,10 @@ namespace CSLight {
 					wait.ms(200);
 					//Console.WriteLine(filesInDirectory[i] + "\n");
 				}
-				// відкриття папки за шляхом
-				Process.Start("explorer.exe", pathFilesOpen);
+				if (itemSelect.Text.Contains("1.")) {
+					// відкриття папки за шляхом
+					Process.Start("explorer.exe", pathFilesOpen);
+				}
 			}
 			
 		}
