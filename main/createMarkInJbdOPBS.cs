@@ -1,5 +1,5 @@
 
-/* 06,10,2024_v1.7.6
+/* 09,10,2024_v1.7.6
 * id обрізаються, щоб поміститись в рядок 
 * функція додавання до дати дні(60) підходить для мін
 * 200 та 300 рахуються та вписуються самі
@@ -15,8 +15,8 @@ using System.Windows.Controls;
 namespace CSLight {
 	class Program {
 		static void Main() {
-			opt.key.KeySpeed = 60;
-			opt.key.TextSpeed = 35;
+			opt.key.KeySpeed = 65;
+			opt.key.TextSpeed = 40;
 			
 			keys.send("Shift+Space*2"); //виділяємо весь рядок
 			wait.ms(100);
@@ -293,7 +293,7 @@ namespace CSLight {
 						markName = targetClassJbd + " ОС (знищ.)";
 					} else if (establishedJbd.ToLower().Contains("ураж")) {
 						markName = targetClassJbd + " ОС (ураж.)";
-					} else if (establishedJbd.Contains("Виявлено") || establishedJbd.Contains("Підтверджено")) {
+					} else if (establishedJbd.Contains("Виявлено") || establishedJbd.Contains("Підтверджено") || establishedJbd.Contains("Не зрозуміло")) {
 						if (commentJbd.ToLower().Contains("знищ")) {
 							markName = targetClassJbd + " ОС (знищ.)";
 						} else if (commentJbd.ToLower().Contains("ураж")) {
@@ -324,7 +324,7 @@ namespace CSLight {
 						markName = targetClassJbd + " (знищ.)";
 					} else if (establishedJbd.Contains("Ураж") || establishedJbd.Contains("ураж")) {
 						markName = targetClassJbd + " (ураж.)";
-					} else if (establishedJbd.Contains("Виявлено") || establishedJbd.Contains("Підтверджено")) {
+					} else if (establishedJbd.Contains("Виявлено") || establishedJbd.Contains("Підтверджено") || establishedJbd.Contains("Не зрозуміло")) {
 						if (commentJbd.ToLower().Contains("знищ")) {
 							markName = targetClassJbd + " (знищ.)";
 						} else if (commentJbd.ToLower().Contains("ураж")) {
@@ -650,7 +650,7 @@ namespace CSLight {
 				//. укриття
 				case "Укриття":
 					if (establishedJbd.ToLower().Contains("знищ") || establishedJbd.ToLower().Contains("ураж")) {
-						// колір жовтий - знищ
+						// колір жовтий
 						var placeColorYellowButton = w.Elm["web:BUTTON", prop: "@title=#ffeb3b"].Find(1);
 						placeColorYellowButton.PostClick(scroll: 250);
 						wait.ms(875);
@@ -659,9 +659,9 @@ namespace CSLight {
 						transpatentColorRange.PostClick(scroll: 250);
 						transpatentColorRange.SendKeys("Left*5");
 						wait.ms(875);
-					} else if (establishedJbd.Contains("Виявлено") || establishedJbd.Contains("Підтверджено") || establishedJbd.Contains("Спростовано")) {
+					} else if (establishedJbd.Contains("Виявлено") || establishedJbd.Contains("Підтверджено") || establishedJbd.Contains("Спростовано") || establishedJbd.Contains("Не зрозуміло")) {
 						if (commentJbd.ToLower().Contains("знищ") || commentJbd.ToLower().Contains("ураж")) {
-							// колір жовтий - знищ
+							// колір жовтий
 							var placeColorYellowButton = w.Elm["web:BUTTON", prop: "@title=#ffeb3b"].Find(1);
 							placeColorYellowButton.PostClick(scroll: 250);
 							wait.ms(875);
