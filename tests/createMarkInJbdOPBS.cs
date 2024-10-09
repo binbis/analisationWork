@@ -207,30 +207,22 @@ namespace CSLight {
 		static void deltaLayerWindow(string targetClassJbd, string commentJbd) {
 			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1");
 			// (01) постійні схов. і укриття
-			string[] permanentStorage = {
-					"Укриття","Склад майна","Склад БК","Склад ПММ",
-					"Польовий склад майна","Польовий склад БК","Польовий склад ПММ"
-				};
+			string permanentStorage = "Укриття Склад майна Склад БК Склад ПММ Польовий склад майна Польовий склад БК Польовий склад ПММ";
+			
 			// (02) антени, камери...
-			string[] antennaCamera = {
-					"Мережеве обладнання","Камера","Антена","РЕБ (окопні)"
-				};
+			string antennaCamera = "Мережеве обладнання Камера Антена РЕБ (окопні)";
 			// поле шар
 			var layerWindow = w.Elm["web:GROUPING", prop: "@data-testid=select-layer"].Find(-1);
 			if (layerWindow != null) {
 				layerWindow.PostClick(scroll: 250);
 				//. перевірка, запис
-				for (int i = 0; i < permanentStorage.Length; i++) {
-					if (permanentStorage[i].Contains(targetClassJbd)) {
-						layerWindow.SendKeys("Ctrl+A", "!Пост", "Enter");
-						return;
-					}
+				if (permanentStorage.Contains(targetClassJbd)) {
+					layerWindow.SendKeys("Ctrl+A", "!Пост", "Enter");
+					return;
 				}
-				for (int i = 0; i < antennaCamera.Length; i++) {
-					if (antennaCamera[i].Contains(targetClassJbd)) {
-						layerWindow.SendKeys("Ctrl+A", "!антени", "Enter");
-						return;
-					}
+				if (antennaCamera.Contains(targetClassJbd)) {
+					layerWindow.SendKeys("Ctrl+A", "!антени", "Enter");
+					return;
 				}
 				switch (targetClassJbd) {
 				case "Міна":
@@ -393,8 +385,10 @@ namespace CSLight {
 				case "Міна":
 					if (establishedJbd.Contains("Авар. скид") || establishedJbd.Contains("Розміновано") || establishedJbd.Contains("Підтв. ураж.") || establishedJbd.Contains("Тільки розрив")) {
 						fullaim = "небо";
-					} else if (establishedJbd.Contains("Встановлено") || establishedJbd.Contains("Спростовано")) {
+					} else if (establishedJbd.Contains("Встановлено")) {
 						fullaim = "повніс";
+					} else if (establishedJbd.Contains("Спростовано")) {
+						return;
 					} else {
 						fullaim = "част";
 					}
@@ -527,7 +521,7 @@ namespace CSLight {
 					keys.sendL("Ctrl+A", "!" + suv, "Enter");
 					return;
 				}
-				// Гусеничний
+				// Гусеничний - колісний
 				if (caterpillar.Contains(targetClassJbd)) {
 					mobileLine.PostClick(scroll: 250);
 					keys.sendL("Ctrl+A", "!" + husenychnyy, "Enter");
