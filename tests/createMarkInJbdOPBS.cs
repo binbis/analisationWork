@@ -54,6 +54,7 @@ namespace CSLight {
 			string targetClassJbd = parts[7]; // Міна/Вантажівка/...
 			string idTargetJbd = TrimString(parts[9], 19); // Міна 270724043
 			string mgrsCoords = parts[18]; // 37U CP 76420 45222
+			string nameOfBch = parts[22]; // ПТМ-3 ТМ-62
 			string establishedJbd = parts[24]; // Встановлено/Уражено/Промах/...
 			string twoHundredth = parts[25]; // 200
 			string threeHundredth = parts[26]; // 300
@@ -73,7 +74,7 @@ namespace CSLight {
 			wait.ms(400);
 			deltaLayerWindow(targetClassJbd, commentJbd);
 			wait.ms(200);
-			deltaMarkName(targetClassJbd, dateJbd, establishedJbd, commentJbd, twoHundredth, threeHundredth);
+			deltaMarkName(nameOfBch, targetClassJbd, dateJbd, establishedJbd, commentJbd, twoHundredth, threeHundredth);
 			wait.ms(200);
 			deltaDateLTimeWindow(dateDeltaFormat, timeJbd);
 			wait.ms(200);
@@ -257,7 +258,7 @@ namespace CSLight {
 			//..
 		}
 		// поле назва
-		static void deltaMarkName(string targetClassJbd, string dateJbd, string establishedJbd, string commentJbd, string twoHundredth, string threeHundredth) {
+		static void deltaMarkName(string nameOfBch, string targetClassJbd, string dateJbd, string establishedJbd, string commentJbd, string twoHundredth, string threeHundredth) {
 			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1");
 			// поле назва
 			var nameOfMarkWindow = w.Elm["web:TEXT", prop: new("@data-testid=T")].Find(-1);
@@ -268,9 +269,9 @@ namespace CSLight {
 				//. Міна
 				case "Міна":
 					if (establishedJbd.Contains("Авар. скид") || establishedJbd.Contains("Розміновано") || establishedJbd.Contains("Підтв. ураж.") || establishedJbd.Contains("Тільки розрив")) {
-						markName = "ПТМ-3 (" + dateJbd + ")";
+						markName = $"{nameOfBch} ({dateJbd})";
 					} else {
-						markName = "ПТМ-3 до (" + datePlasDays(dateJbd) + ")";
+						markName = $"{nameOfBch} до ({datePlasDays(dateJbd)})";
 					}
 					break;
 				//..
