@@ -1,5 +1,5 @@
 
-/* 09,10,2024_v1.7.6
+/* 11,10,2024_v1.7.6
 * id обрізаються, щоб поміститись в рядок 
 * функція додавання до дати дні(60) підходить для мін
 * 200 та 300 рахуються та вписуються самі
@@ -117,7 +117,7 @@ namespace CSLight {
 			string mgrsX = parts[8];
 			string mgrsY = parts[9];
 			string mgsrCoord = $"{mgrsX}{mgrsY}";
-			string layerName = "схована техніка";
+			string layerName = "Крила, FPV, повітр";
 			string name = "FPV (Подавлено)";
 			string capability = "небо";
 			string identyfication = "ворож";
@@ -554,20 +554,20 @@ namespace CSLight {
 				//. Міна
 				case "Міна":
 					if (establishedJbd.Contains("Авар. скид") || establishedJbd.Contains("Подавлено")) {
-						commentContents += "аварійно сикнуто з ударного коптера " + crewTeamJbd;
+						commentContents += $"аварійно сикнуто з ударного коптера {crewTeamJbd}";
 					} else if (establishedJbd.Contains("Розміновано")) {
-						commentContents += commentJbd + ",розміновано, спостерігали з " + crewTeamJbd;
+						commentContents += $"{commentJbd}, розміновано, спостерігали з {crewTeamJbd}";
 					} else if (establishedJbd.Contains("Спростовано")) {
-						commentContents += commentJbd + ", спостерігали з " + crewTeamJbd;
+						commentContents += $"{commentJbd}, спостерігали з  {crewTeamJbd}";
 					} else if (establishedJbd.Contains("Тільки розрив")) {
-						commentContents += "тільки розрив, спостерігали з " + crewTeamJbd;
+						commentContents += $"тільки розрив, спостерігали з {crewTeamJbd}";
 					} else if (establishedJbd.Contains("Підтв. ураж.")) {
-						commentContents += "підрив на міні, кори ( id ), спостерігали з " + crewTeamJbd;
+						commentContents += $"підрив на міні, кори ( id ), спостерігали з {crewTeamJbd}";
 						commentWindow.PostClick(scroll: 250);
 						keys.sendL("Ctrl+A", "!" + commentContents);
 						script.end();
 					} else {
-						commentContents += " встановлено за допомогою ударного коптера " + crewTeamJbd;
+						commentContents += $"встановлено за допомогою ударного коптера {crewTeamJbd}";
 					}
 					break;
 				//..
@@ -575,35 +575,39 @@ namespace CSLight {
 				case "Укриття":
 					commentContents = $"{dateJbd} {timeJbd} - (  {mgrsCoords}  ) - ";
 					if (establishedJbd.ToLower().Contains("знищ")) {
-						commentContents += establishedJbd.ToLower() + " за допомогою " + crewTeamJbd;
+						commentContents += $"{establishedJbd.ToLower()} за допомогою {crewTeamJbd}";
 					} else if (establishedJbd.ToLower().Contains("ураж")) {
-						commentContents += establishedJbd.ToLower() + " за допомогою " + crewTeamJbd;
+						commentContents += $"{establishedJbd.ToLower()} за допомогою {crewTeamJbd}";
 					} else if (establishedJbd.Contains("Підтверджено") || establishedJbd.Contains("Спростовано")) {
 						if (commentJbd.ToLower().Contains("знищ") || commentJbd.ToLower().Contains("ураж")) {
-							commentContents += commentJbd + ", спостерігав " + crewTeamJbd;
+							commentContents += $"{commentJbd}, спостерігав {crewTeamJbd}";
 						} else {
-							commentContents += commentJbd + ", спостерігав " + crewTeamJbd;
+							commentContents += $"{commentJbd}, спостерігав {crewTeamJbd}";
 						}
 					} else if (establishedJbd.Contains("Виявлено")) {
 						if (commentJbd.ToLower().Contains("знищ")) {
-							commentContents += establishedJbd.ToLower() + " знищ." + targetClassJbd.ToLower() + ", спостерігав " + crewTeamJbd;
+							commentContents += $"{establishedJbd.ToLower()} знищ. {targetClassJbd.ToLower()}, спостерігав {crewTeamJbd}";
 						} else if (commentJbd.Contains("ураж")) {
-							commentContents += establishedJbd.ToLower() + " ураж." + targetClassJbd.ToLower() + ", спостерігав " + crewTeamJbd;
+							commentContents += $"{establishedJbd.ToLower()} ураж. {targetClassJbd.ToLower()}, спостерігав {crewTeamJbd}";
 						} else {
-							commentContents += commentJbd + ", спостерігав " + crewTeamJbd;
+							commentContents += $"{commentJbd} , спостерігав {crewTeamJbd}";
 						}
 					} else if (establishedJbd.Contains("Не зрозуміло")) {
-						commentContents += "спроба ураження, " + crewTeamJbd;
+						commentContents += $"спроба ураження, {crewTeamJbd}";
 					}
 					break;
 				//..
 				default:
-					if (establishedJbd.Contains("Виявлено")) {
-						commentContents += commentJbd + ", спостерігали з " + crewTeamJbd;
+					if (establishedJbd.ToLower().Contains("знищ")) {
+						commentContents += $"{establishedJbd.ToLower()} за допомогою {crewTeamJbd}";
+					} else if (establishedJbd.ToLower().Contains("ураж")) {
+						commentContents += $"{establishedJbd.ToLower()} за допомогою {crewTeamJbd}";
+					} else if (establishedJbd.Contains("Виявлено")) {
+						commentContents += $"{commentJbd} , спостерігав {crewTeamJbd}";
 					} else if (establishedJbd.Contains("Не зрозуміло")) {
-						commentContents += "спроба ураження, " + crewTeamJbd;
+						commentContents += $"спроба ураження, {crewTeamJbd}";
 					} else {
-						commentContents += commentJbd + " " + establishedJbd.ToLower() + " за допомогою " + crewTeamJbd;
+						commentContents += $"{commentJbd} {establishedJbd.ToLower()} за допомогою {crewTeamJbd}";
 					}
 					break;
 				}
