@@ -491,7 +491,7 @@ namespace CSLight {
 			string limitedAccess = "Мотоцикл Вантажівка Паливозаправник";
 			string obmezheno = "обмежено";
 			// Позашляховик
-			string pozashlyakhovyk = "Авто ББМ / МТ-ЛБ БМП РЕБ (техніка) БТР Військ. баггі";
+			string pozashlyakhovyk = "Авто ББМ / МТ-ЛБ РЕБ (техніка) БТР Військ. баггі";
 			string suv = "позашлях";
 			// Гусеничний - колісний
 			string caterpillar = "ЗРК РСЗВ САУ КШМ Інж. техніка";
@@ -500,7 +500,7 @@ namespace CSLight {
 			string towTruck = "Гармата Гаубиця";
 			string buksyri = "буксир";
 			// Гусинечний
-			string gusankaList = "Танк";
+			string gusankaList = "Танк БМП";
 			string gusanka = "Гусеничн";
 			
 			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1");
