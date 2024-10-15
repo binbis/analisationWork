@@ -1,4 +1,4 @@
-/** 18.09.2024
+/** 15.10.2024
 
 * Для кожної флешки унікальна назва
 * пропонує місце, куди вказати шлях для вивантаження папок (можна вписати самому та пропонується за замовчуваннм)
@@ -8,6 +8,7 @@
 * Перевірка файлів на цілісність після завершення викачки;
 * перевірка вільного місця для поточної флешки, якщо його недостатньо зупиняє копіювання та викликає діалогове вікно
 - loadbar про завантаження(реалізовано в конлоних логах)
+* фінальне вікно: кількість флешок, людино годин, сумарно гігов
 
 4) Відсоток від 100% скільки воно вже вивантажили
 6) "Темна тема"
@@ -37,7 +38,12 @@ class Program {
 		// Шлях до папки, куди будуть копіюватися файли
 		string destinationBasePath = recomendedPath.Text;
 		
-		int driveNumber = 1;
+		int driveNumber = 1; // кількість флешок
+		long summaGiGybite = 0; // сумарна кількість
+		
+		// старт таймера
+		Stopwatch stopWatch = new Stopwatch();
+		stopWatch.Start();
 		
 		foreach (string drive in removableDrives) {
 			try {
@@ -46,12 +52,13 @@ class Program {
 				if (driveInfo.DriveType == DriveType.Removable && driveInfo.IsReady) {
 					string sourceDir = Path.Combine(drive, ""); // Шлях до кореневої папки флешки
 					string destinationPath = Path.Combine(destinationBasePath, $"FlashDrive_{driveNumber}_" + DateTime.Now.ToString("MM-dd_HH-mm-ss"));
-					
+					// створення унікальеої папки
 					Directory.CreateDirectory(destinationPath);
 					Console.WriteLine($"Копіювання з {sourceDir} в {destinationPath}...");
 					wait.s(0.5);
 					
 					if (HasEnoughSpaceForCopy(destinationBasePath, sourceDir)) {
+						summaGiGybite += GetDirectorySize(sourceDir);
 						CopyDirectory(sourceDir, destinationPath);
 						driveNumber++;
 					} else {
@@ -77,9 +84,17 @@ class Program {
 			}
 		}
 		
+		// зупиняємо таймер та вимірюємо кількість часу, затарачного
+		stopWatch.Stop();
+		TimeSpan elapsedTotal = stopWatch.Elapsed;
+		string timeMs = $"{TimeSpan.FromSeconds(elapsedTotal.TotalMilliseconds / removableDrives.Length):hh\\:mm\\:ss}";
+		
 		// перші спроби з формаим
 		var brr = new wpfBuilder("Window").WinSize(500);
 		brr.R.Add(out Label _, $"Копіювання завершено");
+		brr.R.Add("", out TextBox _, $"Кількість флешок = {driveNumber - 1}").Readonly(); //read-only text
+		brr.R.Add("", out TextBox _, $"Кількість копійованих гігабайт = {FormatSize(summaGiGybite)}").Readonly(); //read-only text
+		brr.R.Add("", out TextBox _, $"Людино годин затрачених на копіювання = {timeMs}").Readonly(); //read-only text
 		brr.R.AddOkCancel();
 		brr.End();
 		brr.Window.Topmost = true;
@@ -193,5 +208,11 @@ class Program {
 		const long OneGb = 1024 * 1024 * 1024;
 		
 		return $"{(double)bytes / OneGb:F2} GB";
+	}
+	// Функція для форматування розміру файлу
+	private static double FormatSizeOne(long bytes) {
+		const long OneGb = 1024 * 1024 * 1024;
+		
+		return (double)bytes / OneGb;
 	}
 }
