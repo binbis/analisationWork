@@ -1,5 +1,5 @@
 
-/* 11,10,2024_v1.7.6
+/* 17,10,2024_v1.7.6
 * id обрізаються, щоб поміститись в рядок 
 * функція додавання до дати дні(60) підходить для мін
 * 200 та 300 рахуються та вписуються самі
@@ -339,7 +339,7 @@ namespace CSLight {
 				case "Т. вильоту дронів":
 					layerWindow.SendKeys("Ctrl+A", "!08", "Enter");
 					break;
-				case "Скупчення ОС":
+				case "ОС РОВ":
 					layerWindow.SendKeys("Ctrl+A", "!10", "Enter");
 					break;
 				case "Міномет":
@@ -365,12 +365,17 @@ namespace CSLight {
 			var nameOfMarkWindow = w.Elm["web:TEXT", prop: new("@data-testid=T")].Find(-1);
 			if (nameOfMarkWindow != null) {
 				string markName = string.Empty;
+				string nameOfMark = nameOfMarkWindow.Value;
+				int indexLoss = nameOfMark.IndexOf(" ");
+				string states = "Розміновано Підтв. ураж. Тільки розрив";
 				//. формування, перевірка
 				switch (targetClassJbd) {
 				//. Міна
 				case "Міна":
-					if (establishedJbd.Contains("Авар. скид") || establishedJbd.Contains("Розміновано") || establishedJbd.Contains("Підтв. ураж.") || establishedJbd.Contains("Тільки розрив")) {
+					if (establishedJbd.Contains("Авар. скид")) {
 						markName = $"{nameOfBch} ({dateJbd})";
+					} else if (states.Contains(establishedJbd)) {
+						markName = $"{nameOfMark.Substring(0, indexLoss)} ({dateJbd})";
 					} else {
 						markName = $"{nameOfBch} до ({datePlasDays(dateJbd)})";
 					}
@@ -401,7 +406,7 @@ namespace CSLight {
 					break;
 				//..
 				//. Скупчення ОС
-				case "Скупчення ОС":
+				case "ОС РОВ":
 					if (twoHundredth.Length > 0) {
 						markName = twoHundredth + " - 200";
 					}
@@ -489,7 +494,7 @@ namespace CSLight {
 						fullaim = "небо";
 					} else if (establishedJbd.Contains("Встановлено")) {
 						fullaim = "повніс";
-					} else if (establishedJbd.Contains("Спростовано")) {
+					} else if (establishedJbd.Contains("Спростовано") || establishedJbd.Contains("Підтверджено")) {
 						return;
 					} else {
 						fullaim = "част";
@@ -592,7 +597,7 @@ namespace CSLight {
 			string limitedAccess = "Мотоцикл Вантажівка Паливозаправник";
 			string obmezheno = "обмежено";
 			// Позашляховик
-			string pozashlyakhovyk = "Авто ББМ / МТ-ЛБ РЕБ (техніка) БТР Військ. баггі";
+			string pozashlyakhovyk = "Авто БМП (техніка) БТР Військ. баггі";
 			string suv = "позашлях";
 			// Гусеничний - колісний
 			string caterpillar = "ЗРК РСЗВ САУ КШМ Інж. техніка";
@@ -601,7 +606,7 @@ namespace CSLight {
 			string towTruck = "Гармата Гаубиця";
 			string buksyri = "буксир";
 			// Гусинечний
-			string gusankaList = "Танк БМП";
+			string gusankaList = "Танк БМП МТ-ЛБ БМД";
 			string gusanka = "Гусеничн";
 			
 			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1");
@@ -659,7 +664,7 @@ namespace CSLight {
 					} else if (establishedJbd.Contains("Розміновано")) {
 						commentContents += $"{commentJbd}, розміновано, спостерігали з {crewTeamJbd}";
 					} else if (establishedJbd.Contains("Спростовано")) {
-						commentContents += $"{commentJbd}, спостерігали з  {crewTeamJbd}";
+						commentContents += $"міна на місці, сліди розриву відсутні, спостерігали з {crewTeamJbd}";
 					} else if (establishedJbd.Contains("Тільки розрив")) {
 						commentContents += $"тільки розрив, спостерігали з {crewTeamJbd}";
 					} else if (establishedJbd.Contains("Підтв. ураж.")) {
@@ -728,7 +733,7 @@ namespace CSLight {
 			// додаткові поля
 			var additionalFields = w.Elm["web:GROUPING", prop: new("desc=Додаткові поля", "@title=Додаткові поля")].Find();
 			additionalFields.PostClick(scroll: 250);
-			//примітки штабу туту біда поле назва та примітки мають одниковість тест ід
+			//примітки штабу тут біда, поле назва та примітки мають одниковість тест ід
 			var notesWindow = w.Elm["web:TEXT", prop: "@name=Примітки штабу"].Find(-1);
 			if (notesWindow != null) {
 				notesWindow.PostClick(scroll: 250);
