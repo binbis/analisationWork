@@ -1,4 +1,4 @@
-/** 17.10.2024
+/** 18.10.2024
 
 * Для кожної флешки унікальна назва
 * пропонує місце, куди вказати шлях для вивантаження папок (можна вписати самому та пропонується за замовчуваннм)
@@ -40,12 +40,13 @@ class Program {
 		
 		int driveNumber = 1; // кількість флешок
 		long summaGiGybite = 0; // сумарна кількість
-		
-		// старт таймера
-		Stopwatch stopWatch = new Stopwatch();
-		stopWatch.Start();
-		
+		string timeMs = string.Empty; // загальний час
+			
 		foreach (string drive in removableDrives) {
+			// старт таймера
+			Stopwatch stopWatch = new Stopwatch();
+			stopWatch.Start();
+			
 			try {
 				// Перевірка, чи є диск знімним (флешкою)
 				DriveInfo driveInfo = new DriveInfo(drive);
@@ -82,12 +83,11 @@ class Program {
 				br.Window.Topmost = true;
 				if (!br.ShowDialog()) return 0;
 			}
+			// зупиняємо таймер та вимірюємо кількість часу, затраченого
+			double elapsedTotal = stopWatch.Elapsed.TotalSeconds / (driveNumber - 1);
+			timeMs = $"{TimeSpan.FromSeconds(elapsedTotal):hh\\:mm\\:ss}";
+			stopWatch.Stop();
 		}
-		
-		// зупиняємо таймер та вимірюємо кількість часу, затраченого
-		double elapsedTotal = stopWatch.Elapsed.TotalSeconds / (driveNumber - 1);
-		string timeMs = $"{TimeSpan.FromSeconds(elapsedTotal):hh\\:mm\\:ss}";
-		stopWatch.Stop();
 		
 		// перші спроби з формаим
 		var brr = new wpfBuilder("Window").WinSize(500);
@@ -149,8 +149,8 @@ class Program {
 		}
 		
 		// Використовуємо Stopwatch для вимірювання часу копіювання
-		Stopwatch stopwatch = new Stopwatch();
-		stopwatch.Start();
+		//Stopwatch stopwatch = new Stopwatch();
+		//stopwatch.Start();
 		
 		// Копіюємо всі файли
 		foreach (string file in allFiles) {
@@ -165,13 +165,13 @@ class Program {
 				copiedSizeBytes += fileInfo.Length;
 				
 				// Обчислення часу, що залишився
-				double averageTimePerItem = stopwatch.Elapsed.TotalSeconds / copiedItems;
-				double estimatedRemainingTime = averageTimePerItem * (totalItems - copiedItems);
+				//double averageTimePerItem = stopwatch.Elapsed.TotalSeconds / copiedItems;
+				//double estimatedRemainingTime = averageTimePerItem * (totalItems - copiedItems);
 				
 				// Виведення прогресу копіювання
 				Console.WriteLine($"Копіювання файлу: {file} ({copiedItems}/{totalItems}) - " +
-								  $"Скопійовано {FormatSize(copiedSizeBytes)} із {FormatSize(totalSizeBytes)} - " +
-								  $"Залишилося приблизно {TimeSpan.FromSeconds(estimatedRemainingTime):hh\\:mm\\:ss}");
+								  $"Скопійовано {FormatSize(copiedSizeBytes)} із {FormatSize(totalSizeBytes)} - "
+								 //$"Залишилося приблизно {TimeSpan.FromSeconds(estimatedRemainingTime):hh\\:mm\\:ss}");
 			}
 			catch (Exception ex) {
 				Console.WriteLine($"Помилка копіювання файлу {file}: {ex.Message}");
@@ -187,20 +187,20 @@ class Program {
 				copiedItems++;
 				
 				// Обчислення часу, що залишився
-				double averageTimePerItem = stopwatch.Elapsed.TotalSeconds / copiedItems;
-				double estimatedRemainingTime = averageTimePerItem * (totalItems - copiedItems);
+				//double averageTimePerItem = stopwatch.Elapsed.TotalSeconds / copiedItems;
+				//double estimatedRemainingTime = averageTimePerItem * (totalItems - copiedItems);
 				
 				// Виведення прогресу копіювання для папки
 				Console.WriteLine($"Копіювання папки: {dir} ({copiedItems}/{totalItems}) - " +
-								  $"Скопійовано {FormatSize(copiedSizeBytes)} із {FormatSize(totalSizeBytes)} - " +
-								  $"Залишилося приблизно {TimeSpan.FromSeconds(estimatedRemainingTime):hh\\:mm\\:ss}");
+								  $"Скопійовано {FormatSize(copiedSizeBytes)} із {FormatSize(totalSizeBytes)} - "
+								  //$"Залишилося приблизно {TimeSpan.FromSeconds(estimatedRemainingTime):hh\\:mm\\:ss}");
 			}
 			catch (Exception ex) {
 				Console.WriteLine($"Помилка копіювання папки {dir}: {ex.Message}");
 			}
 		}
 		
-		stopwatch.Stop();
+		//stopwatch.Stop();
 	}
 	
 	// Функція для форматування розміру файлу
