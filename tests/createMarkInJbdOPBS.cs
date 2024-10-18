@@ -224,7 +224,7 @@ namespace CSLight {
 			// кнопка створення мітки
 			var createButton = w.Elm["web:LISTITEM", prop: "@data-testid=create-object"].Find(1);/*image:WkJNG7UIAGRBTjORbUfyBexPvLqJa+pHaeSMMjAF5p22aevOI5ISKAFsqBMIgrbWjiH0KpEor6ypGQ7hwxmKAvKDdqBwEQOwQZaHVoz82UcMmxYLQt0CoKVpCC4itECYgxleb88hLjoRjDXVgEQAH576y+A+yxfQaDRICfFAblolvG5MAKUkOexxXm5c5PZfCvIvfGloAMDZi29cem4Gl2PKpWQz9sgrknIEs0X+ah5KUiAr+ZTsfz3h56JOEUteHtF9NUVMhihmKcOS4oDfIndLrSAPX5XdJm4quTbqhXh00QMFvAUNvfC3NOJ3KMJsbW1OI1c4Pj6Yf1OufNCpyj53I9z1+jHkyqccytmbVzshdRSTbXwHqDFEuzkhV29YblyfNjNhXx+WvdeV57PXsh8XZuUGEYbk7yVM1nN9OB02FZhEE3shao3Hd8qOIuTaukbb6hFK4dByQSO0TnZ8fHx8rKPWWq6Ry0sQpYVTpfl9eEm5djEH35gaEo4w1G7uQIja4LHhH7Rd0ys01mF9ydO0e9ets6xPUdV/NrArixqtJxo36WqZmD0E*/
 			createButton.PostClick();
-			wait.ms(2000);
+			wait.ms(3000);
 			// поле пошуку об'єктів
 			var fieldSearshingMark = w.Elm["web:GROUPING", "Категорії", navig: "next child2"].Find(1);/*image:WkJNG30IAAQib/e/D18VodkEinU2/YNqUgZOOB4wBlnAyQH84HbQM8YYvlYraHZ8J5qoXFoFQ0pm3bat0XknSP194HOKAA==*/
 			fieldSearshingMark.PostClick();
@@ -239,11 +239,11 @@ namespace CSLight {
 				forCall = true; // перемикання 
 				keys.sendL("Ctrl+A", "!" + witness, "Enter");
 			}
-			wait.ms(2000);
+			wait.ms(3000);
 			// обираємо 1 зі списку
 			var firstMarkInList = w.Elm["web:GROUPING", "Категорії", navig: "next last child"].Find(1);/*image:WkJNG30IAAQib/e/D18VodkEU3QziiJpWgBOOJ5L6kEW8OUkfNUzxhi+Vito5/lO3JF5lBEMTVF0e/qMVrl7UVm4Rh8=*/
 			firstMarkInList.PostClick();
-			wait.ms(2000);
+			wait.ms(4000);
 			
 			// обравши мітку, залишилося її заповнити
 			
@@ -291,9 +291,26 @@ namespace CSLight {
 			var rangeMark = w.Elm["web:SPINBUTTON", prop: "@data-testid=first-range"].Find(1);/*image:WkJNG7UIAMQn9ldv13E93Yjruq46J4CJbJDjuTkDSH8Oanj8LmEYhicSDWYDnow8UUpMh7gxxsuTSRCfy7vCRFc+yRWS+pJAhSMR2Kzddy1Okwa9PZ2IBj04PzlGRlIc/n5/sbG8iIq8LFxfXuBwdxvjA32ory7H89MjCtOTQRAE5qfGMWbCebvxc7vCFG+P1MB/W3oC1daQvWWkjDXC0moqoeGY30YdN0VeFjBhTf6QsMfyoaQd881H1Jcu5uG4TZjpAQ==*/
 			rangeMark.PostClick(scroll: 500);
 			keys.sendL("Ctrl+A", "!" + rangeNumber, "Enter");
+			wait.ms(200);
 			// колір залівки
-			var rangeColorGreen = w.Elm["web:BUTTON", "#4caf50", "@type=button"].Find(1);/*image:WkJNG7UIAMTnf795wSPpV8zTP3RRmag181DEmuljGpE6O53RFmf8n8ofKKAhvowFHsD47NrU51ukuY4xhAuKFflckE3GxGNEREAgdn9tbPbd8nEURxEqkRa6HgNs0JFTVAXvfm+hUAjvvAXFYhHu92XEPFY039fDROvRMV+HlnQMjq0uuDuMGHrpR89uK6L7fjiNBmQHU2i93Rsxh88GCXNBkYyg9J6UCKmcdpunCA+4+aHSq7MZ1apXQ9uXUqW55EVCqGMixAy2YUcy11S70EHL2q9+JDfHoAPggR+ATvOff2xKC+wjeonkQE3oz+WmiizQwSa9aQfoNUChlU0kSf8EDVyd51zoGsDAPGuMahueXPgeWuweZUmaqwbYpOessfVaDRu7uL159ZN4jzhtdQbZUnDhPSgj20Z9eE+sO9N692Or1HrH/XdV1NZm53/Jh8KcvfUbrb3WxcVFawTp/mFyCw==*/
-			
+			var sectorFillColor = w.Elm["web:RADIOBUTTON", "Сектор", "@name=zoneType", navig: "next11"].Find(1);/*image:WkJNGzEGAAQib/djOiEKpiiE5JPZNCUomg3o4LQ5nCHIAk4ST9STQD3wkO2SJJmsdVWHXSEzSSVYyBcI072yt8K/hz2UyN6Q4xWxHfm2lQI=*/
+			sectorFillColor.PostClick(scroll: 500);
+			if (ecipashName.Contains("Мавік")) {
+				var greenColorFill = w.Elm["web:BUTTON", "#4caf50"].Find(1);/*image:WkJNG1EGAGRhbkM1kd2SmDUR/yFBIkTL4pFMP/w3t3xhrNY7+DBjtBpEkIVssVR5KLjQFqqhNlOzCOWtI0QkJGbrv90Tz5BhTDVMbhGTbjggAnXBZ2acvSq3SQPFfRYwDINo1grjXw86lxpkOwGY/yeQLLlg8G1BYR6BNcQL/w7t4S6H+AWh1idC05lqQWjIXk3kkfuVmdvyaiH0XgTR40lqyt/VjT+I6zOVPgTZEnEaN5IOJnMlorkipewEiY3kgtQGqTXydowWEG0hWkW0z3gJ8Sbjdebv+IQb*/
+				greenColorFill.PostClick(scroll: 500);
+			}else if (ecipashName.Contains("FPV")) {
+				var lightBlueColorFill = w.Elm["web:BUTTON", "#00bcd4"].Find(1);/*image:WkJNG1UGAMSIMfczSfO4ZB6SWjJzzCKJI4omIlSodOD7ueWf2w6u1ZUwmE0RsVssVZ4IP1hWQrNHif+dnclkkhLed5p9ISp6KwlZuENyEECGecAxsec+r8moxt2lBsWQGiGXBX/fBpQTYXy96LBsqvH/a0Q3q8bPpx6nYzVGD/phSEYjsLYaQ+A8yN5srIeTNnL2YSdWTgwciS2TE/ljK+1EuqOQ2bui4h69WSeSH4Rp3suteSoicysV80ic5sHzxM2QvZGzIHeD3DXydkgWkGwxWUWyj9QSU5tIrV//OwA=*/
+				lightBlueColorFill.PostClick(scroll: 500);
+			}else {
+				var yelowTwoColorFill = w.Elm["web:BUTTON", "#ffc107"].Find(1);/*image:WkJNG2UGAMSAcXlPhgiyMWNbAxiqnV2/DQlSI9J8vpt8bP2jXkjptLF8C81/g3oRF0EWmMZBbbP7qSkcMghNm0LxPCpmUIdQiIiQtQSQQVojJOHvvQ2atfANTmJ1dRW+RBacy29wnz/DMXcIT3kzzxa34Nz4h6epBd7sEjjS93A/cNXmJVwdU1huouj/YdzG+g73lM9no2KuDHIyMoHU0JAKB7H0ea1HyhoHZfbjcVFR0AaZe08u9qQ5z2K35NhRiH3mRXBH5qAxJwTXwMYFOIM0DsMO/OH4PBijkBk+cABh7IELc9DwodxNiYWSG0quKW/HqAVKbVFqlVH7lF6i9OaK2dDrazD+jg8A*/
+				yelowTwoColorFill.PostClick(scroll: 500);
+			}
+			wait.ms(200);
+			// відсотки залівки колір залівки
+			var rangeSectorFillColor = w.Elm["web:SLIDER", prop: "@data-testid=opacity-slider"].Find(1);/*image:WkJNG2UGAMTnGZf/2OgIJSUIcfOd24S6t+jXl+GEKCUAbVFTN/lHqW/MPrDAu2wtoLE5kDXBckghpDSoG7p+MUmSEo0rmqfC9Q6ACoSAIieADKI2Njaz9xyHTsNa0Yav9TLaczYc3T9jqKcOToMeU8MjmN09gTMxjUl717//X/zvLeC8042My4yftw3k474EmBXeRF4L1sjL34My5C0Bla+KGHIxjqW4MgM+XaFWupoarcu9vb3dPdmrdZcm0yS7p7hlkt9M8msx8lfk9VPlTeFDNpu1BaZs2kvDaIiesuzUEQMA*/
+			rangeSectorFillColor.PostClick();
+			rangeSectorFillColor.SendKeys("Left*3");
+			wait.ms(200);
 		}
 		// додає вказану кількість днів до дати
 		static string datePlasDays(string date) {
