@@ -1,5 +1,10 @@
 /*/ nuget -\DocumentFormat.OpenXml; /*/
 /*
+1. створити папку(будь де)
+2. додати в папку файл приклад, в ворді, з ім'ям originalShedule.docx
+3. виділити рядки в ексель табличці
+4. жмеш скрипт, в діалоговому вікні вказати шлях
+5. отримати готові доповіді довідки
 
 скрипт який робить довідки доповіді
 
@@ -18,8 +23,19 @@ namespace CSLight {
 			string clipboardData = clipboard.copy(); // зчитуємо буфер обміну
 			string[] parts = clipboardData.Split('\n'); // Розділяємо рядок на частини
 			
-			string originalFilePath = @"C:\Users\User-PM\Desktop\testsFolder\originalShedule.docx";// Шлях до оригінального файлу
-			string newFilePath = @"C:\Users\User-PM\Desktop\testsFolder";// Шлях до нового файлу (копії)
+			// вікно діалогу
+			//string[] examlpelesItem = { "" };
+			var b = new wpfBuilder("Window").WinSize(800);
+			b.R.Add(out Label _, "назва файлу з прикладом = originalShedule.docx"); //read-only text
+			b.R.Add("Шляж де лежать приклад", out TextBox originalFilePath).Focus();
+			b.R.AddOkCancel();
+			b.Window.Topmost = true;
+			b.End();
+			// show dialog. Exit if closed not with the OK button.
+			if (!b.ShowDialog()) return;
+			
+			string originalFilePathChange = Path.Combine(originalFilePath.Text,"originalShedule.docx");// Шлях до оригінального файлу
+			string newFilePath = originalFilePath.Text; // Шлях до нового файлу (копії)
 			
 			// Шлях до робочого столу користувача
 			//string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
@@ -51,7 +67,7 @@ namespace CSLight {
 				string newFilePathUsing = Path.Combine(newFilePath, $"{date.Replace(".","")} Довідка-доповідь про втрату борту ({dron_name} № {dron_ID}).docx");
 				
 				// Створити копію файлу
-				System.IO.File.Copy(originalFilePath, newFilePathUsing, true);
+				System.IO.File.Copy(originalFilePathChange, newFilePathUsing, true);
 				//countNumber++; // ітерація
 				
 				// Відкрити копію для редагування
