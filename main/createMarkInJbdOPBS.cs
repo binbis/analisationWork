@@ -1,5 +1,5 @@
 
-/* 17,10,2024_v1.7.6
+/* 24,10,2024_v1.7.6
 * id обрізаються, щоб поміститись в рядок 
 * функція додавання до дати дні(60) підходить для мін
 * 200 та 300 рахуються та вписуються самі
@@ -76,31 +76,31 @@ namespace CSLight {
 			goToMain();
 			wait.ms(400);
 			deltaLayerWindow(targetClassJbd, commentJbd);
-			wait.ms(875);
+			wait.ms(200);
 			deltaMarkName(nameOfBch, targetClassJbd, dateJbd, establishedJbd, commentJbd, twoHundredth, threeHundredth);
-			wait.ms(875);
+			wait.ms(200);
 			deltaDateLTimeWindow(dateDeltaFormat, timeJbd);
-			wait.ms(875);
+			wait.ms(200);
 			deltaNumberOfnumberWindow(twoHundredth, threeHundredth);
-			wait.ms(875);
+			wait.ms(200);
 			deltaCombatCapabilityWindow(targetClassJbd, establishedJbd, commentJbd);
-			wait.ms(875);
+			wait.ms(200);
 			deltaIdentificationWindow(targetClassJbd, establishedJbd, commentJbd);
-			wait.ms(875);
+			wait.ms(200);
 			deltaReliabilityWindow();
-			wait.ms(875);
+			wait.ms(200);
 			deltaFlyeye();
-			wait.ms(875);
+			wait.ms(200);
 			deltaIdPurchaseText(idTargetJbd);
-			wait.ms(875);
+			wait.ms(200);
 			deltaMobilityLine(targetClassJbd);
-			wait.ms(875);
+			wait.ms(200);
 			deltaCommentContents(targetClassJbd, dateJbd, timeJbd, crewTeamJbd, establishedJbd, commentJbd, mgrsCoords);
 			wait.ms(1500);
 			deltaAdditionalFields(idTargetJbd, targetClassJbd);
 			wait.ms(1500);
 			deltaGeografPlace(targetClassJbd, establishedJbd, commentJbd, mgrsCoords);
-			wait.ms(875);
+			wait.ms(200);
 			
 			if (combatLogId.Length > 6) {
 				deltaImportFiles(combatLogId, pathTo_combatLogId, establishedJbd, commentJbd, idTargetJbd, whatDidJbd, getDDnMM(dateJbd), timeJbd.Replace(":", "."), GetCutsSTR(crewTeamJbd), numberOFlying);
@@ -384,7 +384,7 @@ namespace CSLight {
 				string markName = string.Empty;
 				string nameOfMark = nameOfMarkWindow.Value;
 				int indexLoss = nameOfMark.IndexOf(" ");
-				string states = "Розміновано Підтв. ураж. Тільки розрив";
+				string states = "Розміновано Підтв. ураж. Тільки розрив Спростовано";
 				//. формування, перевірка
 				switch (targetClassJbd) {
 				//. Міна
@@ -751,7 +751,7 @@ namespace CSLight {
 			var additionalFields = w.Elm["web:GROUPING", prop: new("desc=Додаткові поля", "@title=Додаткові поля")].Find();
 			additionalFields.PostClick(scroll: 250);
 			//примітки штабу тут біда, поле назва та примітки мають одниковість тест ід
-			var notesWindow = w.Elm["web:TEXT", prop: "@name=Примітки штабу"].Find(-1);
+			var notesWindow = w.Elm["web:TEXT", prop: new("@data-testid=string-field__input", "@name=Зауваження штабу")].Find(-1);/*image:WkJNGy0GAAQib/e/33dKMIWi24hGsK40kIvjdxjDYBZwEgl2oYccsr1Jkpl5qhN3ZBapBUP9KLo9NVrh3U3lcPW/qwc=*/
 			if (notesWindow != null) {
 				notesWindow.PostClick(scroll: 250);
 				keys.sendL("Ctrl+A", "!" + idTargetJbd, "Enter");
@@ -859,7 +859,7 @@ namespace CSLight {
 					}
 					// перейменування елементу на те що хочу я
 					File.Move(filesInDirectory[i], newPath);
-					wait.ms(875);
+					wait.ms(200);
 					//Console.WriteLine(filesInDirectory[i] + "\n");
 				}
 				// відкриття папки за шляхом
