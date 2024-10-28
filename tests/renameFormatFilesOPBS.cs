@@ -125,12 +125,13 @@ namespace CSLight {
 			if (establishedJbd == "Підтв. ураж.") {
 				return "зйом.ураж";
 				//return whatToDo;
-			} else if (establishedJbd.ToLower().Contains("ураж")) {
-				return "ураж";
-			}
-			if (establishedJbd.ToLower().Contains("знищ")) {
+			} else if (establishedJbd.ToLower().Contains("знищ")) {
 				return "знищ";
 			}
+			if (establishedJbd.ToLower().Contains("ураж")) {
+				return "ураж";
+			}
+			
 			if (establishedJbd.Contains("Встановлено")) {
 				return "встан";
 			}

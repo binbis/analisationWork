@@ -26,7 +26,7 @@ namespace CSLight {
 			// вікно діалогу
 			//string[] examlpelesItem = { "" };
 			var b = new wpfBuilder("Window").WinSize(800);
-			b.R.Add(out Label _, "назва файлу з прикладом = originalShedule.docx"); //read-only text
+			b.R.Add("назва файлу з прикладом", out TextBox _, "originalShedule.docx"); //read-only text
 			b.R.Add("Шляж де лежать приклад", out TextBox originalFilePath).Focus();
 			b.R.AddOkCancel();
 			b.Window.Topmost = true;
@@ -34,7 +34,7 @@ namespace CSLight {
 			// show dialog. Exit if closed not with the OK button.
 			if (!b.ShowDialog()) return;
 			
-			string originalFilePathChange = Path.Combine(originalFilePath.Text,"originalShedule.docx");// Шлях до оригінального файлу
+			string originalFilePathChange = Path.Combine(originalFilePath.Text, "originalShedule.docx");// Шлях до оригінального файлу
 			string newFilePath = originalFilePath.Text; // Шлях до нового файлу (копії)
 			
 			// Шлях до робочого столу користувача
@@ -64,7 +64,7 @@ namespace CSLight {
 				string pilot_name = elements[17]; // ПІП пілота в називному відмінку
 				
 				// 20241009 Довідка-доповідь про втрату борту (Vampire № SFCF1000016693).docx
-				string newFilePathUsing = Path.Combine(newFilePath, $"{date.Replace(".","")} Довідка-доповідь про втрату борту ({dron_name} № {dron_ID}).docx");
+				string newFilePathUsing = Path.Combine(newFilePath, $"{date.Replace(".", "")} Довідка-доповідь про втрату борту ({dron_name} № {dron_ID}).docx");
 				
 				// Створити копію файлу
 				System.IO.File.Copy(originalFilePathChange, newFilePathUsing, true);

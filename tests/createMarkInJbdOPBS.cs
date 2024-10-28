@@ -1,8 +1,8 @@
 
-/* 24,10,2024_v1.7.6
+/* 26,10,2024_v1.7.6
 * id обрізаються, щоб поміститись в рядок 
 * функція додавання до дати дні(60) підходить для мін
-* 200 та 300 рахуються та вписуються самі
+* 200 та 300 рахуються
 * відкриття папки за ід повідомлення 1-3 секунди (бабмасік)
 * координата в коментар для укриття
 * розділено функціонал, заповнення мітки окремо від створення та заповнення мітки для реб-рер
@@ -389,7 +389,10 @@ namespace CSLight {
 				switch (targetClassJbd) {
 				//. Міна
 				case "Міна":
-					if (establishedJbd.Contains("Авар. скид")) {
+					if (!nameOfBch.Contains("ПТМ-3")) {
+						markName = $"{nameOfBch}";
+					}
+					else if (establishedJbd.Contains("Авар. скид")) {
 						markName = $"{nameOfBch} ({dateJbd})";
 					} else if (states.Contains(establishedJbd)) {
 						markName = $"{nameOfMark.Substring(0, indexLoss)} ({dateJbd})";

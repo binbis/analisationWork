@@ -1,4 +1,4 @@
-/** 07,10,2024
+/** 28,10,2024
 	створення для створення папок з Планування excel
 1. вибираєш ячейку під колонкою А
 2. жмеш скрипт
@@ -98,9 +98,9 @@ class Program {
 			// Змінна, що змінюється після кожної операції
 			string textName = string.Empty;
 			if (crew.Contains("Ев. ")) {
-				textName = $"{crew}\t {point}\t {city}\t {formattedTeam}\n";
+				textName = $"{date}\t {crew}\t {point}\t {city}\t {formattedTeam}\n";
 			} else {
-				textName = $"{crew}\t {point}\t {area}\t {formattedTeam}\n";
+				textName = $"{date}\t {crew}\t {point}\t {area}\t {formattedTeam}\n";
 			}
 			
 			if (textName.Length > 16) {
