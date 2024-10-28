@@ -1,4 +1,4 @@
-/* 08,10,2024
+/* 28,10,2024
 проєкт - переіменування файлів в папці
 
 04.10 21.30 М111 (Лелека) Васабі ББМ  МТ-ЛБ 041024073 - виявлено 1
@@ -26,7 +26,7 @@ namespace CSLight {
 			string[] parts = clipboardData.Split('\t'); // Розділяємо рядок на частини
 			
 			// вікно діалогу
-			string[] examlpelesItem = { "1. Перейменування в папці", "2. Готове речення в буфер обміну" };
+			string[] examlpelesItem = { "1. Перейменування в папці Бамбас", "2. Готове речення в буфер обміну", "3. Перейменування в папці Уголь" };
 			var b = new wpfBuilder("Window").WinSize(400);
 			b.R.Add("Назва", out ComboBox itemSelect).Items(examlpelesItem);
 			b.R.AddOkCancel();
@@ -48,6 +48,7 @@ namespace CSLight {
 			
 			string messageId = parts[34]; // 1725666514064
 			string pathDonbasFolder = @"\\SNG-8-sh\CombatLog\Donbas_Combat_Log"; // реальний шлях
+			string pathCoalFolder = @"\\Sng-2\аеророзвідка\combatlog\Sumy_Combat_Log"; // 
 			
 			if (itemSelect.Text.Contains("2.")) {
 				if (crewTeamJbd.Contains("FPV")) {
@@ -59,8 +60,15 @@ namespace CSLight {
 				}
 			}
 			
+			
 			if (messageId.Length > 3) {
-				string pathFilesOpen = Path.Combine(pathDonbasFolder, messageId);
+				string pathFilesOpen = string.Empty;
+				if (itemSelect.Text.Contains("3.")) {
+					pathFilesOpen = Path.Combine(pathCoalFolder, messageId);
+				} else {
+					pathFilesOpen = Path.Combine(pathDonbasFolder, messageId);
+				}
+				
 				// спроба перейменувати назву
 				var filesInDirectory = Directory.EnumerateFiles(pathFilesOpen, "*").Where(name => !name.EndsWith(".db")).ToArray();
 				

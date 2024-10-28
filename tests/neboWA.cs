@@ -26,6 +26,7 @@ namespace CSLight {
 				var fielEnterdWhatsApp = whatsAppWindow.Elm["WINDOW", "WhatsApp", "class=Windows.UI.Core.CoreWindow", EFFlags.UIA].Find(1);/*image:WkJNGz0GAATCtd3D83X7h+9DROwrSwYxybSZmjo5PrYFKEEQtkXNk4TDXAKHkHFoevKnPp+jUXthx42tChXxD3o/IyK4O5mJmRERqOo+zC8E382C1ktsOlZGfH4SAA==*/
 				fielEnterdWhatsApp.PostClick();
 				keys.send("Ctrl+V");
+				keys.send("0");
 				wait.s(2);
 				keys.send("Enter");
 				
