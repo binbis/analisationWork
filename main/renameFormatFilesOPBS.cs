@@ -100,7 +100,7 @@ namespace CSLight {
 					wait.ms(200);
 					//Console.WriteLine(filesInDirectory[i] + "\n");
 				}
-				if (itemSelect.Text.Contains("1.")) {
+				if (itemSelect.Text.Contains("1.") || itemSelect.Text.Contains("3.")) {
 					// відкриття папки за шляхом
 					Process.Start("explorer.exe", pathFilesOpen);
 				}
