@@ -1,4 +1,4 @@
-/*/ c \analisationWork\globalClass\Bisbin.cs; /*/
+/*/ c \analisationWork-main\globalClass\Bisbin.cs; /*/
 
 /* 29.10.2024 2.0
 
@@ -159,7 +159,7 @@ namespace CSLight {
 			wait.ms(400);
 			//. боєздатність
 			var combatCapabilityWindow = w.Elm["web:GROUPING", prop: "@data-testid=operational-condition-select"].Find(-1);/*image:WkJNG/0DAATCdr9tIAMZJ1HadVdc0HlCGjjheOyxBBGldiG6XOEdIJS163wjDxQ6OQqO6Pb0bJV3N/Q4Pp/VAA==*/
-			capabilityWindow.PostClick(scroll: 250);
+			combatCapabilityWindow.PostClick(scroll: 250);
 			keys.sendL("Ctrl+A", "!" + capability, "Enter*2");
 			//..
 			wait.ms(400);

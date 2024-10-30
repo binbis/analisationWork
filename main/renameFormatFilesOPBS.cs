@@ -1,4 +1,4 @@
-/*/ c \analisationWork\globalClass\Bisbin.cs; /*/
+/*/ c \analisationWork-main\globalClass\Bisbin.cs; /*/
 /* 30,10,2024
 проєкт - переіменування файлів в папці
 
