@@ -1,4 +1,6 @@
-/*25.09.2024_0.0.3
+/*/ c \analisationWork\globalClass\Bisbin.cs; /*/
+
+/* 30.10.2024_0.0.3
 * на основі обраної назви виставляється боєздатність
 * якщо дата відсутня ставить з прикріплення(якщо відсутнє поточну) 
 * якщо є прикріплення додасть перше ім'я в кінець коментару
@@ -74,14 +76,14 @@ class Program {
 		string nameAttachmentMessage = string.Empty;
 		string dateTimeAttachmentMessage = string.Empty;
 		string clipData_time = DateTime.Now.ToString("dd/MM/yyyy hh:mm");
-		
+		clipboard.clear();
 		// основне вікно
 		var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1").Activate();
 		wait.ms(900);
 		nameAttachmentMessage = getNameWithAttachments();
 		dateTimeAttachmentMessage = getDateTimeWithAttachments();
 		wait.ms(900);
-		goToMain();
+		Bisbin.goToMainField();
 		wait.ms(900);
 		deltaLayerWindow(nameDeltaFill);
 		wait.ms(900);
@@ -93,12 +95,11 @@ class Program {
 		wait.ms(900);
 		deltaCombatCapabilityWindow(nameDeltaFill);
 		wait.ms(900);
-		deltaReliabilityWindow();
+		Bisbin.reliabilityWindow();
 		wait.ms(900);
-		deltaFlyeye();
+		Bisbin.flyEye();
 		wait.ms(900);
 		commentDeltaAreaFill(clipData_time, commentDeltaFill, nameAttachmentMessage);
-		clipboard.clear();
 		
 	}
 	static void deltaLayerWindow(string nameDeltaFill) {

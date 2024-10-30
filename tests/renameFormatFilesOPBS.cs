@@ -1,7 +1,6 @@
-/* 28,10,2024
+/*/ c \analisationWork\globalClass\Bisbin.cs; /*/
+/* 30,10,2024
 проєкт - переіменування файлів в папці
-
-04.10 21.30 М111 (Лелека) Васабі ББМ  МТ-ЛБ 041024073 - виявлено 1
 
 + знайти перейменувати вміст та відкрити папку
 + обійти екіпаж crewTeamJbd з кінця та обрізати усе до )
@@ -26,7 +25,12 @@ namespace CSLight {
 			string[] parts = clipboardData.Split('\t'); // Розділяємо рядок на частини
 			
 			// вікно діалогу
-			string[] examlpelesItem = { "1. Перейменування в папці Бамбас", "2. Готове речення в буфер обміну", "3. Перейменування в папці Уголь" };
+			string[] examlpelesItem = {
+				"1. Перейменування в папці Бамбас",
+				"2. Готове речення в буфер обміну",
+				"3. Перейменування в папці Уголь-дон",
+				"4. Перейменування в папці Уголь-ссу",
+			};
 			var b = new wpfBuilder("Window").WinSize(400);
 			b.R.Add("Назва", out ComboBox itemSelect).Items(examlpelesItem);
 			b.R.AddOkCancel();
@@ -40,15 +44,16 @@ namespace CSLight {
 			string timeJbd = parts[1].Replace(":", "."); // 00:40 - 00.40
 			string commentJbd = parts[2].Replace("\n", " "); // коментар
 			string numberOFlying = parts[3]; // 5
-			string crewTeamJbd = GetCutsSTR(TrimAfterDot(parts[4].Replace("\n", ""))); // R-18 (Мавка)
+			string crewTeamJbd = Bisbin.GetCutsEcipash(Bisbin.TrimAfterDot(parts[4].Replace("\n", ""))); // R-18 (Мавка)
 			string whatToDo = parts[5];// Дорозвідка / Мінування ....
 			string targetClassJbd = parts[7]; // Міна/Вантажівка/...
 			string idTargetJbd = parts[9].Replace("/", ""); // Міна 270724043
 			string establishedJbd = parts[24]; // Встановлено/Уражено/Промах/...
 			
 			string messageId = parts[34]; // 1725666514064
-			string pathDonbasFolder = @"\\SNG-8-sh\CombatLog\Donbas_Combat_Log"; // реальний шлях
-			string pathCoalFolder = @"\\Sng-2\аеророзвідка\combatlog\Sumy_Combat_Log"; // 
+			string pathDonbasFolder = @"\\SNG-8-sh\CombatLog\Donbas_Combat_Log"; // 
+			string pathCoalFolderDon = @"\\Sng-2\аеророзвідка\combatlog\Vugl_Combat_Log"; //
+			string pathCoalFolderSsy = @"\\Sng-2\аеророзвідка\combatlog\Sumy_Combat_Log"; // 
 			
 			if (itemSelect.Text.Contains("2.")) {
 				if (crewTeamJbd.Contains("FPV")) {
@@ -60,11 +65,12 @@ namespace CSLight {
 				}
 			}
 			
-			
 			if (messageId.Length > 3) {
 				string pathFilesOpen = string.Empty;
 				if (itemSelect.Text.Contains("3.")) {
-					pathFilesOpen = Path.Combine(pathCoalFolder, messageId);
+					pathFilesOpen = Path.Combine(pathCoalFolderDon, messageId);
+				} else if (itemSelect.Text.Contains("4.")) {
+					pathFilesOpen = Path.Combine(pathCoalFolderSsy, messageId);
 				} else {
 					pathFilesOpen = Path.Combine(pathDonbasFolder, messageId);
 				}
@@ -100,33 +106,17 @@ namespace CSLight {
 					wait.ms(200);
 					//Console.WriteLine(filesInDirectory[i] + "\n");
 				}
-				if (itemSelect.Text.Contains("1.") || itemSelect.Text.Contains("3.")) {
+				if (itemSelect.Text.Contains("1.") || itemSelect.Text.Contains("3.") || itemSelect.Text.Contains("4.")) {
 					// відкриття папки за шляхом
 					Process.Start("explorer.exe", pathFilesOpen);
 				}
 			}
 			
 		}
-		// обрізати рядок усе після крапки
-		static string TrimAfterDot(string str) {
-			int dotIndex = str.IndexOf('.');
-			if (dotIndex != -1) {
-				return str.Substring(0, dotIndex);
-			}
-			return str;
-		}
 		// формат для перейменування відео 27.07.2024 - 27.07
 		static string getDDnMM(string str) {
 			string[] partOfDates = str.Split(".");
 			return $"{partOfDates[0]}.{partOfDates[1]}";
-		}
-		// обрізати назви екіпажів
-		static string GetCutsSTR(string str) {
-			int index = str.LastIndexOf(')');
-			if (index != -1) {
-				return str.Substring(0, index + 1);
-			}
-			return str;
 		}
 		// перевірка для статусу з жбд
 		static string getTrueEstablished(string establishedJbd, string commentJbd, string whatToDo) {
