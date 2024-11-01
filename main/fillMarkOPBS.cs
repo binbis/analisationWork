@@ -1,4 +1,4 @@
-/*/ c \analisationWork-main\globalClass\Bisbin.cs; /*/
+/*/ c \analisationWork\globalClass\Bisbin.cs; /*/
 
 /* 29.10.2024 2.0
 
@@ -183,9 +183,9 @@ namespace CSLight {
 		static void createWhoWork(string clipboardData) {
 			string[] parts = clipboardData.Split('\t'); // Розділяємо рядок на частини
 			
-			string ecipashName = parts[0]; // екіпаж
-			string flyDot = $"Т.в. \"{parts[1]}\""; // точка вильоту
-			string mgrsCoord = parts[9]; // координати
+			string ecipashName = parts[1]; // екіпаж
+			string flyDot = $"Т.в. \"{parts[2]}\""; // точка вильоту
+			string mgrsCoord = parts[10]; // координати
 			string finalName = $"{ecipashName} {flyDot}";
 			
 			string rebMark = "Створення перешкод";
@@ -280,10 +280,10 @@ namespace CSLight {
 			if (ecipashName.Contains("Мавік")) {
 				var greenColorFill = w.Elm["web:BUTTON", "#4caf50"].Find(1);/*image:WkJNG1EGAGRhbkM1kd2SmDUR/yFBIkTL4pFMP/w3t3xhrNY7+DBjtBpEkIVssVR5KLjQFqqhNlOzCOWtI0QkJGbrv90Tz5BhTDVMbhGTbjggAnXBZ2acvSq3SQPFfRYwDINo1grjXw86lxpkOwGY/yeQLLlg8G1BYR6BNcQL/w7t4S6H+AWh1idC05lqQWjIXk3kkfuVmdvyaiH0XgTR40lqyt/VjT+I6zOVPgTZEnEaN5IOJnMlorkipewEiY3kgtQGqTXydowWEG0hWkW0z3gJ8Sbjdebv+IQb*/
 				greenColorFill.PostClick(scroll: 500);
-			}else if (ecipashName.Contains("FPV")) {
+			} else if (ecipashName.Contains("FPV")) {
 				var lightBlueColorFill = w.Elm["web:BUTTON", "#00bcd4"].Find(1);/*image:WkJNG1UGAMSIMfczSfO4ZB6SWjJzzCKJI4omIlSodOD7ueWf2w6u1ZUwmE0RsVssVZ4IP1hWQrNHif+dnclkkhLed5p9ISp6KwlZuENyEECGecAxsec+r8moxt2lBsWQGiGXBX/fBpQTYXy96LBsqvH/a0Q3q8bPpx6nYzVGD/phSEYjsLYaQ+A8yN5srIeTNnL2YSdWTgwciS2TE/ljK+1EuqOQ2bui4h69WSeSH4Rp3suteSoicysV80ic5sHzxM2QvZGzIHeD3DXydkgWkGwxWUWyj9QSU5tIrV//OwA=*/
 				lightBlueColorFill.PostClick(scroll: 500);
-			}else {
+			} else {
 				var yelowTwoColorFill = w.Elm["web:BUTTON", "#ffc107"].Find(1);/*image:WkJNG2UGAMSAcXlPhgiyMWNbAxiqnV2/DQlSI9J8vpt8bP2jXkjptLF8C81/g3oRF0EWmMZBbbP7qSkcMghNm0LxPCpmUIdQiIiQtQSQQVojJOHvvQ2atfANTmJ1dRW+RBacy29wnz/DMXcIT3kzzxa34Nz4h6epBd7sEjjS93A/cNXmJVwdU1huouj/YdzG+g73lM9no2KuDHIyMoHU0JAKB7H0ea1HyhoHZfbjcVFR0AaZe08u9qQ5z2K35NhRiH3mRXBH5qAxJwTXwMYFOIM0DsMO/OH4PBijkBk+cABh7IELc9DwodxNiYWSG0quKW/HqAVKbVFqlVH7lF6i9OaK2dDrazD+jg8A*/
 				yelowTwoColorFill.PostClick(scroll: 500);
 			}
@@ -291,7 +291,7 @@ namespace CSLight {
 			// відсотки залівки колір залівки
 			var rangeSectorFillColor = w.Elm["web:SLIDER", prop: "@data-testid=opacity-slider"].Find(1);/*image:WkJNG2UGAMTnGZf/2OgIJSUIcfOd24S6t+jXl+GEKCUAbVFTN/lHqW/MPrDAu2wtoLE5kDXBckghpDSoG7p+MUmSEo0rmqfC9Q6ACoSAIieADKI2Njaz9xyHTsNa0Yav9TLaczYc3T9jqKcOToMeU8MjmN09gTMxjUl717//X/zvLeC8042My4yftw3k474EmBXeRF4L1sjL34My5C0Bla+KGHIxjqW4MgM+XaFWupoarcu9vb3dPdmrdZcm0yS7p7hlkt9M8msx8lfk9VPlTeFDNpu1BaZs2kvDaIiesuzUEQMA*/
 			rangeSectorFillColor.PostClick();
-			rangeSectorFillColor.SendKeys("Left*5");
+			rangeSectorFillColor.SendKeys("Left*8");
 			wait.ms(200);
 		}
 		// обрати відповідний шар
