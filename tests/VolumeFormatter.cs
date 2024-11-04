@@ -1,3 +1,6 @@
+using System.Windows.Controls;
+using System.Windows.Media;
+
 /*
 
 код форматує усі накопичувачі типу флешка
@@ -9,7 +12,18 @@ using System.Linq;
 */
 
 class Program {
-	static void Main() {
+	static int Main() {
+		
+		var b = new wpfBuilder("Window").WinSize(600);
+		b.Brush(Brushes.Moccasin); //dialog background color
+		b.Font(size: 18, bold: true); //default font for all controls
+		b.R.Add(out Label recomendedPath, "            Ти певний?\n Я ж форматну усі флешки.").Align("c", "c");
+		b.R.AddOkCancel().Focus();
+		b.Window.Topmost = true;
+		b.End();
+		// show dialog. Exit if closed not with the OK button.
+		if (!b.ShowDialog()) return 0;
+		
 		// Отримуємо всі диски типу "Знімний диск" (флешки)
 		var removableDrives = DriveInfo.GetDrives().Where(d => d.DriveType == DriveType.Removable && d.IsReady);
 		
@@ -19,6 +33,7 @@ class Program {
 		}
 		
 		Console.WriteLine("Спроба форматування усіх флешок завершена.");
+		return 0;
 	}
 	
 	static void FormatDriveWithDiskpart(string driveLetter) {

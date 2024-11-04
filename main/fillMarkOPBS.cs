@@ -1,4 +1,4 @@
-/*/ c \analisationWork\globalClass\Bisbin.cs; /*/
+/*/ c \analisationWork-main\globalClass\Bisbin.cs; /*/
 
 /* 29.10.2024 2.0
 
