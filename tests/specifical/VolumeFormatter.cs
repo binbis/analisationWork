@@ -1,6 +1,3 @@
-using System.Windows.Controls;
-using System.Windows.Media;
-
 /*
 
 код форматує усі накопичувачі типу флешка
@@ -10,6 +7,9 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 */
+
+using System.Windows.Controls;
+using System.Windows.Media;
 
 class Program {
 	static int Main() {
@@ -40,7 +40,7 @@ class Program {
 		try {
 			// Створюємо файл команд для diskpart
 			string diskpartScriptPath = Path.GetTempFileName();
-			File.WriteAllText(diskpartScriptPath, $"select volume {driveLetter}\nclean\ncreate partition primary\nformat fs=ntfs quick\nassign letter={driveLetter}\nexit");
+			File.WriteAllText(diskpartScriptPath, $"select volume {driveLetter}\nclean\ncreate partition primary\nformat fs=exfat quick\nassign letter={driveLetter}\nexit");
 			
 			// Створюємо процес для запуску diskpart з нашим файлом команд
 			var diskpartProcess = new Process {
