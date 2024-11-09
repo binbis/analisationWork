@@ -188,6 +188,7 @@ namespace CSLight {
 			string[] parts = clipboardData.Split('\n'); // Розділяємо рядок на частини
 			string dateTimeNow = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss"); // поточний час
 			var features = new List<Object>(); //
+			string plassEror = string.Empty; // для подальшої перевірки
 			
 			foreach (string item in parts) {
 				string[] elements = item.Split('\t'); // ділимо рядок на елементи
@@ -241,7 +242,8 @@ namespace CSLight {
 					
 					features.Add(feature.ToString());
 				} else {
-					Console.WriteLine("одне з речень не містить mgrs координат");
+					Console.WriteLine($"речення {elements[1]} Т.в. ({elements[2]}) не містить mgrs координат");
+					plassEror += $"\r речення {elements[1]} Т.в. ({elements[2]}) не містить mgrs координат";
 				}
 			};
 			
@@ -257,6 +259,7 @@ namespace CSLight {
 			// Шлях до робочого столу користувача
 			string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
 			string fileName = $"{DateTime.Now.ToString("dd mmss")} - layer 777.geojson"; // Формування назви файлу
+			string finalComment = string.Empty; // для подальшої перевірки
 			try {
 				// Повний шлях до файлу, який ми хочемо створити
 				string filePath = Path.Combine(desktopPath, fileName);
@@ -264,11 +267,22 @@ namespace CSLight {
 				// Записуємо рядок у файл
 				File.WriteAllText(filePath, geoJson.ToString());
 				
-				Console.WriteLine("Файл успішно створено на робочому столі.");
+				finalComment = $"Файл {fileName} успішно створено на робочому столі.";
 			}
 			catch (Exception ex) {
 				Console.WriteLine($"Виникла помилка при створенні файлу: {ex.Message}");
+				finalComment = $"Виникла помилка при створенні файлу: {ex.Message}";
 			}
+			
+			// вікно діалогу
+			var b = new wpfBuilder("Window").WinSize(650);
+			b.R.Add(out Label _, plassEror);
+			b.R.Add(out Label _, finalComment);
+			b.R.AddOkCancel();
+			b.Window.Topmost = true;
+			b.End();
+			// show dialog. Exit if closed not with the OK button.
+			if (!b.ShowDialog()) return;
 			
 		}
 		// обрати відповідний шар
