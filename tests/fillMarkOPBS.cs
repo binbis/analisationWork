@@ -1,6 +1,6 @@
 /*/ nuget -\CoordinateSharp; c \analisationWork\globalClass\Bisbin.cs; /*/
 
-/* 29.10.2024 2.0
+/* 13.11.2024 2.0
 
 * id обрізаються, щоб поміститись в рядок 
 * функція додавання до дати дні(x) підходить для мін
@@ -300,39 +300,39 @@ namespace CSLight {
 				layerWindow.PostClick(scroll: 250);
 				//. перевірка, запис
 				if (permanentStorage.Contains(targetClassJbd)) {
-					keys.sendL("Ctrl+A", "!Пост", "Enter");
+					keys.sendL("Ctrl+A", "!постійні схов.", "Enter");
 					return;
 				}
 				if (antennaCamera.Contains(targetClassJbd)) {
-					keys.sendL("Ctrl+A", "!антени", "Enter");
+					keys.sendL("Ctrl+A", "!антени, камери", "Enter");
 					return;
 				}
 				switch (targetClassJbd) {
 				case "Міна":
-					keys.sendL("Ctrl+A", "!11", "Enter");
+					keys.sendL("Ctrl+A", "!маршрути, міни, загородж", "Enter");
 					break;
 				case "Загородження":
-					keys.sendL("Ctrl+A", "!11", "Enter");
+					keys.sendL("Ctrl+A", "!маршрути, міни, загородж", "Enter");
 					break;
 				case "Бліндаж":
-					keys.sendL("Ctrl+A", "!07", "Enter");
+					keys.sendL("Ctrl+A", "!траншеї і бліндажі", "Enter");
 					break;
 				case "Т. вильоту дронів":
-					keys.sendL("Ctrl+A", "!08", "Enter");
+					keys.sendL("Ctrl+A", "!т. вильоту дронів", "Enter");
 					break;
 				case "ОС РОВ":
-					keys.sendL("Ctrl+A", "!10", "Enter");
+					keys.sendL("Ctrl+A", "!особовий склад РОВ", "Enter");
 					break;
 				case "Міномет":
-					keys.sendL("Ctrl+A", "!09", "Enter");
+					keys.sendL("Ctrl+A", "!окопна зброя (+ міномети)", "Enter");
 					break;
 				default:
 					if (commentJbd.ToLower().Contains("рус") || commentJbd.ToLower().Contains("рух")) {
-						keys.sendL("Ctrl+A", "!06", "Enter");
+						keys.sendL("Ctrl+A", "!техніка в русі ", "Enter");
 					} else if (commentJbd.ToLower().Contains("виходи") || commentJbd.ToLower().Contains("вогнева позиція")) {
-						keys.sendL("Ctrl+A", "!05", "Enter");
+						keys.sendL("Ctrl+A", "!вогневі позиції ", "Enter");
 					} else {
-						keys.sendL("Ctrl+A", "!04", "Enter");
+						keys.sendL("Ctrl+A", "!схована техніка ", "Enter");
 					}
 					break;
 				}
@@ -480,7 +480,7 @@ namespace CSLight {
 			//. перевірка
 			if (combatCapabilityWindow != null) {
 				string fullaim = string.Empty;
-				string states = "Розміновано Підтв. ураж. Тільки розрив";
+				string states = "Розміновано Підтв. ураж. Тільки розрив Авар. скид";
 				switch (targetClassJbd) {
 				//. Якщо ти міна
 				case "Міна":

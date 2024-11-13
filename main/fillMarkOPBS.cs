@@ -1,6 +1,6 @@
-/*/ c \analisationWork-main\globalClass\Bisbin.cs; /*/
+/*/ nuget -\CoordinateSharp; c \analisationWork-main\globalClass\Bisbin.cs; /*/
 
-/* 29.10.2024 2.0
+/* 13.11.2024 2.0
 
 * id обрізаються, щоб поміститись в рядок 
 * функція додавання до дати дні(x) підходить для мін
@@ -13,6 +13,7 @@
 
 using System.Windows;
 using System.Windows.Controls;
+using CoordinateSharp;
 
 namespace CSLight {
 	class Program {
@@ -20,15 +21,15 @@ namespace CSLight {
 			opt.key.KeySpeed = 20;
 			opt.key.TextSpeed = 20;
 			
-			keys.send("Shift+Space*2"); //виділяємо весь рядок
-			wait.ms(100);
+			//keys.send("Shift+Space*2"); //виділяємо весь рядок
+			//wait.ms(100);
 			keys.send("Ctrl+C"); //копіюємо код
 			wait.ms(100);
 			string clipboardData = clipboard.copy(); // зчитуємо буфер обміну
 			string[] examlpelesItem = {
 										"1. Заповнення мітки",
 										"2. Створення РЕБ та РЕР мітки",
-										"3. Створення 777 мітки",
+										"3. Створення 777 міток",
 									};
 			// вікно діалогу
 			var b = new wpfBuilder("Window").WinSize(400);
@@ -179,120 +180,110 @@ namespace CSLight {
 			//..
 			
 		}
-		// створення мітки з Чергування для оч для 777
+		// створення файлу для імпорта з Чергування - 777
 		static void createWhoWork(string clipboardData) {
-			string[] parts = clipboardData.Split('\t'); // Розділяємо рядок на частини
 			
-			string ecipashName = parts[1]; // екіпаж
-			string flyDot = $"Т.в. \"{parts[2]}\""; // точка вильоту
-			string mgrsCoord = parts[10]; // координати
-			string finalName = $"{ecipashName} {flyDot}";
+			keys.send("Ctrl+C"); //копіюємо код
+			wait.ms(100);
+			string[] parts = clipboardData.Split('\n'); // Розділяємо рядок на частини
+			string dateTimeNow = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss"); // поточний час
+			var features = new List<Object>(); //
+			string plassEror = string.Empty; // для подальшої перевірки
 			
-			string rebMark = "Створення перешкод";
-			string damageMark = "БПЛА вертикального зльоту";
-			string witness = "Безпілотний літак";
+			foreach (string item in parts) {
+				string[] elements = item.Split('\t'); // ділимо рядок на елементи
+				if (elements.Length < 10) continue; // Пропускаємо, якщо елементів недостатньо
+				if (elements[10].Length > 5) {
+					// Парсимо елементи з буфера обміну
+					string sidc = string.Empty;
+					string outlineСolor = ""; // колір обведення
+					
+					if (elements[1].Contains("група")) { // якщо це евак
+						sidc = "10032500003211000000";
+					} else if (elements[1].Contains("Маві")) { // якщо це мавік
+						sidc = "10030120001104000000";
+						outlineСolor = "#4dc04d";
+					} else if (elements[1].Contains("(FPV)")) { //  або фпв
+						sidc = "10030120001104000000";
+						outlineСolor = "#3bd5e7";
+					} else if (Regex.IsMatch(elements[1], @"\bП\d{2}\b")) { // якщо ти бомбер або дартс
+						sidc = "10030120001104000000";
+						outlineСolor = "#597380";
+					} else { // інші
+						sidc = "10010120001103000000";
+						outlineСolor = "#ff9327";
+					}
+					
+					string name = $"{elements[1]} Т.в. ({elements[2]})";
+					
+					//координати обробка
+					Coordinate c = Coordinate.Parse(elements[10]); // в строку переробляємо
+					c.FormatOptions.Format = CoordinateFormatType.Decimal; // 40.577 -70.757
+					string coordinates = c.ToString().Replace(' ', ',');
+					string coordX = coordinates.Split(',')[0];
+					string coordY = coordinates.Split(',')[1];
+					string wgsCoord = $"{coordY}, {coordX}";
+					
+					// Формуємо JSON для однієї мітки (Feature) вручну
+					var feature = new StringBuilder();
+					feature.AppendLine("{");
+					feature.AppendLine("  \"type\": \"Feature\",");
+					feature.AppendLine("  \"properties\": {");
+					feature.AppendLine($"    \"sidc\": \"{sidc}\",");
+					feature.AppendLine($"    \"name\": \"{name}\",");
+					feature.AppendLine($"    \"observation_datetime\": \"{dateTimeNow}\",");
+					feature.AppendLine($"    	\"outline-color\": \"{outlineСolor}\"");
+					feature.AppendLine("  },");
+					feature.AppendLine("  \"geometry\": {");
+					feature.AppendLine("    \"type\": \"Point\",");
+					feature.AppendLine($"    \"coordinates\": [{wgsCoord}]");
+					feature.AppendLine("  }");
+					feature.AppendLine("}");
+					
+					features.Add(feature.ToString());
+				} else {
+					Console.WriteLine($"речення {elements[1]} Т.в. ({elements[2]}) не містить mgrs координат");
+					plassEror += $"\r речення {elements[1]} Т.в. ({elements[2]}) не містить mgrs координат";
+				}
+			};
 			
-			string friendlyStatys = "дружній";
-			bool forCall = false; // змінна для визначення фарбування
-			int rangeNumber = 0;
+			// Формуємо повний JSON для FeatureCollection
+			var geoJson = new StringBuilder();
+			geoJson.AppendLine("{");
+			geoJson.AppendLine("  \"type\": \"FeatureCollection\",");
+			geoJson.AppendLine("  \"features\": [");
+			geoJson.AppendLine(string.Join(",\n", features));
+			geoJson.AppendLine("  ]");
+			geoJson.AppendLine("}");
 			
-			// вкладка
-			var w = wnd.find(1, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1").Activate();
-			// поле для ввода координат
-			var searchWindow = w.Elm["web:COMBOBOX", "Пошук", "@placeholder=Знайти адресу або координату"].Find(1);/*image:WkJNG7UIAORoHN5oRBJfB/vGbqVFY/5vprU1wUSXLYGe52tSUS8aW2TeWPoNUzjwPssdgp7rLpc4JMIwWdrO0kML0qDyqBeq3FIANchkeCXsc19HyUIBra2toGVtDldXV8ChwgG2wQHw+fkJmZmZcHt7C6I64rC+vg4vLy/AIMEA5g724JYQCwr6aiApqXLo6np3d+fqK/n/2dDQcWttm42NNbDWoH7oDadBzAZyKXSH2giDtcU6MRupyqU5z+dr3q62m/i1wvVS8k7frj6Sl/SNZzcJV9dNwCBs+D8nE10xq0Y0OeMXcv6f4VT+vxAyQIBMSGglDZkkV0kEbNBECE2EOI0w1Sh0UZ5dgSjCKs/GziFUIZWcfOq445jgYp8iBgSMcOQ/GbH8mj9KoUXF+XIBTO0aM8ozcKwGUOmEKp1DxxCaeCzONdJJXnyznMyL/YnQv/DL8xg4r4WIU/qYVxt+3TXPK1wA*/
-			searchWindow.PostClick();
-			keys.sendL("Ctrl+A", "!" + mgrsCoord, "Enter");
-			wait.ms(3000);
-			// кнопка створення мітки
-			var createButton = w.Elm["web:LISTITEM", prop: "@data-testid=create-object"].Find(1);/*image:WkJNG7UIAGRBTjORbUfyBexPvLqJa+pHaeSMMjAF5p22aevOI5ISKAFsqBMIgrbWjiH0KpEor6ypGQ7hwxmKAvKDdqBwEQOwQZaHVoz82UcMmxYLQt0CoKVpCC4itECYgxleb88hLjoRjDXVgEQAH576y+A+yxfQaDRICfFAblolvG5MAKUkOexxXm5c5PZfCvIvfGloAMDZi29cem4Gl2PKpWQz9sgrknIEs0X+ah5KUiAr+ZTsfz3h56JOEUteHtF9NUVMhihmKcOS4oDfIndLrSAPX5XdJm4quTbqhXh00QMFvAUNvfC3NOJ3KMJsbW1OI1c4Pj6Yf1OufNCpyj53I9z1+jHkyqccytmbVzshdRSTbXwHqDFEuzkhV29YblyfNjNhXx+WvdeV57PXsh8XZuUGEYbk7yVM1nN9OB02FZhEE3shao3Hd8qOIuTaukbb6hFK4dByQSO0TnZ8fHx8rKPWWq6Ry0sQpYVTpfl9eEm5djEH35gaEo4w1G7uQIja4LHhH7Rd0ys01mF9ydO0e9ets6xPUdV/NrArixqtJxo36WqZmD0E*/
-			createButton.PostClick();
-			wait.ms(3000);
-			// поле пошуку об'єктів
-			var fieldSearshingMark = w.Elm["web:GROUPING", "Категорії", navig: "next child2"].Find(1);/*image:WkJNG30IAAQib/e/D18VodkEinU2/YNqUgZOOB4wBlnAyQH84HbQM8YYvlYraHZ8J5qoXFoFQ0pm3bat0XknSP194HOKAA==*/
-			fieldSearshingMark.PostClick();
-			if (ecipashName.Contains("РЕБ") || ecipashName.Contains("РЛС")) {
-				rangeNumber = 45000;
-				keys.sendL("Ctrl+A", "!" + rebMark, "Enter");
-			} else if (ecipashName.Contains("Мавік") || ecipashName.Contains("FPV") || Regex.IsMatch(ecipashName, @"\bП\d{2}\b")) {
-				rangeNumber = 11000;
-				keys.sendL("Ctrl+A", "!" + damageMark, "Enter");
-			} else {
-				rangeNumber = 45000;
-				forCall = true; // перемикання 
-				keys.sendL("Ctrl+A", "!" + witness, "Enter");
+			// Шлях до робочого столу користувача
+			string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+			string fileName = $"{DateTime.Now.ToString("dd mmss")} - layer 777.geojson"; // Формування назви файлу
+			string finalComment = string.Empty; // для подальшої перевірки
+			try {
+				// Повний шлях до файлу, який ми хочемо створити
+				string filePath = Path.Combine(desktopPath, fileName);
+				
+				// Записуємо рядок у файл
+				File.WriteAllText(filePath, geoJson.ToString());
+				
+				finalComment = $"Файл {fileName} успішно створено на робочому столі.";
 			}
-			wait.ms(3000);
-			// обираємо 1 зі списку
-			var firstMarkInList = w.Elm["web:GROUPING", "Категорії", navig: "next last child"].Find(1);/*image:WkJNG30IAAQib/e/D18VodkEU3QziiJpWgBOOJ5L6kEW8OUkfNUzxhi+Vito5/lO3JF5lBEMTVF0e/qMVrl7UVm4Rh8=*/
-			firstMarkInList.PostClick();
-			wait.ms(4000);
-			
-			// обравши мітку, залишилося її заповнити
-			
-			// повернення на основне вікно
-			var mainFilds = w.Elm["web:GROUPING", prop: new("desc=Основні поля", "@title=Основні поля")].Find(-1);
-			mainFilds.PostClick();
-			wait.ms(200);
-			// поле назва
-			var nameMark = w.Elm["STATICTEXT", "Назва", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA, navig: "next"].Find(1);/*image:WkJNG30IAAQib/e/D18VodkEkm4jE1SbVIETjgeMQRZwcgA/OB34jDGGr9UKmrm/E3VkLqWCISmybttGq7yzCP3d4HPKAA==*/
-			nameMark.PostClick(scroll: 500);
-			keys.sendL("Ctrl+A", "!" + finalName, "Enter");
-			wait.ms(200);
-			// дата/час
-			var dateField = w.Elm["TEXT", "дд/мм/рррр", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA].Find(1);/*image:WkJNG7UIAMQH9mdvcwKVFtK/7AqIjYmJrNcugSo7/exMwwsGOAuCLOAk8QgTDJyekIe4McbLk0kQl5vHJhNtmWCBLxyTBCoMo0jn7L5rwuVEgI87SrLS0d/RiviQANxcXqCtrgqz4yPITY5HdVEeVuamMTHYh56WRqRGh6OxshQjvV0YGjcdbuAKijvBP+3YJUTMw4nEe+48dz93idA4eddGtey3dIVotPxz7/aOT+Qr9uLqtwjFVv1BUWuUfBNdL/sl5r1buO87eSf7O1klRLrbwrk6RwJ3W14LyeCU5GuRoxDL9+M1EA==*/
-			dateField.PostClick(scroll: 500);
-			wait.ms(200);
-			// кнопка поточного часу
-			var dateAndTimeNowButton = w.Elm["BUTTON", "Час виявлення", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA, navig: "next3 last"].Find(1);/*image:WkJNG7UIAMT/Z391B0zzBlpADWTaNHGbWdfvzG8Loq0jFJpC+WcHb/K2zkeOhokVWJ+uBfw5sHcswTwAWWYJjeN5b/03Yqd0iBi1qQX7anTUCASCWhBaSCCH3M8s0919z7jwQPS1NuD6/AQ5SbH4+/3BjMCoKchCSWYyvj7eIYoiEqNC8HR3g83lBRSkJqA8OxUpMWFo2lrnz2XgDdYmfeeRT2c+C9dosH7Onofy7Y851hMccEjqhxqpjHR8d+qgXd74L9qyj5xp9j+goFGCjrzK2ZlzVc6jYTJewC/nqnzcdbzkaCuEho6TftwqkDEjzyPMfuklpvTy7ssh1lE68griAbE8xQJy4XGjeNMTzGTGKlB5T9bDnqAtF6freMmIF0t39cw99Ac76aCPAg==*/
-			dateAndTimeNowButton.PostClick(scroll: 500);
-			wait.ms(200);
-			// поле ідентифікації 
-			var identyficationField = w.Elm["STATICTEXT", "Ідентифікація", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA, navig: "next2"].Find(1);/*image:WkJNG7UIAOTn5drLhzRB1M/U2E3NxP/e4m+b4HDrFrzsmxWdFvANEl/eDRLRQLiAE+kFFtE2/3BpCiEhGmq0TGcxsMI4IABOIJITASnIeOmktLPnTVNaFHJTEsDGQAtWF+Yg0M0RBrs74OL0GOrKiiEhLAjcrM3gYGcL2upr4O76CgyV5aAUZcHE8ABw7X8T4M4bc2BhBCc07tngvNBBC1nngJdvjYu80xo9ah+HDO9G4APQeJVn1bF0Nzo+PjQOQI803SG/ipwd67JiVUB75Z2QErUsgcad4gPwniTvwUZfXYDGqf2jWTqCuAgSjLSrjH3PMr2OUUyw5vgPqrbk0Jvj40m20hsaJ0UA/UWUboXGqhny+J6BLMg8NfPe5W0RV2sPEWQW3xouj8g7ZEvlL+rxh7/7reFxpGpL7nYI9BxNtBj3uKX/c8xCUwbRNBX7EzRlYBYwC1TMS1HQuv94DL9sFP0dk05Em2CjlunwjWk=*/
-			identyficationField.PostClick(scroll: 500);
-			keys.sendL("Ctrl+A", "!" + friendlyStatys, "Enter");
-			wait.ms(200);
-			
-			// Георафічне розташування
-			var geografPlaceWindow = w.Elm["web:GROUPING", prop: "@title=Географічне розташування"].Find();
-			geografPlaceWindow.PostClick(scroll: 500);
-			wait.ms(3000);
-			// якщо ти не скидувач, фарбуйся
-			if (forCall == true) {
-				var colorBoxing = w.Elm["web:STATICTEXT", "Колір обведення", navig: "parent"].Find(1);/*image:WkJNG4EIAAQib/cjqIp1m00gCcknRZOEpMg60MHp53L1QxZwEokHTDHGGL5WK2h1fkeiyGzKCBadgjLbq9ZbZQ3l3UNtUdj8tfcB*/
-				colorBoxing.PostClick(scroll: 500);
-				wait.ms(1000);
-				var selectColor = w.Elm["web:BUTTON", "#ff9327", new("@title=#ff9327", "@type=button")].Find(1);/*image:WkJNG7UIAMT/GFdvibTT6bquOsANrst/5wjH3XpQhKYDqNfk05/Kny15WYMwQHNSztMlMtbGglWhQNLzImyTgYdnRyBkVicYWeMjvV5ET8qJuWaADaVGIZLvfSvgskCxfYnj42M4OubRUlmC6NQTvAUNsMVOkJ/5h7MxBsnpP5yTvwgPHSHUNuLzA1lEA26kDFPJB3Rk46ekxijcr1JK7tRWklJyhvQEK94nSk6I3rxMFJeIvUrUjnrIMT0tdZfIDk7Qz+AmlNNLYRplZiXu0fAEtAQ45i11k8nWola4BuzoDS73a3reIS5pTqVgsV/8FQ0baw9jNcoMLhjHjPu+IS7ffd/oPKm++v4BIIPJUf4YHOy/zP5Y7a5mhn2ovSMA*/
-				selectColor.PostClick(scroll: 500);
-				wait.ms(200);
+			catch (Exception ex) {
+				Console.WriteLine($"Виникла помилка при створенні файлу: {ex.Message}");
+				finalComment = $"Виникла помилка при створенні файлу: {ex.Message}";
 			}
-			// кнопка встановлення сектору
-			var sectorButton = w.Elm["web:RADIOBUTTON", "Сектор", "@name=zoneType"].Find(1);/*image:WkJNG7UIAOT+7XISl3CXnUNcgdgArFhJFbTv9gesrgr4YxdNOkhHN/XPXh84sICnUEDhg7Qs4G2BrmEWyFgA8MIJPbZAtrl5eYmHYNFV4howqQxpFgsGEAMmvgzIg55IS1dldrm6mJlCa2UexIf4w+ZEB8Tn1UNSgxT4kEDoHluHqu4J2N1ehuacIJhoDIX4kFooys2E6fllGOwhUDKOW/WOHIDeL0c7vxFzYMZVY6QGxxL7T1JJjytDSBVlB0/QCuN0yYmYEG7Shh28SS1kWBrh6AodsZWv44bE13FlWixBY46yiDSUQ9LGHNIIDqfZLhpziBr07q6EkirIDUolZyMULm/oZ/7A9jtEKK1KzaexPF0jHh09eXR0ZbOGcQ9hKUvrHMkdSy95MbmU4JtZhOoWOOTKvP3//7syjqz497kqRkJaNXiDLUvdBKTHNb981VL/DK4W*/
-			sectorButton.PostClick(scroll: 500);
-			wait.ms(200);
-			// поле відстані
-			var rangeMark = w.Elm["web:SPINBUTTON", prop: "@data-testid=first-range"].Find(1);/*image:WkJNG7UIAMQn9ldv13E93Yjruq46J4CJbJDjuTkDSH8Oanj8LmEYhicSDWYDnow8UUpMh7gxxsuTSRCfy7vCRFc+yRWS+pJAhSMR2Kzddy1Okwa9PZ2IBj04PzlGRlIc/n5/sbG8iIq8LFxfXuBwdxvjA32ory7H89MjCtOTQRAE5qfGMWbCebvxc7vCFG+P1MB/W3oC1daQvWWkjDXC0moqoeGY30YdN0VeFjBhTf6QsMfyoaQd881H1Jcu5uG4TZjpAQ==*/
-			rangeMark.PostClick(scroll: 500);
-			keys.sendL("Ctrl+A", "!" + rangeNumber, "Enter");
-			wait.ms(200);
-			// колір залівки
-			var sectorFillColor = w.Elm["web:RADIOBUTTON", "Сектор", "@name=zoneType", navig: "next11"].Find(1);/*image:WkJNGzEGAAQib/djOiEKpiiE5JPZNCUomg3o4LQ5nCHIAk4ST9STQD3wkO2SJJmsdVWHXSEzSSVYyBcI072yt8K/hz2UyN6Q4xWxHfm2lQI=*/
-			sectorFillColor.PostClick(scroll: 500);
-			if (ecipashName.Contains("Мавік")) {
-				var greenColorFill = w.Elm["web:BUTTON", "#4caf50"].Find(1);/*image:WkJNG1EGAGRhbkM1kd2SmDUR/yFBIkTL4pFMP/w3t3xhrNY7+DBjtBpEkIVssVR5KLjQFqqhNlOzCOWtI0QkJGbrv90Tz5BhTDVMbhGTbjggAnXBZ2acvSq3SQPFfRYwDINo1grjXw86lxpkOwGY/yeQLLlg8G1BYR6BNcQL/w7t4S6H+AWh1idC05lqQWjIXk3kkfuVmdvyaiH0XgTR40lqyt/VjT+I6zOVPgTZEnEaN5IOJnMlorkipewEiY3kgtQGqTXydowWEG0hWkW0z3gJ8Sbjdebv+IQb*/
-				greenColorFill.PostClick(scroll: 500);
-			} else if (ecipashName.Contains("FPV")) {
-				var lightBlueColorFill = w.Elm["web:BUTTON", "#00bcd4"].Find(1);/*image:WkJNG1UGAMSIMfczSfO4ZB6SWjJzzCKJI4omIlSodOD7ueWf2w6u1ZUwmE0RsVssVZ4IP1hWQrNHif+dnclkkhLed5p9ISp6KwlZuENyEECGecAxsec+r8moxt2lBsWQGiGXBX/fBpQTYXy96LBsqvH/a0Q3q8bPpx6nYzVGD/phSEYjsLYaQ+A8yN5srIeTNnL2YSdWTgwciS2TE/ljK+1EuqOQ2bui4h69WSeSH4Rp3suteSoicysV80ic5sHzxM2QvZGzIHeD3DXydkgWkGwxWUWyj9QSU5tIrV//OwA=*/
-				lightBlueColorFill.PostClick(scroll: 500);
-			} else {
-				var yelowTwoColorFill = w.Elm["web:BUTTON", "#ffc107"].Find(1);/*image:WkJNG2UGAMSAcXlPhgiyMWNbAxiqnV2/DQlSI9J8vpt8bP2jXkjptLF8C81/g3oRF0EWmMZBbbP7qSkcMghNm0LxPCpmUIdQiIiQtQSQQVojJOHvvQ2atfANTmJ1dRW+RBacy29wnz/DMXcIT3kzzxa34Nz4h6epBd7sEjjS93A/cNXmJVwdU1huouj/YdzG+g73lM9no2KuDHIyMoHU0JAKB7H0ea1HyhoHZfbjcVFR0AaZe08u9qQ5z2K35NhRiH3mRXBH5qAxJwTXwMYFOIM0DsMO/OH4PBijkBk+cABh7IELc9DwodxNiYWSG0quKW/HqAVKbVFqlVH7lF6i9OaK2dDrazD+jg8A*/
-				yelowTwoColorFill.PostClick(scroll: 500);
-			}
-			wait.ms(200);
-			// відсотки залівки колір залівки
-			var rangeSectorFillColor = w.Elm["web:SLIDER", prop: "@data-testid=opacity-slider"].Find(1);/*image:WkJNG2UGAMTnGZf/2OgIJSUIcfOd24S6t+jXl+GEKCUAbVFTN/lHqW/MPrDAu2wtoLE5kDXBckghpDSoG7p+MUmSEo0rmqfC9Q6ACoSAIieADKI2Njaz9xyHTsNa0Yav9TLaczYc3T9jqKcOToMeU8MjmN09gTMxjUl717//X/zvLeC8042My4yftw3k474EmBXeRF4L1sjL34My5C0Bla+KGHIxjqW4MgM+XaFWupoarcu9vb3dPdmrdZcm0yS7p7hlkt9M8msx8lfk9VPlTeFDNpu1BaZs2kvDaIiesuzUEQMA*/
-			rangeSectorFillColor.PostClick();
-			rangeSectorFillColor.SendKeys("Left*8");
-			wait.ms(200);
+			
+			// вікно діалогу
+			var b = new wpfBuilder("Window").WinSize(650);
+			b.R.Add(out Label _, plassEror);
+			b.R.Add(out Label _, finalComment);
+			b.R.AddOkCancel();
+			b.Window.Topmost = true;
+			b.End();
+			// show dialog. Exit if closed not with the OK button.
+			if (!b.ShowDialog()) return;
+			
 		}
 		// обрати відповідний шар
 		static void deltaLayerWindow(string targetClassJbd, string commentJbd) {
@@ -309,39 +300,39 @@ namespace CSLight {
 				layerWindow.PostClick(scroll: 250);
 				//. перевірка, запис
 				if (permanentStorage.Contains(targetClassJbd)) {
-					keys.sendL("Ctrl+A", "!Пост", "Enter");
+					keys.sendL("Ctrl+A", "!постійні схов.", "Enter");
 					return;
 				}
 				if (antennaCamera.Contains(targetClassJbd)) {
-					keys.sendL("Ctrl+A", "!антени", "Enter");
+					keys.sendL("Ctrl+A", "!антени, камери", "Enter");
 					return;
 				}
 				switch (targetClassJbd) {
 				case "Міна":
-					keys.sendL("Ctrl+A", "!11", "Enter");
+					keys.sendL("Ctrl+A", "!маршрути, міни, загородж", "Enter");
 					break;
 				case "Загородження":
-					keys.sendL("Ctrl+A", "!11", "Enter");
+					keys.sendL("Ctrl+A", "!маршрути, міни, загородж", "Enter");
 					break;
 				case "Бліндаж":
-					keys.sendL("Ctrl+A", "!07", "Enter");
+					keys.sendL("Ctrl+A", "!траншеї і бліндажі", "Enter");
 					break;
 				case "Т. вильоту дронів":
-					keys.sendL("Ctrl+A", "!08", "Enter");
+					keys.sendL("Ctrl+A", "!т. вильоту дронів", "Enter");
 					break;
 				case "ОС РОВ":
-					keys.sendL("Ctrl+A", "!10", "Enter");
+					keys.sendL("Ctrl+A", "!особовий склад РОВ", "Enter");
 					break;
 				case "Міномет":
-					keys.sendL("Ctrl+A", "!09", "Enter");
+					keys.sendL("Ctrl+A", "!окопна зброя (+ міномети)", "Enter");
 					break;
 				default:
 					if (commentJbd.ToLower().Contains("рус") || commentJbd.ToLower().Contains("рух")) {
-						keys.sendL("Ctrl+A", "!06", "Enter");
+						keys.sendL("Ctrl+A", "!техніка в русі ", "Enter");
 					} else if (commentJbd.ToLower().Contains("виходи") || commentJbd.ToLower().Contains("вогнева позиція")) {
-						keys.sendL("Ctrl+A", "!05", "Enter");
+						keys.sendL("Ctrl+A", "!вогневі позиції ", "Enter");
 					} else {
-						keys.sendL("Ctrl+A", "!04", "Enter");
+						keys.sendL("Ctrl+A", "!схована техніка ", "Enter");
 					}
 					break;
 				}
@@ -489,7 +480,7 @@ namespace CSLight {
 			//. перевірка
 			if (combatCapabilityWindow != null) {
 				string fullaim = string.Empty;
-				string states = "Розміновано Підтв. ураж. Тільки розрив";
+				string states = "Розміновано Підтв. ураж. Тільки розрив Авар. скид";
 				switch (targetClassJbd) {
 				//. Якщо ти міна
 				case "Міна":
@@ -579,7 +570,7 @@ namespace CSLight {
 			string limitedAccess = "Мотоцикл Вантажівка Паливозаправник";
 			string obmezheno = "обмежено";
 			// Позашляховик
-			string pozashlyakhovyk = "Авто БМП (техніка) БТР Військ. баггі";
+			string pozashlyakhovyk = "Авто БТР Військ. баггі";
 			string suv = "позашлях";
 			// Гусеничний - колісний
 			string caterpillar = "ЗРК РСЗВ САУ КШМ Інж. техніка";
@@ -783,9 +774,6 @@ namespace CSLight {
 				}
 			}
 		}
-		
-		
-		
 		
 	}
 }
