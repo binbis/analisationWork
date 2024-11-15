@@ -44,12 +44,23 @@ namespace CSLight {
 			
 			if (itemSelect.Text.Contains("1.")) {
 				fillMarkWithJBD(clipboardData);
+				return;
 			}
 			if (itemSelect.Text.Contains("2.")) {
 				createREBandRER(clipboardData);
+				return;
 			}
 			if (itemSelect.Text.Contains("3.")) {
 				createWhoWork(clipboardData);
+				return;
+			}
+			if (itemSelect.Text.Contains("4.")) {
+				createImportFileToMine(clipboardData);
+				return;
+			}
+			if (itemSelect.Text.Contains("5.")) {
+				Console.WriteLine("Рано, поки в роботі міни");
+				return;
 			}
 		}
 		// тіло для заповнення мітки
@@ -231,7 +242,7 @@ namespace CSLight {
 					feature.AppendLine("  },");
 					feature.AppendLine("  \"geometry\": {");
 					feature.AppendLine("    \"type\": \"Point\",");
-					feature.AppendLine($"    \"coordinates\": [{wgsCoord}]").Replace("(","").Replace(")","");
+					feature.AppendLine($"    \"coordinates\": [{wgsCoord}]").Replace("(", "").Replace(")", "");
 					feature.AppendLine("  }");
 					feature.AppendLine("}");
 					
@@ -279,6 +290,123 @@ namespace CSLight {
 			// show dialog. Exit if closed not with the OK button.
 			if (!b.ShowDialog()) return;
 			
+		}
+		// файл з мінами
+		static void createImportFileToMine(string clipboardData) {
+			
+			/*
+				Протитанкова міна (ПТМ) - 10011500002103000000
+				дружня - 10031500002103000000
+					повність боездатна - 10031520002103000000
+					частково боездатна - 10031530002103000000
+					не боездатна - 10031540002103000000
+			*/
+			
+			string[] parts = clipboardData.Split('\n'); // Розділяємо рядок на частини
+			var features = new List<Object>(); //
+			string plassEror = string.Empty; // для подальшої перевірки
+			
+			foreach (string item in parts) {
+				string[] elements = item.Split('\t'); // ділимо рядок на елементи
+				
+				// Присвоюємо змінним відповідні значення
+				string dateJbd = elements[0]; // 27.07.2024
+				string timeJbd = elements[1]; //00:40
+				string commentJbd = elements[2].Replace("\n", " "); //коментар (для ідентифікації скоріш за все)
+				string numberOFlying = elements[3]; // 5
+				string crewTeamJbd = Bisbin.TrimAfterDot(elements[4].Replace("\n\t", "")); // R-18-1 (Мавка)
+				string whatDidJbd = elements[5]; // Дорозвідка / Мінування ..
+				string targetClassJbd = elements[7]; // Міна/Вантажівка/...
+				string idTargetJbd = Bisbin.TrimNTwonyString(elements[9], 19); // Міна 270724043
+				string mgrsCoords = elements[18]; // 37U CP 76420 45222
+				string nameOfBch = elements[22]; // ПТМ-3 ТМ-62
+				string establishedJbd = elements[24]; // Встановлено/Уражено/Промах/...
+				string twoHundredth = elements[25]; // 200
+				string threeHundredth = elements[26]; // 300
+				
+				// захист від дурачка
+				if (whatDidJbd.Contains("Мінування")) {
+					// підготовка значнь для полів
+					string sidc = string.Empty;
+					string states = "Розміновано Підтв. ураж. Тільки розрив Авар. скид";
+					if (states.Contains(establishedJbd)) {
+						sidc = "10031540002103000000";
+					} else if (establishedJbd.Contains("Встановлено")) {
+						sidc = "10031520002103000000";
+					} else if (establishedJbd.Contains("Спростовано")) {
+						return;
+					} else {
+						sidc = "10031530002103000000";
+					}
+					
+					string name = Bisbin.createMineName(nameOfBch, targetClassJbd, dateJbd, establishedJbd, commentJbd, twoHundredth, threeHundredth);
+					string commentar = Bisbin.createComment(targetClassJbd, dateJbd, timeJbd, crewTeamJbd, establishedJbd, commentJbd, mgrsCoords);
+					string dateTimeNow = $"{dateJbd.Split(".")[2]}-{dateJbd.Split(".")[1]}-{dateJbd.Split(".")[0]}T{timeJbd}:22"; // поточний час yyyy-MM-ddTHH:mm:ss
+					//координати обробка
+					var wgsCoord = Bisbin.ConvertMGRSToWGS84(mgrsCoords);
+					
+					// Формуємо JSON для однієї мітки (Feature) вручну
+					var feature = new StringBuilder();
+					feature.AppendLine("{");
+					feature.AppendLine("  \"type\": \"Feature\",");
+					feature.AppendLine("  \"properties\": {");
+					feature.AppendLine($"	\"sidc\": \"{sidc}\","); // номер мітки (мітка) 
+					feature.AppendLine($"	\"name\": \"{name}\","); // назва
+					feature.AppendLine($"	\"reliability_credibility\": \"A2\","); // достовірність
+					feature.AppendLine($"	\"platform_type\": \"AIRREC\",");
+					feature.AppendLine($"	\"staff_comments\": \"{idTargetJbd}\","); // ід
+					feature.AppendLine($"	\"observation_datetime\": \"{dateTimeNow}\","); // дата-час
+					feature.AppendLine($"	\"quantity\": \"1\","); // кількість
+					feature.AppendLine($"	\"comments\": [");
+					feature.AppendLine($" 		\"{commentar}\"");
+					feature.AppendLine($"	]");
+					feature.AppendLine("  },");
+					feature.AppendLine("  \"geometry\": {");
+					feature.AppendLine("    \"type\": \"Point\",");
+					feature.AppendLine($"    \"coordinates\": [{wgsCoord}]").Replace("(", "").Replace(")", "");
+					feature.AppendLine("  }");
+					feature.AppendLine("}");
+					
+					features.Add(feature.ToString());
+				}
+				
+			}
+			// Формуємо повний JSON для FeatureCollection
+			var geoJson = new StringBuilder();
+			geoJson.AppendLine("{");
+			geoJson.AppendLine("  \"type\": \"FeatureCollection\",");
+			geoJson.AppendLine("  \"features\": [");
+			geoJson.AppendLine(string.Join(",\n", features));
+			geoJson.AppendLine("  ]");
+			geoJson.AppendLine("}");
+			
+			// Шлях до робочого столу користувача
+			string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+			string fileName = $"mines_marks - {DateTime.Now.ToString("dd mmss")}.geojson"; // Формування назви файлу
+			string finalComment = string.Empty; // для подальшої перевірки
+			try {
+				// Повний шлях до файлу, який ми хочемо створити
+				string filePath = Path.Combine(desktopPath, fileName);
+				
+				// Записуємо рядок у файл
+				File.WriteAllText(filePath, geoJson.ToString());
+				
+				finalComment = $"Файл {fileName} успішно створено на робочому столі.";
+			}
+			catch (Exception ex) {
+				Console.WriteLine($"Виникла помилка при створенні файлу: {ex.Message}");
+				finalComment = $"Виникла помилка при створенні файлу: {ex.Message}";
+			}
+			
+			// вікно діалогу
+			var b = new wpfBuilder("Window").WinSize(650);
+			b.R.Add(out Label _, plassEror);
+			b.R.Add(out Label _, finalComment);
+			b.R.AddOkCancel();
+			b.Window.Topmost = true;
+			b.End();
+			// show dialog. Exit if closed not with the OK button.
+			if (!b.ShowDialog()) return;
 		}
 		// обрати відповідний шар
 		static void deltaLayerWindow(string targetClassJbd, string commentJbd) {
@@ -336,9 +464,10 @@ namespace CSLight {
 			
 		}
 		// відповідна назва
-		static void deltaMarkName(string nameOfBch, string targetClassJbd, string dateJbd, string establishedJbd, string commentJbd, string twoHundredth, string threeHundredth) {
+		static string deltaMarkName(string nameOfBch, string targetClassJbd, string dateJbd, string establishedJbd, string commentJbd, string twoHundredth, string threeHundredth) {
 			// основна вкладка
 			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1");
+			string nameIs = string.Empty;
 			// поле назва
 			var nameOfMarkWindow = w.Elm["web:TEXT", prop: "@data-testid=T"].Find(-1);/*image:WkJNG/0DAATCdr9tIAMZJ1HadVdc0HlCGjjheOyxBBGllpBf6R0glLXrfCMPFDo5BUd0e9rZKu9u6HE8Pg==*/
 			if (nameOfMarkWindow != null) {
@@ -351,7 +480,7 @@ namespace CSLight {
 				//. Міна
 				case "Міна":
 					if (establishedJbd.Contains("Спростовано")) {
-						return;
+						return "";
 					}
 					if (establishedJbd.Contains("Авар. скид")) {
 						markName = $"{nameOfBch} ({dateJbd})";
@@ -429,7 +558,9 @@ namespace CSLight {
 				//..
 				nameOfMarkWindow.PostClick(scroll: 250);
 				keys.sendL("Ctrl+A", "!" + markName);
+				nameIs = markName;
 			}
+			return nameIs;
 			
 		}
 		// поле дата / час
@@ -621,69 +752,10 @@ namespace CSLight {
 		static void deltaCommentContents(string targetClassJbd, string dateJbd, string timeJbd, string crewTeamJbd, string establishedJbd, string commentJbd, string mgrsCoords) {
 			// основна вкладка
 			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1");
-			string commentContents = $"{dateJbd} {timeJbd} - ";
 			// коментар
 			var commentWindow = w.Elm["web:TEXT", "Введіть значення", "@data-testid=comment-editing__textarea"].Find(-1);/*image:WkJNG/0DAATCdr9tIAMZJ1HadVdc0HlCGjjheOyxBBGllpBf6R0glLXrfCMPFDo5BUd0e7rZKu9u6HFcPg==*/
 			if (commentWindow != null) {
-				switch (targetClassJbd) {
-				//. Міна
-				case "Міна":
-					if (establishedJbd.Contains("Авар. скид") || establishedJbd.Contains("Подавлено")) {
-						commentContents += $"аварійно сикнуто з ударного коптера {crewTeamJbd}";
-					} else if (establishedJbd.Contains("Розміновано")) {
-						commentContents += $"розміновано, спостерігали з {crewTeamJbd}";
-					} else if (establishedJbd.Contains("Спростовано")) {
-						commentContents += $"міна на місці, сліди розриву відсутні, спостерігали з {crewTeamJbd}";
-					} else if (establishedJbd.Contains("Тільки розрив")) {
-						commentContents += $"тільки розрив, спостерігали з {crewTeamJbd}";
-					} else if (establishedJbd.Contains("Підтв. ураж.")) {
-						commentContents += $"підрив на міні, **кори**, спостерігали з {crewTeamJbd}";
-						commentWindow.PostClick(scroll: 250);
-						keys.sendL("Ctrl+A", "!" + commentContents);
-						script.end();
-					} else {
-						commentContents += $"встановлено за допомогою ударного коптера {crewTeamJbd}";
-					}
-					break;
-				//..
-				//. Укриття
-				case "Укриття":
-					commentContents += $"(  {mgrsCoords}  ) - ";
-					if (establishedJbd.ToLower().Contains("знищ") || establishedJbd.ToLower().Contains("ураж")) {
-						commentContents += $"{establishedJbd.ToLower()} за допомогою {crewTeamJbd}";
-					} else if (establishedJbd.Contains("Підтверджено") || establishedJbd.Contains("Спростовано")) {
-						if (commentJbd.ToLower().Contains("знищ") || commentJbd.ToLower().Contains("ураж")) {
-							commentContents += $"{commentJbd}, спостерігав {crewTeamJbd}";
-						} else {
-							commentContents += $"{commentJbd}, спостерігав {crewTeamJbd}";
-						}
-					} else if (establishedJbd.Contains("Виявлено")) {
-						if (commentJbd.ToLower().Contains("знищ")) {
-							commentContents += $"{establishedJbd.ToLower()} знищ. {targetClassJbd.ToLower()}, спостерігав {crewTeamJbd}";
-						} else if (commentJbd.Contains("ураж")) {
-							commentContents += $"{establishedJbd.ToLower()} ураж. {targetClassJbd.ToLower()}, спостерігав {crewTeamJbd}";
-						} else {
-							commentContents += $"{commentJbd} , спостерігав {crewTeamJbd}";
-						}
-					} else if (establishedJbd.Contains("Не зрозуміло")) {
-						commentContents += $"спроба ураження, {crewTeamJbd}";
-					}
-					break;
-				//..
-				default:
-					//.
-					if (establishedJbd.ToLower().Contains("знищ") || establishedJbd.ToLower().Contains("ураж")) {
-						commentContents += $"{establishedJbd.ToLower()} за допомогою {crewTeamJbd}";
-					} else if (establishedJbd.Contains("Виявлено")) {
-						commentContents += $"{commentJbd} , спостерігав {crewTeamJbd}";
-					} else if (establishedJbd.Contains("Не зрозуміло")) {
-						commentContents += $"спроба ураження, {crewTeamJbd}";
-					} else {
-						commentContents += $"{commentJbd}, {establishedJbd.ToLower()} за допомогою {crewTeamJbd}";
-					}
-					//..
-					break;
-				}
+				string commentContents = Bisbin.createComment(targetClassJbd, dateJbd, timeJbd, crewTeamJbd, establishedJbd, commentJbd, mgrsCoords);
 				commentWindow.PostClick(scroll: 250);
 				keys.sendL("Ctrl+A", "!" + commentContents);
 				wait.ms(500);
@@ -691,7 +763,6 @@ namespace CSLight {
 				var commentAsseptButton = w.Elm["web:BUTTON", prop: "@data-testid=comment-editing__button-save"].Find(-1);/*image:WkJNGxUEAMSHv+a7a722w1tUYzRY+vgABzifyAY2mkdiJH5bHj97WVkYSXdJMJzQRAaJ6Ax2w4Hb0Hl5RQRFq1zXWaQGwIkszElhuTPE+ViliA87u4v7eonTfApCCG4LG//dFu/NCkWXnu+Go8hnbbsxrLmtULTt7kpKLWg+STdJNFLi0yRd3QA=*/
 				commentAsseptButton.PostClick(scroll: 250);
 			}
-			
 		}
 		// додаткові поля
 		static void deltaAdditionalFields(string idTargetJbd, string targetClassJbd) {
