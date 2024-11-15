@@ -1,6 +1,6 @@
-/*/ nuget -\CoordinateSharp; c \analisationWork-main\globalClass\Bisbin.cs; /*/
+/*/ c \analisationWork-main\globalClass\Bisbin.cs; /*/
 
-/* 13.11.2024 2.0
+/* 15.11.2024 2.0
 
 * id обрізаються, щоб поміститись в рядок 
 * функція додавання до дати дні(x) підходить для мін
@@ -13,9 +13,9 @@
 
 using System.Windows;
 using System.Windows.Controls;
-using CoordinateSharp;
 
 namespace CSLight {
+	
 	class Program {
 		static void Main() {
 			opt.key.KeySpeed = 20;
@@ -183,8 +183,6 @@ namespace CSLight {
 		// створення файлу для імпорта з Чергування - 777
 		static void createWhoWork(string clipboardData) {
 			
-			keys.send("Ctrl+C"); //копіюємо код
-			wait.ms(100);
 			string[] parts = clipboardData.Split('\n'); // Розділяємо рядок на частини
 			string dateTimeNow = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss"); // поточний час
 			var features = new List<Object>(); //
@@ -217,12 +215,7 @@ namespace CSLight {
 					string name = $"{elements[1]} Т.в. ({elements[2]})";
 					
 					//координати обробка
-					Coordinate c = Coordinate.Parse(elements[10]); // в строку переробляємо
-					c.FormatOptions.Format = CoordinateFormatType.Decimal; // 40.577 -70.757
-					string coordinates = c.ToString().Replace(' ', ',');
-					string coordX = coordinates.Split(',')[0];
-					string coordY = coordinates.Split(',')[1];
-					string wgsCoord = $"{coordY}, {coordX}";
+					var wgsCoord = Bisbin.ConvertMGRSToWGS84(elements[10]);
 					
 					// Формуємо JSON для однієї мітки (Feature) вручну
 					var feature = new StringBuilder();
@@ -236,7 +229,7 @@ namespace CSLight {
 					feature.AppendLine("  },");
 					feature.AppendLine("  \"geometry\": {");
 					feature.AppendLine("    \"type\": \"Point\",");
-					feature.AppendLine($"    \"coordinates\": [{wgsCoord}]");
+					feature.AppendLine($"    \"coordinates\": [{wgsCoord}]").Replace("(","").Replace(")","");
 					feature.AppendLine("  }");
 					feature.AppendLine("}");
 					

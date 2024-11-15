@@ -1,3 +1,5 @@
+/*/ nuget -\CoordinateSharp; /*/
+using CoordinateSharp;
 
 public class Bisbin {
 	
@@ -106,5 +108,12 @@ public class Bisbin {
 			certaintyWindow.PostClick(scroll: 250);
 		}
 	}
-	
+	//	
+	public static (double Latitude, double Longitude) ConvertMGRSToWGS84(string mgrs) {
+			// Створення координати з MGRS
+			Coordinate coordinate = Coordinate.Parse(mgrs);
+			
+			// Отримання широти та довготи з об'єкта координати
+			return (coordinate.Longitude.ToDouble(), coordinate.Latitude.ToDouble());
+		}
 }
