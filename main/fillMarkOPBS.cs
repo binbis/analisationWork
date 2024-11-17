@@ -136,21 +136,21 @@ namespace CSLight {
 			// основна вкладка
 			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1").Activate();
 			//. перехід по корам
-			var searchWindow = w.Elm["web:COMBOBOX", prop: new("@aria-label=Пошук", "@placeholder=Знайти адресу або координату")].Find(1);
-			searchWindow.PostClick();
-			keys.sendL("Ctrl+A", "!" + mgsrCoord, "Enter");
+			//var searchWindow = w.Elm["web:COMBOBOX", prop: new("@aria-label=Пошук", "@placeholder=Знайти адресу або координату")].Find(1);
+			//searchWindow.PostClick();
+			//keys.sendL("Ctrl+A", "!" + mgsrCoord, "Enter");
 			//.. 
-			wait.ms(2000);
+			//wait.ms(2000);
 			//. ставимо мітку
-			var createButton = w.Elm["web:LISTITEM", prop: "@data-testid=create-object"].Find(1);
+			var createButton = w.Elm["LISTITEM", "Створити об'єкт", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA].Find(1);/*image:WkJNGzUEAMSIsflI5ojmXk2TRNOJhsz1qTbWF6kLdR4K605/aykfC+x4oVvz1gItkeBrCSSYQsKxRnA2J0mKsQ/fA2kLGZUGUIYu5GQClqOVOl/InZ7CohTDnsugWAZG399A+Rl+oxoUCg3JwwNsbzbQB/1orFaIfMTL9noNb6sJQNBeOjzYWV5cnOPGDZ/JRbawcPPP7kxfpeo/FNmx//qDKRku7XCVnM8Hccd8cVGFd+JN7bxdpFGEvCA0X1ycJPY7jIs3lB0s2/X+BQA=*/
 			createButton.PostClick(scroll: 250);
 			wait.ms(2000);
 			// обираємо мітку
-			var categorySearch = w.Elm["web:TEXT", "Пошук об'єктів", "@placeholder=Пошук об'єктів"].Find(1);/*image:WkJNG30IAAQib/e/D18VodkEU3Qz/YNqUgY6OJ7L1Q+3gJNILEgpxhjD12oFzY7vxBOVS2vBUCWLbk9njc47QWXpevusAg==*/
+			var categorySearch = w.Elm["TEXT", "Пошук об'єктів", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA].Find(1);/*image:WkJNGzUEAMQnxr3v4zqsbWlukJR2nSGugRk22/GTboRLRxkHQZhQCdRdNlB8phLT9IbbLpdENMPTz4mMqOWEBs4QdQKWKxul/651t5sQG+SH+IpejPe2IjYmDQutIeiZWEZtaR76g/JRHxeA1dV5NNR1Y3OyGVNVHYiNqEVzdjkynfr4GwfXg3q93v26LEgSKLfXbyE7b7//R9mkWelcOZ1ep3qYHro/cnZzG0f/YJ9fdz9uOKcYlCvnorJP2dSvigovr4oiKsoQsQ02OejSk3I5AQ==*/
 			categorySearch.PostClick();
 			keys.sendL("Ctrl+A", "!" + bplaName);
 			wait.ms(3000);
-			var bplaMark = w.Elm["web:LISTITEM", "Військовий повітряний засіб БПЛА вертикального зльоту / посадки (VT-UAV)"].Find(1);
+			var bplaMark = w.Elm["TEXT", "Пошук об'єктів", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA, navig: "next2 child"].Find(1);/*image:WkJNG/0DAATCdr9tIAMZR0nadV0+yBPioBnHzx5LEFFqEx+47G4dIJS1p76RFxqTHAVHdFvao/NuQY/n8zkd*/
 			bplaMark.PostClick();
 			wait.ms(2000);
 			//..
@@ -769,14 +769,6 @@ namespace CSLight {
 				idPurchaseWindow.PostClick(scroll: 250);
 				keys.sendL("Ctrl+A", "!" + idTargetJbd);
 			}
-			
-			//примітки штабу - (поле назва та примітки мають одниковість тест ід)
-			//var notesWindow = w.Elm["web:TEXT", prop: new("@data-testid=string-field__input", "@name=Зауваження штабу")].Find(-1);/*image:WkJNG/0DAATCdr9tIAMZJ1HadVdc0HlCGjjheOyxBBGldiG6XOEdIJS163wjDxQ6OQqO6Pb0bJV3N/Q4Pp/VAA==*/
-			//if (notesWindow != null) {
-			//	notesWindow.PostClick(scroll: 250);
-			//	keys.sendL("Ctrl+A", "!" + idTargetJbd, "Enter");
-			//}
-			
 		}
 		// Георафічне розташування
 		static void deltaGeografPlace(string targetClassJbd, string establishedJbd, string commentJbd) {
@@ -786,14 +778,14 @@ namespace CSLight {
 			Bisbin.goToGeograficalPlace();
 			string states = "Виявлено Підтверджено Спростовано Не зрозуміло";
 			// Колір заливки
-			var deltaColorFills = w.Elm["web:STATICTEXT", "Колір заливки"].Find(-1);
+			var deltaColorFills = w.Elm["STATICTEXT", "Колір заливки", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA].Find(-1);/*image:WkJNGzUEAOT+dbVBOhEJciYB36AfgtkPli3OJkjwfxkkJRK8hKKkPCn3BU/SDBo8G8RKKq/u77dZ/0uIRhpEi/Qyc0uk5WjWxOJWd4Nve3dPh5oaguQQv3VXbpo/EG63B1RCAabG+8HHefzD3z9VZy4Cw1oHS1s2wvwdK0F0bIPC3jWwsrgBVrVugnW4HVbv3yITh/RNy8Cw18NiKWB1cav+c2AbtA2wvaIuUwNzq2MeIyEiusy2lLsqCOBqGb0dhp0amO7yX8XoeDUowh9oi0zX8dN5diRxh/D0NUa8ZD7rMfk75iXkY2q52Xx86jZGzEGfTxB1VhC5uYWPX5OWuXZHGkdSdspabazdrlFwnkjR47L/iHwlM91GkLtO1FZYq6DsKOEnhCYq5sVng4D4BxpNnv5PfcJ81L7FQ4rS3iTiifxT24kqTvfduNmnru7yDltVVQtj9v2hIIBdfXSi4lRwOlBXC06HRV6MDrWbQl2kWzcEAJ3+W6FEEASnrhYcX7Jr+0QPGpPdDgIAimpUc9eFglrJzLpk1jSt4kSi1grpSASnggv2I0qfJ9bGpECdvxgnK2sjLkoZ+1qtdoKU2UWi21CgcBEbZnXakhFdjSfzFsA82mKSEsG5QJg+P9polON2l4kpCeTKDFJCiAuDtUL4MsEsHLuxzMyx4ybEHjZ4IUxjbuOzUjilyT2/iJ1E3hIiQqQ4Fh+ZVCp1hXmqG6nOrmSJ2PLLVBeZQlMm4v7PkydB+Dwr9S4ZVNiBWExYEtHCIy1HWrq6X2dhqvcKjUiUkx7MnPLc51PGYsuIrKu7ZfIIzpxh03WJMJW4iM+z8oifLY0QIqKTNSn5QfJEp1bnadOUsVOmlF6hc47E6PZJ8vAUIbbkmZEfzl85I3T7SAXWhKqYPnOPB364WWh0oOV46JikBanBiTCJiLEs0IwQj/WSseqWM6iWwsnsd5ow9hBJnfOjrkFhnlu/igFgUPeUPFYu3/GQ0DFVIMxnEGL+CqWUAFAakZdjRYqER+gMpEIPjXk1HcQOAA==*/
 			if (deltaColorFills != null) {
 				switch (targetClassJbd) {
 				//. укриття
 				case "Укриття":
 					if (establishedJbd.ToLower().Contains("знищ") || establishedJbd.ToLower().Contains("ураж")) {
 						// колір жовтий
-						var placeColorYellowButton = w.Elm["web:BUTTON", prop: "@title=#ffeb3b"].Find(1);
+						var placeColorYellowButton = w.Elm["BUTTON", "#ffeb3b", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA].Find(-1);/*image:WkJNGzUEAOT+dbVBOhEJciYB36AfgtkPli3OJkjwfxkkJRK8hKKkPCn3BU/SDBo8G8RKKq/u77dZ/0uIRhpEi/Qyc0uk5WjWxOJWd4Nve3dPh5oaguQQv3VXbpo/EG63B1RCAabG+8HHefzD3z9VZy4Cw1oHS1s2wvwdK0F0bIPC3jWwsrgBVrVugnW4HVbv3yITh/RNy8Cw18NiKWB1cav+c2AbtA2wvaIuUwNzq2MeIyEiusy2lLsqCOBqGb0dhp0amO7yX8XoeDUowh9oi0zX8dN5diRxh/D0NUa8ZD7rMfk75iXkY2q52Xx86jZGzEGfTxB1VhC5uYWPX5OWuXZHGkdSdspabazdrlFwnkjR47L/iHwlM91GkLtO1FZYq6DsKOEnhCYq5sVng4D4BxpNnv5PfcJ81L7FQ4rS3iTiifxT24kqTvfduNmnru7yDltVVQtj9v2hIIBdfXSi4lRwOlBXC06HRV6MDrWbQl2kWzcEAJ3+W6FEEASnrhYcX7Jr+0QPGpPdDgIAimpUc9eFglrJzLpk1jSt4kSi1grpSASnggv2I0qfJ9bGpECdvxgnK2sjLkoZ+1qtdoKU2UWi21CgcBEbZnXakhFdjSfzFsA82mKSEsG5QJg+P9polON2l4kpCeTKDFJCiAuDtUL4MsEsHLuxzMyx4ybEHjZ4IUxjbuOzUjilyT2/iJ1E3hIiQqQ4Fh+ZVCp1hXmqG6nOrmSJ2PLLVBeZQlMm4v7PkydB+Dwr9S4ZVNiBWExYEtHCIy1HWrq6X2dhqvcKjUiUkx7MnPLc51PGYsuIrKu7ZfIIzpxh03WJMJW4iM+z8oifLY0QIqKTNSn5QfJEp1bnadOUsVOmlF6hc47E6PZJ8vAUIbbkmZEfzl85I3T7SAXWhKqYPnOPB364WWh0oOV46JikBanBiTCJiLEs0IwQj/WSseqWM6iWwsnsd5ow9hBJnfOjrkFhnlu/igFgUPeUPFYu3/GQ0DFVIMxnEGL+CqWUAFAakZdjRYqER+gMpEIPjXk1HcQOAA==*/
 						placeColorYellowButton.PostClick(scroll: 250);
 						wait.ms(500);
 						// відсоток прозрачності
@@ -804,7 +796,7 @@ namespace CSLight {
 					} else if (states.Contains(establishedJbd)) {
 						if (commentJbd.ToLower().Contains("знищ") || commentJbd.ToLower().Contains("ураж")) {
 							// колір жовтий
-							var placeColorYellowButton = w.Elm["web:BUTTON", prop: "@title=#ffeb3b"].Find(1);
+							var placeColorYellowButton = w.Elm["BUTTON", "#ffeb3b", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA].Find(-1);/*image:WkJNGzUEAOT+dbVBOhEJciYB36AfgtkPli3OJkjwfxkkJRK8hKKkPCn3BU/SDBo8G8RKKq/u77dZ/0uIRhpEi/Qyc0uk5WjWxOJWd4Nve3dPh5oaguQQv3VXbpo/EG63B1RCAabG+8HHefzD3z9VZy4Cw1oHS1s2wvwdK0F0bIPC3jWwsrgBVrVugnW4HVbv3yITh/RNy8Cw18NiKWB1cav+c2AbtA2wvaIuUwNzq2MeIyEiusy2lLsqCOBqGb0dhp0amO7yX8XoeDUowh9oi0zX8dN5diRxh/D0NUa8ZD7rMfk75iXkY2q52Xx86jZGzEGfTxB1VhC5uYWPX5OWuXZHGkdSdspabazdrlFwnkjR47L/iHwlM91GkLtO1FZYq6DsKOEnhCYq5sVng4D4BxpNnv5PfcJ81L7FQ4rS3iTiifxT24kqTvfduNmnru7yDltVVQtj9v2hIIBdfXSi4lRwOlBXC06HRV6MDrWbQl2kWzcEAJ3+W6FEEASnrhYcX7Jr+0QPGpPdDgIAimpUc9eFglrJzLpk1jSt4kSi1grpSASnggv2I0qfJ9bGpECdvxgnK2sjLkoZ+1qtdoKU2UWi21CgcBEbZnXakhFdjSfzFsA82mKSEsG5QJg+P9polON2l4kpCeTKDFJCiAuDtUL4MsEsHLuxzMyx4ybEHjZ4IUxjbuOzUjilyT2/iJ1E3hIiQqQ4Fh+ZVCp1hXmqG6nOrmSJ2PLLVBeZQlMm4v7PkydB+Dwr9S4ZVNiBWExYEtHCIy1HWrq6X2dhqvcKjUiUkx7MnPLc51PGYsuIrKu7ZfIIzpxh03WJMJW4iM+z8oifLY0QIqKTNSn5QfJEp1bnadOUsVOmlF6hc47E6PZJ8vAUIbbkmZEfzl85I3T7SAXWhKqYPnOPB364WWh0oOV46JikBanBiTCJiLEs0IwQj/WSseqWM6iWwsnsd5ow9hBJnfOjrkFhnlu/igFgUPeUPFYu3/GQ0DFVIMxnEGL+CqWUAFAakZdjRYqER+gMpEIPjXk1HcQOAA==*/
 							placeColorYellowButton.PostClick(scroll: 250);
 							wait.ms(500);
 							// відсоток прозрачності
@@ -814,7 +806,7 @@ namespace CSLight {
 							wait.ms(500);
 						} else {
 							//колір червоний - ворож
-							var placeColorRedButton = w.Elm["web:BUTTON", prop: "@title=#f44336"].Find(1);
+							var placeColorRedButton = w.Elm["BUTTON", "#f44336", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA].Find(-1);/*image:WkJNGzUEAOT+dbVBOhEJciYB36AfgtkPli3OJkjwfxkkJRK8hKKkPCn3BU/SDBo8G8RKKq/u77dZ/0uIRhpEi/Qyc0uk5WjWxOJWd4Nve3dPh5oaguQQv3VXbpo/EG63B1RCAabG+8HHefzD3z9VZy4Cw1oHS1s2wvwdK0F0bIPC3jWwsrgBVrVugnW4HVbv3yITh/RNy8Cw18NiKWB1cav+c2AbtA2wvaIuUwNzq2MeIyEiusy2lLsqCOBqGb0dhp0amO7yX8XoeDUowh9oi0zX8dN5diRxh/D0NUa8ZD7rMfk75iXkY2q52Xx86jZGzEGfTxB1VhC5uYWPX5OWuXZHGkdSdspabazdrlFwnkjR47L/iHwlM91GkLtO1FZYq6DsKOEnhCYq5sVng4D4BxpNnv5PfcJ81L7FQ4rS3iTiifxT24kqTvfduNmnru7yDltVVQtj9v2hIIBdfXSi4lRwOlBXC06HRV6MDrWbQl2kWzcEAJ3+W6FEEASnrhYcX7Jr+0QPGpPdDgIAimpUc9eFglrJzLpk1jSt4kSi1grpSASnggv2I0qfJ9bGpECdvxgnK2sjLkoZ+1qtdoKU2UWi21CgcBEbZnXakhFdjSfzFsA82mKSEsG5QJg+P9polON2l4kpCeTKDFJCiAuDtUL4MsEsHLuxzMyx4ybEHjZ4IUxjbuOzUjilyT2/iJ1E3hIiQqQ4Fh+ZVCp1hXmqG6nOrmSJ2PLLVBeZQlMm4v7PkydB+Dwr9S4ZVNiBWExYEtHCIy1HWrq6X2dhqvcKjUiUkx7MnPLc51PGYsuIrKu7ZfIIzpxh03WJMJW4iM+z8oifLY0QIqKTNSn5QfJEp1bnadOUsVOmlF6hc47E6PZJ8vAUIbbkmZEfzl85I3T7SAXWhKqYPnOPB364WWh0oOV46JikBanBiTCJiLEs0IwQj/WSseqWM6iWwsnsd5ow9hBJnfOjrkFhnlu/igFgUPeUPFYu3/GQ0DFVIMxnEGL+CqWUAFAakZdjRYqER+gMpEIPjXk1HcQOAA==*/
 							placeColorRedButton.PostClick(scroll: 250);
 							wait.ms(500);
 							// відсоток прозрачності
@@ -825,7 +817,7 @@ namespace CSLight {
 						}
 					} else {
 						//колір червоний - ворож
-						var placeColorRedButton = w.Elm["web:BUTTON", prop: "@title=#f44336"].Find(1);
+						var placeColorRedButton = w.Elm["BUTTON", "#f44336", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA].Find(-1);/*image:WkJNGzUEAOT+dbVBOhEJciYB36AfgtkPli3OJkjwfxkkJRK8hKKkPCn3BU/SDBo8G8RKKq/u77dZ/0uIRhpEi/Qyc0uk5WjWxOJWd4Nve3dPh5oaguQQv3VXbpo/EG63B1RCAabG+8HHefzD3z9VZy4Cw1oHS1s2wvwdK0F0bIPC3jWwsrgBVrVugnW4HVbv3yITh/RNy8Cw18NiKWB1cav+c2AbtA2wvaIuUwNzq2MeIyEiusy2lLsqCOBqGb0dhp0amO7yX8XoeDUowh9oi0zX8dN5diRxh/D0NUa8ZD7rMfk75iXkY2q52Xx86jZGzEGfTxB1VhC5uYWPX5OWuXZHGkdSdspabazdrlFwnkjR47L/iHwlM91GkLtO1FZYq6DsKOEnhCYq5sVng4D4BxpNnv5PfcJ81L7FQ4rS3iTiifxT24kqTvfduNmnru7yDltVVQtj9v2hIIBdfXSi4lRwOlBXC06HRV6MDrWbQl2kWzcEAJ3+W6FEEASnrhYcX7Jr+0QPGpPdDgIAimpUc9eFglrJzLpk1jSt4kSi1grpSASnggv2I0qfJ9bGpECdvxgnK2sjLkoZ+1qtdoKU2UWi21CgcBEbZnXakhFdjSfzFsA82mKSEsG5QJg+P9polON2l4kpCeTKDFJCiAuDtUL4MsEsHLuxzMyx4ybEHjZ4IUxjbuOzUjilyT2/iJ1E3hIiQqQ4Fh+ZVCp1hXmqG6nOrmSJ2PLLVBeZQlMm4v7PkydB+Dwr9S4ZVNiBWExYEtHCIy1HWrq6X2dhqvcKjUiUkx7MnPLc51PGYsuIrKu7ZfIIzpxh03WJMJW4iM+z8oifLY0QIqKTNSn5QfJEp1bnadOUsVOmlF6hc47E6PZJ8vAUIbbkmZEfzl85I3T7SAXWhKqYPnOPB364WWh0oOV46JikBanBiTCJiLEs0IwQj/WSseqWM6iWwsnsd5ow9hBJnfOjrkFhnlu/igFgUPeUPFYu3/GQ0DFVIMxnEGL+CqWUAFAakZdjRYqER+gMpEIPjXk1HcQOAA==*/
 						placeColorRedButton.PostClick(scroll: 250);
 						wait.ms(500);
 						// відсоток прозрачності
