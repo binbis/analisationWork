@@ -1,6 +1,6 @@
 /*/ c \analisationWork-main\globalClass\Bisbin.cs; /*/
 
-/* 15.11.2024 2.0
+/* 17.11.2024 2.0
 
 * id обрізаються, щоб поміститись в рядок 
 * функція додавання до дати дні(x) підходить для мін
@@ -756,6 +756,9 @@ namespace CSLight {
 				commentWindow.PostClick(scroll: 250);
 				keys.sendL("Ctrl+A", "!" + commentContents);
 			}
+			wait.ms(500);
+			var commentWindowAcceptButton = w.Elm["STATICTEXT", "Новий коментар", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA, navig: "next4"].Find(1);/*image:WkJNGwkEAMTnudy/Me1A9ta1az9PLNdFEJZwUJPjY3+WIEwoC6h5DoFKW+AhuyYJNrI/ijRsO+FSIgeBscuZvuiKCJ/7jNv1gPf3j9+DuZTfQNfP2qeYua4D*/
+			commentWindowAcceptButton.PostClick(scroll: 250);
 		}
 		// додаткові поля
 		static void deltaAdditionalFields(string idTargetJbd, string targetClassJbd) {
@@ -789,7 +792,7 @@ namespace CSLight {
 						placeColorYellowButton.PostClick(scroll: 250);
 						wait.ms(500);
 						// відсоток прозрачності
-						var transpatentColorRange =  w.Elm["web:SLIDER"].Find(1);/*image:WkJNGzUEAMQn9ldvQTXxAKVNl+jkLmeh/blIJCtEwu895QOJRTBEZxrvHqAV6cZu/K8UcCxRCdzV5eMlrSjMuvisYCq6U4fMFEn6goTFvkAYf3+7SYvIiC70trcgzudASNwDYoOSsbm2iqrifIRFzyE6tBy311fIiI/GzPgoghPe8PT4iNDYXfjGX2KPEqTMukuVZRGLBlLdHV8inM2lRUfOXXvAl939EGiDsr5DIOw/SR5z2R6EPih0r27/JWTQ3SA7dFZ6Lt2GHhGhV2zYpfCfsUGnVdSJTe7glZWMM+CdHcYdzckEkf9GuMlanyNzRjUxnWOcvrPxRzi3suSPX+I019bIshobqdGpPcNpHQ==*/
+						var transpatentColorRange = w.Elm["web:SLIDER"].Find(1);/*image:WkJNGzUEAMQn9ldvQTXxAKVNl+jkLmeh/blIJCtEwu895QOJRTBEZxrvHqAV6cZu/K8UcCxRCdzV5eMlrSjMuvisYCq6U4fMFEn6goTFvkAYf3+7SYvIiC70trcgzudASNwDYoOSsbm2iqrifIRFzyE6tBy311fIiI/GzPgoghPe8PT4iNDYXfjGX2KPEqTMukuVZRGLBlLdHV8inM2lRUfOXXvAl939EGiDsr5DIOw/SR5z2R6EPih0r27/JWTQ3SA7dFZ6Lt2GHhGhV2zYpfCfsUGnVdSJTe7glZWMM+CdHcYdzckEkf9GuMlanyNzRjUxnWOcvrPxRzi3suSPX+I019bIshobqdGpPcNpHQ==*/
 						transpatentColorRange.PostClick(scroll: 250);
 						transpatentColorRange.SendKeys("Left*5");
 						wait.ms(500);
