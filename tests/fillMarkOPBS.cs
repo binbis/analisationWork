@@ -21,7 +21,6 @@ namespace CSLight {
 			opt.key.KeySpeed = 20;
 			opt.key.TextSpeed = 20;
 			
-			//keys.send("Shift+Space*2"); //виділяємо весь рядок
 			//wait.ms(100);
 			keys.send("Ctrl+C"); //копіюємо код
 			wait.ms(100);
