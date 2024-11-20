@@ -1,5 +1,5 @@
 /*/ c \analisationWork-main\globalClass\Bisbin.cs; /*/
-/* 30,10,2024
+/* 20,11,2024
 проєкт - переіменування файлів в папці
 
 + знайти перейменувати вміст та відкрити папку
@@ -10,6 +10,7 @@
 
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace CSLight {
 	class Program {
@@ -25,15 +26,16 @@ namespace CSLight {
 			string[] parts = clipboardData.Split('\t'); // Розділяємо рядок на частини
 			
 			// вікно діалогу
-			string[] examlpelesItem = {
-				"1. Перейменування в папці Бамбас",
-				"2. Готове речення в буфер обміну",
-				"3. Перейменування в папці Уголь-дон",
-				"4. Перейменування в папці Уголь-ссу",
-			};
-			var b = new wpfBuilder("Window").WinSize(400);
-			b.R.Add("Назва", out ComboBox itemSelect).Items(examlpelesItem);
-			b.R.AddOkCancel();
+			var b = new wpfBuilder("Window").WinSize(600);
+			//Brush
+			b.Font(size: 17, bold: true);
+			b.Brush(Brushes.DarkGray);
+			// insider
+			b.R.AddButton("1. Готове речення в буфер обміну", 2).Brush(Brushes.LightCoral);
+			b.R.AddButton("2. Перейменування в папці Бамбас", 1).Brush(Brushes.LightSalmon);
+			b.R.AddButton("3. Перейменування в папці Уголь", 3).Brush(Brushes.LightGoldenrodYellow);
+			b.R.AddButton("4. Перейменування в папці Уголь-Суджа", 4).Brush(Brushes.LightGoldenrodYellow);
+			b.R.AddOkCancel().Font(size: 14, bold: false);
 			b.Window.Topmost = true;
 			b.End();
 			// show dialog. Exit if closed not with the OK button.
@@ -55,7 +57,7 @@ namespace CSLight {
 			string pathCoalFolderDon = @"\\Sng-2\аеророзвідка\combatlog\Vugl_Combat_Log"; //
 			string pathCoalFolderSsy = @"\\Sng-2\аеророзвідка\combatlog\Sumy_Combat_Log"; // 
 			
-			if (itemSelect.Text.Contains("2.")) {
+			if (b.ResultButton == 2) {
 				if (crewTeamJbd.Contains("FPV")) {
 					Clipboard.SetText($"{dateJbd} {timeJbd} {crewTeamJbd} В{numberOFlying} - {establishedJbd.ToLower()}");
 					return;
@@ -67,9 +69,9 @@ namespace CSLight {
 			
 			if (messageId.Length > 3) {
 				string pathFilesOpen = string.Empty;
-				if (itemSelect.Text.Contains("3.")) {
+				if (b.ResultButton == 3) {
 					pathFilesOpen = Path.Combine(pathCoalFolderDon, messageId);
-				} else if (itemSelect.Text.Contains("4.")) {
+				} else if (b.ResultButton == 4) {
 					pathFilesOpen = Path.Combine(pathCoalFolderSsy, messageId);
 				} else {
 					pathFilesOpen = Path.Combine(pathDonbasFolder, messageId);
@@ -106,7 +108,7 @@ namespace CSLight {
 					wait.ms(200);
 					//Console.WriteLine(filesInDirectory[i] + "\n");
 				}
-				if (itemSelect.Text.Contains("1.") || itemSelect.Text.Contains("3.") || itemSelect.Text.Contains("4.")) {
+				if (b.ResultButton == 1 || b.ResultButton == 3 || b.ResultButton == 4) {
 					// відкриття папки за шляхом
 					Process.Start("explorer.exe", pathFilesOpen);
 				}

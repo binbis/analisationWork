@@ -1,4 +1,4 @@
-/** 28,10,2024
+/** 20,11,2024
 	створення для створення папок з Планування excel
 1. вибираєш ячейку під колонкою А
 2. жмеш скрипт
@@ -23,14 +23,21 @@
 
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 class Program {
 	static void Main() {
 		// вікно діалогу
-		string[] examlpelesItem = { "1. Папка з папками екіпажей", "2. Для оперативників", "3. Обробка відео 1", "4. Обробка відео 2" };
 		var b = new wpfBuilder("Window").WinSize(400);
-		b.R.Add("Назва", out ComboBox itemSelect).Items(examlpelesItem);
-		b.R.AddOkCancel();
+		//Brush
+		b.Font(size: 17, bold: true);
+		b.Brush(Brushes.DarkGray);
+		// insider
+		b.R.AddButton("1. Папка з папками екіпажей", 1).Brush(Brushes.LightSeaGreen);
+		b.R.AddButton("2. Для оперативників", 2).Brush(Brushes.LightCoral);
+		b.R.AddButton("3. Обробка відео 1", 3).Brush(Brushes.LightGoldenrodYellow);
+		b.R.AddButton("4. Обробка відео 2", 4).Brush(Brushes.LightGoldenrodYellow);
+		b.R.AddOkCancel().Font(size: 14, bold: false);
 		b.Window.Topmost = true;
 		b.End();
 		// show dialog. Exit if closed not with the OK button.
@@ -38,7 +45,7 @@ class Program {
 		
 		string ecipashNameWithTable = Clipboard.GetText(); // це після обробки іншим скриптом
 		
-		if (itemSelect.Text.Contains("1.") || itemSelect.Text.Contains("2.") || itemSelect.Text.Contains("3.")) {
+		if (b.ResultButton == 1 || b.ResultButton == 2 || b.ResultButton == 3) {
 			keys.send("Ctrl+Space"); //виділяємо весь стовбець
 		} else {
 			keys.send("Shift+Space*2"); //виділяємо весь рядок
@@ -56,16 +63,16 @@ class Program {
 		// Розбиваємо текст на масив чергувань
 		string[] shifts = initialString.Split(new[] { "ЧЕРГУВАННЯ" }, StringSplitOptions.RemoveEmptyEntries);
 		
-		if (itemSelect.Text.Contains("1.")) {
+		if (b.ResultButton == 1) {
 			createFolderWithFoldersEkipash(shifts);
 		}
-		if (itemSelect.Text.Contains("2.")) {
+		if (b.ResultButton == 2) {
 			createMinimalEkipash(shifts);
 		}
-		if (itemSelect.Text.Contains("3.")) {
+		if (b.ResultButton == 3) {
 			WhoWorkInTime(shifts);
 		}
-		if (itemSelect.Text.Contains("4.")) {
+		if (b.ResultButton == 4) {
 			WhoWorkinTimeFinal(ecipashPositionParts, ecipashNameWithTable);
 		}
 		

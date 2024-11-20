@@ -1,6 +1,6 @@
 /*/ c \analisationWork\globalClass\Bisbin.cs; /*/
 
-/* 17.11.2024 2.0
+/* 20.11.2024 2.0
 
 * id обрізаються, щоб поміститись в рядок 
 * функція додавання до дати дні(x) підходить для мін
@@ -13,6 +13,7 @@
 
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace CSLight {
 	
@@ -21,44 +22,44 @@ namespace CSLight {
 			opt.key.KeySpeed = 20;
 			opt.key.TextSpeed = 20;
 			
-			//wait.ms(100);
 			keys.send("Ctrl+C"); //копіюємо код
 			wait.ms(100);
 			string clipboardData = clipboard.copy(); // зчитуємо буфер обміну
-			string[] examlpelesItem = {
-										"1. Заповнення мітки",
-										"2. Створення РЕБ та РЕР мітки",
-										"3. Створення файлу 777 міток",
-										"4. міни ска",
-										"5. обізнаність ворога й всяке",
-									};
 			// вікно діалогу
-			var b = new wpfBuilder("Window").WinSize(400);
-			b.R.Add("Назва", out ComboBox itemSelect).Items(examlpelesItem);
-			b.R.AddOkCancel();
+			var b = new wpfBuilder("Window").WinSize(450);
+			//Brush
+			b.Font(size: 17, bold: true);
+			b.Brush(Brushes.DarkGray);
+			// insider
+			b.R.AddButton("1. Заповнення мітки", 1).Brush(Brushes.LightCoral);
+			b.R.AddButton("2. Створення РЕБ та РЕР мітки", 2).Brush(Brushes.LightCoral);
+			b.R.AddButton("3. Файл імпорта для 777 міток", 3).Brush(Brushes.LightGoldenrodYellow);
+			b.R.AddButton("4. Файл імпорта з МІНАМИ", 4).Brush(Brushes.LightGoldenrodYellow);
+			b.R.AddButton("5. Файл імпорта - обізнаність ворога й всяке", 5).Brush(Brushes.LightGreen);
+			b.R.AddOkCancel().Font(size: 14, bold: false);
 			b.Window.Topmost = true;
 			b.End();
 			// show dialog. Exit if closed not with the OK button.
 			if (!b.ShowDialog()) return;
 			
-			if (itemSelect.Text.Contains("1.")) {
+			if (b.ResultButton == 1) {
 				fillMarkWithJBD(clipboardData);
 				return;
 			}
-			if (itemSelect.Text.Contains("2.")) {
+			if (b.ResultButton == 2) {
 				createREBandRER(clipboardData);
 				return;
 			}
-			if (itemSelect.Text.Contains("3.")) {
+			if (b.ResultButton == 3) {
 				createWhoWork(clipboardData);
 				return;
 			}
-			if (itemSelect.Text.Contains("4.")) {
+			if (b.ResultButton == 4) {
 				createImportFileToMine(clipboardData);
 				return;
 			}
-			if (itemSelect.Text.Contains("5.")) {
-				Console.WriteLine("Рано, поки в роботі міни");
+			if (b.ResultButton == 5) {
+				Console.WriteLine("Рано, ще не порацював концепцію під усі обізнаності");
 				return;
 			}
 		}
@@ -292,11 +293,16 @@ namespace CSLight {
 		static void createImportFileToMine(string clipboardData) {
 			
 			/*
-				Протитанкова міна (ПТМ) - 10011500002103000000
+				для птм, тм Протитанкова міна (ПТМ) - 10011500002103000000
 				дружня - 10031500002103000000
 					повність боездатна - 10031520002103000000
 					частково боездатна - 10031530002103000000
 					не боездатна - 10031540002103000000
+				для ппм Міна-пастка - 10011500002003000000
+					повність боездатна - 10011520002003000000
+					частково боездатна - 10011530002003000000
+					не боездатна - 10011540002003000000
+				
 			*/
 			
 			string[] parts = clipboardData.Split('\n'); // Розділяємо рядок на частини
@@ -323,20 +329,27 @@ namespace CSLight {
 				
 				// захист від дурачка
 				if (whatDidJbd.Contains("Мінування")) {
-					// підготовка значнь для полів
+					// підготовка значень для полів
+					string name = Bisbin.createMineName(nameOfBch, targetClassJbd, dateJbd, establishedJbd, commentJbd, twoHundredth, threeHundredth);
 					string sidc = string.Empty;
 					string states = "Розміновано Підтв. ураж. Тільки розрив Авар. скид";
 					if (states.Contains(establishedJbd)) {
-						sidc = "10031540002103000000";
+						if (name.Contains("ППМ")) {
+							sidc = "10011540002003000000";
+						} else { sidc = "10031540002103000000"; }
 					} else if (establishedJbd.Contains("Встановлено")) {
-						sidc = "10031520002103000000";
+						if (name.Contains("ППМ")) {
+							sidc = "10011520002003000000";
+						} else { sidc = "10031520002103000000"; }
 					} else if (establishedJbd.Contains("Спростовано")) {
 						return;
 					} else {
-						sidc = "10031530002103000000";
+						if (name.Contains("ППМ")) {
+							sidc = "10011530002003000000";
+						} else { sidc = "10031530002103000000"; }
 					}
 					
-					string name = Bisbin.createMineName(nameOfBch, targetClassJbd, dateJbd, establishedJbd, commentJbd, twoHundredth, threeHundredth);
+					
 					string commentar = Bisbin.createComment(targetClassJbd, dateJbd, timeJbd, crewTeamJbd, establishedJbd, commentJbd, mgrsCoords);
 					string dateTimeNow = $"{dateJbd.Split(".")[2]}-{dateJbd.Split(".")[1]}-{dateJbd.Split(".")[0]}T{timeJbd}:22"; // поточний час yyyy-MM-ddTHH:mm:ss
 					//координати обробка
@@ -472,6 +485,8 @@ namespace CSLight {
 				string nameOfMark = nameOfMarkWindow.Value;
 				int indexLoss = nameOfMark.IndexOf(' ');
 				string states = "Розміновано Підтв. ураж. Тільки розрив";
+				string minesNameLarge = "ПТМ-3 ТМ-62"; // 90 днів
+				string minesNameLess = ""; // заготовка
 				
 				switch (targetClassJbd) {
 				//. Міна
@@ -484,8 +499,11 @@ namespace CSLight {
 					} else if (states.Contains(establishedJbd)) {
 						markName = $"{nameOfMark.Substring(0, indexLoss)} ({dateJbd})";
 					} else {
-						if (nameOfBch.Contains("ПТМ-3")) {
+						if (minesNameLarge.Contains(nameOfBch)) {
 							markName = $"{nameOfBch} до ({Bisbin.datePlasDays(dateJbd, 90)})";
+						}
+						if (nameOfBch.Contains("ППМ")) {
+							markName = $"{nameOfBch} до ({Bisbin.datePlasDays(dateJbd, 8)})";
 						} else {
 							markName = $"{nameOfBch} до ()";
 						}
@@ -792,7 +810,7 @@ namespace CSLight {
 						placeColorYellowButton.PostClick(scroll: 250);
 						wait.ms(500);
 						// відсоток прозрачності
-						var transpatentColorRange = w.Elm["web:SLIDER"].Find(1);/*image:WkJNGzUEAMQn9ldvQTXxAKVNl+jkLmeh/blIJCtEwu895QOJRTBEZxrvHqAV6cZu/K8UcCxRCdzV5eMlrSjMuvisYCq6U4fMFEn6goTFvkAYf3+7SYvIiC70trcgzudASNwDYoOSsbm2iqrifIRFzyE6tBy311fIiI/GzPgoghPe8PT4iNDYXfjGX2KPEqTMukuVZRGLBlLdHV8inM2lRUfOXXvAl939EGiDsr5DIOw/SR5z2R6EPih0r27/JWTQ3SA7dFZ6Lt2GHhGhV2zYpfCfsUGnVdSJTe7glZWMM+CdHcYdzckEkf9GuMlanyNzRjUxnWOcvrPxRzi3suSPX+I019bIshobqdGpPcNpHQ==*/
+						var transpatentColorRange = w.Elm["web:SLIDER"].Find(-1);/*image:WkJNGzUEAMQn9ldvQTXxAKVNl+jkLmeh/blIJCtEwu895QOJRTBEZxrvHqAV6cZu/K8UcCxRCdzV5eMlrSjMuvisYCq6U4fMFEn6goTFvkAYf3+7SYvIiC70trcgzudASNwDYoOSsbm2iqrifIRFzyE6tBy311fIiI/GzPgoghPe8PT4iNDYXfjGX2KPEqTMukuVZRGLBlLdHV8inM2lRUfOXXvAl939EGiDsr5DIOw/SR5z2R6EPih0r27/JWTQ3SA7dFZ6Lt2GHhGhV2zYpfCfsUGnVdSJTe7glZWMM+CdHcYdzckEkf9GuMlanyNzRjUxnWOcvrPxRzi3suSPX+I019bIshobqdGpPcNpHQ==*/
 						transpatentColorRange.PostClick(scroll: 250);
 						transpatentColorRange.SendKeys("Left*5");
 						wait.ms(500);
@@ -803,7 +821,7 @@ namespace CSLight {
 							placeColorYellowButton.PostClick(scroll: 250);
 							wait.ms(500);
 							// відсоток прозрачності
-							var transpatentColorRange = w.Elm["web:SLIDER"].Find(1);/*image:WkJNGzUEAMQn9ldvQTXxAKVNl+jkLmeh/blIJCtEwu895QOJRTBEZxrvHqAV6cZu/K8UcCxRCdzV5eMlrSjMuvisYCq6U4fMFEn6goTFvkAYf3+7SYvIiC70trcgzudASNwDYoOSsbm2iqrifIRFzyE6tBy311fIiI/GzPgoghPe8PT4iNDYXfjGX2KPEqTMukuVZRGLBlLdHV8inM2lRUfOXXvAl939EGiDsr5DIOw/SR5z2R6EPih0r27/JWTQ3SA7dFZ6Lt2GHhGhV2zYpfCfsUGnVdSJTe7glZWMM+CdHcYdzckEkf9GuMlanyNzRjUxnWOcvrPxRzi3suSPX+I019bIshobqdGpPcNpHQ==*/
+							var transpatentColorRange = w.Elm["web:SLIDER"].Find(-1);/*image:WkJNGzUEAMQn9ldvQTXxAKVNl+jkLmeh/blIJCtEwu895QOJRTBEZxrvHqAV6cZu/K8UcCxRCdzV5eMlrSjMuvisYCq6U4fMFEn6goTFvkAYf3+7SYvIiC70trcgzudASNwDYoOSsbm2iqrifIRFzyE6tBy311fIiI/GzPgoghPe8PT4iNDYXfjGX2KPEqTMukuVZRGLBlLdHV8inM2lRUfOXXvAl939EGiDsr5DIOw/SR5z2R6EPih0r27/JWTQ3SA7dFZ6Lt2GHhGhV2zYpfCfsUGnVdSJTe7glZWMM+CdHcYdzckEkf9GuMlanyNzRjUxnWOcvrPxRzi3suSPX+I019bIshobqdGpPcNpHQ==*/
 							transpatentColorRange.PostClick(scroll: 250);
 							transpatentColorRange.SendKeys("Left*5");
 							wait.ms(500);
@@ -813,7 +831,7 @@ namespace CSLight {
 							placeColorRedButton.PostClick(scroll: 250);
 							wait.ms(500);
 							// відсоток прозрачності
-							var transpatentColorRange = w.Elm["web:SLIDER"].Find(1);/*image:WkJNGzUEAMQn9ldvQTXxAKVNl+jkLmeh/blIJCtEwu895QOJRTBEZxrvHqAV6cZu/K8UcCxRCdzV5eMlrSjMuvisYCq6U4fMFEn6goTFvkAYf3+7SYvIiC70trcgzudASNwDYoOSsbm2iqrifIRFzyE6tBy311fIiI/GzPgoghPe8PT4iNDYXfjGX2KPEqTMukuVZRGLBlLdHV8inM2lRUfOXXvAl939EGiDsr5DIOw/SR5z2R6EPih0r27/JWTQ3SA7dFZ6Lt2GHhGhV2zYpfCfsUGnVdSJTe7glZWMM+CdHcYdzckEkf9GuMlanyNzRjUxnWOcvrPxRzi3suSPX+I019bIshobqdGpPcNpHQ==*/
+							var transpatentColorRange = w.Elm["web:SLIDER"].Find(-1);/*image:WkJNGzUEAMQn9ldvQTXxAKVNl+jkLmeh/blIJCtEwu895QOJRTBEZxrvHqAV6cZu/K8UcCxRCdzV5eMlrSjMuvisYCq6U4fMFEn6goTFvkAYf3+7SYvIiC70trcgzudASNwDYoOSsbm2iqrifIRFzyE6tBy311fIiI/GzPgoghPe8PT4iNDYXfjGX2KPEqTMukuVZRGLBlLdHV8inM2lRUfOXXvAl939EGiDsr5DIOw/SR5z2R6EPih0r27/JWTQ3SA7dFZ6Lt2GHhGhV2zYpfCfsUGnVdSJTe7glZWMM+CdHcYdzckEkf9GuMlanyNzRjUxnWOcvrPxRzi3suSPX+I019bIshobqdGpPcNpHQ==*/
 							transpatentColorRange.PostClick(scroll: 250);
 							transpatentColorRange.SendKeys("Left*5");
 							wait.ms(500);
@@ -824,7 +842,7 @@ namespace CSLight {
 						placeColorRedButton.PostClick(scroll: 250);
 						wait.ms(500);
 						// відсоток прозрачності
-						var transpatentColorRange = w.Elm["web:SLIDER"].Find(1);/*image:WkJNGzUEAMQn9ldvQTXxAKVNl+jkLmeh/blIJCtEwu895QOJRTBEZxrvHqAV6cZu/K8UcCxRCdzV5eMlrSjMuvisYCq6U4fMFEn6goTFvkAYf3+7SYvIiC70trcgzudASNwDYoOSsbm2iqrifIRFzyE6tBy311fIiI/GzPgoghPe8PT4iNDYXfjGX2KPEqTMukuVZRGLBlLdHV8inM2lRUfOXXvAl939EGiDsr5DIOw/SR5z2R6EPih0r27/JWTQ3SA7dFZ6Lt2GHhGhV2zYpfCfsUGnVdSJTe7glZWMM+CdHcYdzckEkf9GuMlanyNzRjUxnWOcvrPxRzi3suSPX+I019bIshobqdGpPcNpHQ==*/
+						var transpatentColorRange = w.Elm["web:SLIDER"].Find(-1);/*image:WkJNGzUEAMQn9ldvQTXxAKVNl+jkLmeh/blIJCtEwu895QOJRTBEZxrvHqAV6cZu/K8UcCxRCdzV5eMlrSjMuvisYCq6U4fMFEn6goTFvkAYf3+7SYvIiC70trcgzudASNwDYoOSsbm2iqrifIRFzyE6tBy311fIiI/GzPgoghPe8PT4iNDYXfjGX2KPEqTMukuVZRGLBlLdHV8inM2lRUfOXXvAl939EGiDsr5DIOw/SR5z2R6EPih0r27/JWTQ3SA7dFZ6Lt2GHhGhV2zYpfCfsUGnVdSJTe7glZWMM+CdHcYdzckEkf9GuMlanyNzRjUxnWOcvrPxRzi3suSPX+I019bIshobqdGpPcNpHQ==*/
 						transpatentColorRange.PostClick(scroll: 250);
 						transpatentColorRange.SendKeys("Left*5");
 						wait.ms(500);
