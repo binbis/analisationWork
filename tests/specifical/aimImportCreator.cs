@@ -18,7 +18,7 @@ namespace CSLight {
 			
 			string[] parts = clipboardData.Split('\n'); // Розділяємо рядок на частини
 			string dateTimeFormat = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss"); // як хочуть
-			string dateNow = DateTime.Now.ToString("DD.MM.YYYY"); // поточний час
+			string dateNow = DateTime.Now.ToString("dd.MM.yyyy"); // поточний час
 			var features = new List<Object>(); //
 			string plassEror = string.Empty; // для подальшої перевірки
 			
@@ -30,7 +30,7 @@ namespace CSLight {
 					string sidc = "10012500001318000000";
 					
 					//координати обробка
-					var wgsCoord = Bisbin.ConvertMGRSToWGS84(elements[1]);
+					var wgsCoord = Bisbin.ConvertMGRSToWGS84(elements[2]);
 					
 					// Формуємо JSON для однієї мітки (Feature) вручну
 					var feature = new StringBuilder();
@@ -49,8 +49,8 @@ namespace CSLight {
 					
 					features.Add(feature.ToString());
 				} else {
-					Console.WriteLine($" {elements[1]} не містить координат");
-					plassEror += $"\r {elements[1]} не містить координат";
+					Console.WriteLine($" {elements[2]} не містить координат");
+					plassEror += $"\r {elements[2]} не містить координат";
 				}
 			};
 			
