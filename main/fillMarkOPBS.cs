@@ -196,7 +196,7 @@ namespace CSLight {
 			foreach (string item in parts) {
 				string[] elements = item.Split('\t'); // ділимо рядок на елементи
 				if (elements.Length < 10) continue; // Пропускаємо, якщо елементів недостатньо
-				if (elements[10].Length > 5) {
+				if (elements[3].Length > 5) {
 					// Парсимо елементи з буфера обміну
 					string sidc = string.Empty;
 					string outlineСolor = ""; // колір обведення
@@ -222,7 +222,7 @@ namespace CSLight {
 					string name = $"{elements[1]} Т.в. ({elements[2]})";
 					
 					//координати обробка
-					var wgsCoord = Bisbin.ConvertMGRSToWGS84(elements[10]);
+					var wgsCoord = Bisbin.ConvertMGRSToWGS84(elements[3]);
 					
 					// Формуємо JSON для однієї мітки (Feature) вручну
 					var feature = new StringBuilder();
