@@ -1,5 +1,5 @@
 /*/ c \analisationWork-main\globalClass\Bisbin.cs; /*/
-/* 20,11,2024
+/* 25,11,2024
 проєкт - переіменування файлів в папці
 
 + знайти перейменувати вміст та відкрити папку
@@ -75,6 +75,13 @@ namespace CSLight {
 					pathFilesOpen = Path.Combine(pathCoalFolderSsy, messageId);
 				} else {
 					pathFilesOpen = Path.Combine(pathDonbasFolder, messageId);
+				}
+				
+				if (!filesystem.exists(pathFilesOpen)) {
+					//osdText.showTransparentText("Transparent text");
+					dialog.show("Помилка", $"Незнайдено подібної папки {pathDonbasFolder}/{messageId}", secondsTimeout: 5);
+					Console.WriteLine($"Незнайдено подібної папки {pathDonbasFolder}/{messageId}, рекомендація: преевірити бота, можливо він вимкнений, також перевірити чи є досуп до серверу");
+					return;
 				}
 				
 				// спроба перейменувати назву

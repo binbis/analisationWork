@@ -1,6 +1,6 @@
 /*/ c \analisationWork-main\globalClass\Bisbin.cs; /*/
 
-/* 24.11.2024 2.1
+/* 29.11.2024 2.1
 
 * id обрізаються, щоб поміститись в рядок 
 * функція додавання до дати дні(x) підходить для мін
@@ -577,15 +577,15 @@ namespace CSLight {
 			var dateDeltaWindow = w.Elm["TEXT", "дд/мм/рррр", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA].Find(1);
 			if (dateDeltaWindow != null) {
 				dateDeltaWindow.PostClick();
-				keys.sendL("Ctrl+A", "!" + dateDeltaFormat);
-			}
+				keys.sendL("Ctrl+A", "!" + dateDeltaFormat, "Enter");
+				}
 			wait.ms(500);
 			// час
-			var timeDeltaWindow = w.Elm["TEXT", "гг:хх", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA].Find(1);
-			if (timeDeltaWindow != null) {
-				timeDeltaWindow.PostClick();
-				keys.sendL("Ctrl+A", "!" + timeJbd, "Enter");
-			}
+			//var timeDeltaWindow = w.Elm["TEXT", "гг:хх", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA].Find(1);
+			//if (timeDeltaWindow != null) {
+				//timeDeltaWindow.PostClick();
+				keys.sendL("!" + timeJbd, "Enter");
+			//}
 		}
 		// поле кількість
 		static void deltaNumberOfnumberWindow(string twoHundredth, string threeHundredth) {
