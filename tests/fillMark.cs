@@ -1,6 +1,6 @@
 /*/ c \analisationWork\globalClass\Bisbin.cs; /*/
 
-/* 05.12.2024 2.1
+/* 06.12.2024 2.1
 
 * id обрізаються, щоб поміститись в рядок 
 * функція додавання до дати дні(x) підходить для мін
@@ -33,7 +33,7 @@ namespace CSLight {
 			// insider
 			b.R.AddButton("1. Заповнення мітки", 1).Brush(Brushes.LightCoral);
 			b.R.AddButton("2. Створення РЕБ та РЕР мітки", 2).Brush(Brushes.LightCoral);
-			b.R.AddButton("3. Файл імпорта для 777 міток", 3).Brush(Brushes.LightGoldenrodYellow);
+			b.R.AddButton("3. Файлa імпорта для 777 міток", 3).Brush(Brushes.LightGoldenrodYellow);
 			b.R.AddButton("4. Файл імпорта з МІНАМИ", 4).Brush(Brushes.LightGoldenrodYellow);
 			b.R.AddButton("5. Файл імпорта - обізнаність ворога й всяке", 5).Brush(Brushes.LightGreen);
 			b.R.AddOkCancel().Font(size: 14, bold: false);
@@ -329,18 +329,19 @@ namespace CSLight {
 					string name = Bisbin.createMineName(nameOfBch, targetClassJbd, dateJbd, establishedJbd, commentJbd, twoHundredth, threeHundredth);
 					string sidc = string.Empty;
 					string states = "Розміновано Підтв. ураж. Тільки розрив Авар. скид";
+					string bchTropsMines = "ППМ К2";
 					if (states.Contains(establishedJbd)) {
-						if (name.Contains("ППМ")) {
+						if (bchTropsMines.Contains(name)) {
 							sidc = "10011540002003000000";
 						} else { sidc = "10031540002103000000"; }
 					} else if (establishedJbd.Contains("Встановлено")) {
-						if (name.Contains("ППМ")) {
+						if (bchTropsMines.Contains(name)) {
 							sidc = "10011520002003000000";
 						} else { sidc = "10031520002103000000"; }
 					} else if (establishedJbd.Contains("Спростовано")) {
 						return;
 					} else {
-						if (name.Contains("ППМ")) {
+						if (bchTropsMines.Contains(name)) {
 							sidc = "10011530002003000000";
 						} else { sidc = "10031530002103000000"; }
 					}
@@ -479,7 +480,7 @@ namespace CSLight {
 				int indexLoss = nameOfMark.IndexOf(' ');
 				string states = "Розміновано Підтв. ураж. Тільки розрив";
 				string minesNameLarge = "ПТМ-3 ТМ-62"; // 90 днів
-				string minesNameLess = ""; // заготовка
+				string bchTropsMines = "ППМ К2";
 				
 				switch (targetClassJbd) {
 				//. Міна
@@ -494,7 +495,7 @@ namespace CSLight {
 					} else {
 						if (minesNameLarge.Contains(nameOfBch)) {
 							markName = $"{nameOfBch} до ({Bisbin.datePlasDays(dateJbd, 90)})";
-						} else if (nameOfBch.Contains("ППМ")) {
+						} else if (bchTropsMines.Contains(nameOfBch)) {
 							markName = $"{nameOfBch} до ({Bisbin.datePlasDays(dateJbd, 8)})";
 						} else {
 							markName = $"{nameOfBch} до ()";
@@ -584,12 +585,7 @@ namespace CSLight {
 				keys.sendL("Ctrl+A", "!" + dateDeltaFormat, "Enter");
 			}
 			wait.ms(500);
-			// час
-			//var timeDeltaWindow = w.Elm["TEXT", "гг:хх", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA].Find(1);
-			//if (timeDeltaWindow != null) {
-			//timeDeltaWindow.PostClick();
 			keys.sendL("!" + timeJbd, "Enter");
-			//}
 		}
 		// поле кількість
 		static void deltaNumberOfnumberWindow(string twoHundredth, string threeHundredth) {
@@ -774,9 +770,6 @@ namespace CSLight {
 				commentWindow.PostClick(scroll: 250);
 				keys.sendL("Ctrl+A", "!" + commentContents);
 			}
-			wait.ms(500);
-			//var commentWindowAcceptButton = w.Elm["STATICTEXT", "Новий коментар", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA, navig: "next4"].Find(-1);
-			//commentWindowAcceptButton.PostClick(scroll: 250);
 		}
 		// додаткові поля
 		static void deltaAdditionalFields(string idTargetJbd, string targetClassJbd) {
