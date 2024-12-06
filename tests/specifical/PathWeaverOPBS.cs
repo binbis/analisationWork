@@ -54,3 +54,48 @@ namespace CSLight {
 	}
 }
 
+
+/* інтерфейс який ми заслуговуємо
+
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media;
+
+var bMain = new wpfBuilder("Window").WinSize(600);
+var b = bMain;
+b.Row(-1).Add(out TabControl tc).Height(250..);
+b.R.AddOkCancel(apply: "_Apply").Font(size: 14, bold: false);
+b.Window.Topmost = true;
+
+wpfBuilder _Page(string name, WBPanelType panelType = WBPanelType.Grid) {
+	var tp = new TabItem { Header = name };
+	tc.Items.Add(tp);
+	return new wpfBuilder(tp, panelType);
+}
+
+var b1 = b = _Page("Скрипти");
+//Brush
+b.Font(size: 17, bold: true);
+b.Brush(Brushes.DarkGray);
+// insider
+b.R.AddButton("1. Готове речення в буфер обміну", 2).Brush(Brushes.LightCoral);
+b.R.AddButton("2. Створти папку екіпаж -> ід", 5).Brush(Brushes.LightCyan);
+b.R.AddButton("3. Перейменування в папці Бамбас", 1).Brush(Brushes.LightSalmon);
+b.R.AddButton("4. Перейменування в папці Уголь", 3).Brush(Brushes.LightGoldenrodYellow);
+b.R.AddButton("5. Перейменування в папці Уголь-Суджа", 4).Brush(Brushes.LightGoldenrodYellow);
+b.End();
+
+var b2 = b = _Page("Технічне налаштування");
+//Brush
+b.Font(size: 16, bold: true);
+b.Brush(Brushes.DarkGray);
+// insider
+b2.R.Add(out Label _, "Шлях до папки де буде створено папки в папках").AlignContent(HorizontalAlignment.Center);
+b.R.Add(out TextBox text1).Font(size: 14, bold: false).Size(400, 40).AddButton("Запам'ятати", 99).Brush(Brushes.LightCoral).Width(125);
+b.End();
+
+
+
+b = bMain.End();
+if (!b.ShowDialog()) return;
+

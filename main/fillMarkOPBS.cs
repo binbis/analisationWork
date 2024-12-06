@@ -1,6 +1,6 @@
 /*/ c \analisationWork-main\globalClass\Bisbin.cs; /*/
 
-/* 29.11.2024 2.1
+/* 05.12.2024 2.1
 
 * id обрізаються, щоб поміститись в рядок 
 * функція додавання до дати дні(x) підходить для мін
@@ -524,6 +524,9 @@ namespace CSLight {
 				//..
 				//. Скупчення ОС
 				case "ОС РОВ":
+					if (twoHundredth.Length == 0 || threeHundredth.Length == 0) {
+						markName = targetClassJbd;
+					}
 					if (twoHundredth.Length > 0) {
 						markName = twoHundredth + " - 200";
 					}
@@ -533,6 +536,7 @@ namespace CSLight {
 					if (twoHundredth.Length > 0 && threeHundredth.Length > 0) {
 						markName = twoHundredth + " - 200, " + threeHundredth + " - 300";
 					}
+					
 					break;
 				//..
 				default:
@@ -578,13 +582,13 @@ namespace CSLight {
 			if (dateDeltaWindow != null) {
 				dateDeltaWindow.PostClick();
 				keys.sendL("Ctrl+A", "!" + dateDeltaFormat, "Enter");
-				}
+			}
 			wait.ms(500);
 			// час
 			//var timeDeltaWindow = w.Elm["TEXT", "гг:хх", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA].Find(1);
 			//if (timeDeltaWindow != null) {
-				//timeDeltaWindow.PostClick();
-				keys.sendL("!" + timeJbd, "Enter");
+			//timeDeltaWindow.PostClick();
+			keys.sendL("!" + timeJbd, "Enter");
 			//}
 		}
 		// поле кількість
@@ -640,6 +644,12 @@ namespace CSLight {
 						} else {
 							fullaim = "повніс";
 						}
+						// для ос не зроз ....
+					} else if (!establishedJbd.ToLower().Contains("знищ") || !establishedJbd.ToLower().Contains("ураж")) {
+						fullaim = "не о";
+						combatCapabilityWindow.PostClick(scroll: 250);
+						keys.sendL("Ctrl+A", "!" + fullaim, "Enter");
+						return;
 					} else {
 						if (commentJbd.ToLower().Contains("знищ")) {
 							fullaim = "небо";
@@ -765,8 +775,8 @@ namespace CSLight {
 				keys.sendL("Ctrl+A", "!" + commentContents);
 			}
 			wait.ms(500);
-			var commentWindowAcceptButton = w.Elm["STATICTEXT", "Новий коментар", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA, navig: "next4"].Find(-1);
-			commentWindowAcceptButton.PostClick(scroll: 250);
+			//var commentWindowAcceptButton = w.Elm["STATICTEXT", "Новий коментар", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA, navig: "next4"].Find(-1);
+			//commentWindowAcceptButton.PostClick(scroll: 250);
 		}
 		// додаткові поля
 		static void deltaAdditionalFields(string idTargetJbd, string targetClassJbd) {
@@ -796,44 +806,44 @@ namespace CSLight {
 				case "Укриття":
 					if (establishedJbd.ToLower().Contains("знищ") || establishedJbd.ToLower().Contains("ураж")) {
 						// колір жовтий
-						var placeColorYellowButton = w.Elm["BUTTON", "#ffeb3b", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA].Find(-1);
-						placeColorYellowButton.PostClick(scroll: 250);
+						var placeColorYellowButton = w.Elm["BUTTON", "#ffeb3b", "class=Chrome_RenderWidgetHostHWND", EFFlags.HiddenToo | EFFlags.UIA].Find(1);
+						placeColorYellowButton.PostClick(scroll: 500);
 						wait.ms(500);
 						// відсоток прозрачності
 						var transpatentColorRange = w.Elm["web:SLIDER"].Find(-1);
-						transpatentColorRange.PostClick(scroll: 250);
+						transpatentColorRange.PostClick(scroll: 500);
 						transpatentColorRange.SendKeys("Left*5");
 						wait.ms(500);
 					} else if (states.Contains(establishedJbd)) {
 						if (commentJbd.ToLower().Contains("знищ") || commentJbd.ToLower().Contains("ураж")) {
 							// колір жовтий
-							var placeColorYellowButton = w.Elm["BUTTON", "#ffeb3b", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA].Find(-1);
-							placeColorYellowButton.PostClick(scroll: 250);
+							var placeColorYellowButton = w.Elm["BUTTON", "#ffeb3b", "class=Chrome_RenderWidgetHostHWND", EFFlags.HiddenToo | EFFlags.UIA].Find(1);
+							placeColorYellowButton.PostClick(scroll: 500);
 							wait.ms(500);
 							// відсоток прозрачності
 							var transpatentColorRange = w.Elm["web:SLIDER"].Find(-1);
-							transpatentColorRange.PostClick(scroll: 250);
+							transpatentColorRange.PostClick(scroll: 500);
 							transpatentColorRange.SendKeys("Left*5");
 							wait.ms(500);
 						} else {
 							//колір червоний - ворож
 							var placeColorRedButton = w.Elm["BUTTON", "#f44336", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA].Find(-1);
-							placeColorRedButton.PostClick(scroll: 250);
+							placeColorRedButton.PostClick(scroll: 500);
 							wait.ms(500);
 							// відсоток прозрачності
 							var transpatentColorRange = w.Elm["web:SLIDER"].Find(-1);
-							transpatentColorRange.PostClick(scroll: 250);
+							transpatentColorRange.PostClick(scroll: 500);
 							transpatentColorRange.SendKeys("Left*5");
 							wait.ms(500);
 						}
 					} else {
 						//колір червоний - ворож
 						var placeColorRedButton = w.Elm["BUTTON", "#f44336", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA].Find(-1);
-						placeColorRedButton.PostClick(scroll: 250);
+						placeColorRedButton.PostClick(scroll: 500);
 						wait.ms(500);
 						// відсоток прозрачності
 						var transpatentColorRange = w.Elm["web:SLIDER"].Find(-1);
-						transpatentColorRange.PostClick(scroll: 250);
+						transpatentColorRange.PostClick(scroll: 500);
 						transpatentColorRange.SendKeys("Left*5");
 						wait.ms(500);
 					}
