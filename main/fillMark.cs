@@ -100,7 +100,7 @@ namespace CSLight {
 			wait.ms(500);
 			deltaCombatCapabilityWindow(targetClassJbd, establishedJbd, commentJbd);
 			wait.ms(500);
-			deltaIdentificationWindow(targetClassJbd, establishedJbd, commentJbd);
+			deltaIdentificationWindow(targetClassJbd, establishedJbd, commentJbd, nameOfBch);
 			wait.ms(500);
 			Bisbin.reliabilityWindow();
 			wait.ms(500);
@@ -329,19 +329,19 @@ namespace CSLight {
 					string name = Bisbin.createMineName(nameOfBch, targetClassJbd, dateJbd, establishedJbd, commentJbd, twoHundredth, threeHundredth);
 					string sidc = string.Empty;
 					string states = "Розміновано Підтв. ураж. Тільки розрив Авар. скид";
-					string bchTropsMines = "ППМ К2";
+					string bchTropsMines = "К2 ППМ";
 					if (states.Contains(establishedJbd)) {
-						if (bchTropsMines.Contains(name)) {
+						if (bchTropsMines.Contains(nameOfBch)) {
 							sidc = "10011540002003000000";
 						} else { sidc = "10031540002103000000"; }
 					} else if (establishedJbd.Contains("Встановлено")) {
-						if (bchTropsMines.Contains(name)) {
+						if (bchTropsMines.Contains(nameOfBch)) {
 							sidc = "10011520002003000000";
 						} else { sidc = "10031520002103000000"; }
 					} else if (establishedJbd.Contains("Спростовано")) {
 						return;
 					} else {
-						if (bchTropsMines.Contains(name)) {
+						if (bchTropsMines.Contains(nameOfBch)) {
 							sidc = "10011530002003000000";
 						} else { sidc = "10031530002103000000"; }
 					}
@@ -664,16 +664,22 @@ namespace CSLight {
 			}
 		}
 		// ідентифікація 
-		static void deltaIdentificationWindow(string targetClassJbd, string establishedJbd, string commentJbd) {
+		static void deltaIdentificationWindow(string targetClassJbd, string establishedJbd, string commentJbd, string nameOfBch) {
 			// основна вкладка
 			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1");
+			string bchTropsMines = "К2 ППМ";
 			// ідетнифікація поле
 			var identificationWindow = w.Elm["STATICTEXT", "Ідентифікація", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA, navig: "next2"].Find(-1);
 			if (identificationWindow != null) {
 				string friendly = string.Empty;
 				switch (targetClassJbd) {
 				case "Міна":
-					friendly = "дружній";
+					if (bchTropsMines.Contains(nameOfBch)) {
+						friendly = "відом";
+					} else {
+						friendly = "дружній";
+					}
+					
 					break;
 				case "Укриття":
 					if (establishedJbd.ToLower().Contains("знищ") || commentJbd.ToLower().Contains("знищ")) {

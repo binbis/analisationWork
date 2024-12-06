@@ -180,7 +180,7 @@ public class Bisbin {
 		// поле назва
 		string markName = string.Empty;
 		string bchMines = "ПТМ-3 ТМ-62";
-		string bchTropsMines = "ППМ К2";
+		string bchTropsMines = "К2 ППМ";
 		if (establishedJbd.Contains("Авар. скид")) {
 			markName = $"{nameOfBch} ({dateJbd})";
 		} else {

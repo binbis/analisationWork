@@ -27,10 +27,6 @@ namespace CSLight {
 			opt.key.KeySpeed = 20;
 			opt.key.TextSpeed = 20;
 			
-			keys.send("Ctrl+C"); // копіюємо код
-			wait.ms(100);
-			string clipboardData = clipboard.copy(); // зчитуємо буфер обміну
-			
 			var bMain = new wpfBuilder("Window").WinSize(600); // основне вікно
 			var b = bMain; // 
 			b.Row(-1).Add(out TabControl tc).Height(250..); // підтримка табуляції + фіксована висота
@@ -68,15 +64,19 @@ namespace CSLight {
 			
 			int dialogButtonResOne = b1.ResultButton; // значення нажатої кнопки
 			int dialogButtonResTwo = b2.ResultButton; // значення нажатої кнопки
-			string rememberPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),@"LibreAutomate\Main\files\analisationWork\customTemp\pathes.txt"); // шлях до файлу зі збереженим шляхом
+			string rememberPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), @"LibreAutomate\Main\files\analisationWork\customTemp\pathes.txt"); // шлях до файлу зі збереженим шляхом
 			
 			// основа
 			if (dialogButtonResOne != 5 && dialogButtonResOne != 99) {
-				renameAll(clipboardData, dialogButtonResOne);
+				keys.send("Ctrl+C"); // копіюємо код
+				wait.ms(100);
+				renameAll(clipboard.copy(), dialogButtonResOne);
 			}
 			
 			if (dialogButtonResOne == 5) {
-				PathWeaver(clipboardData, rememberPath);
+				keys.send("Ctrl+C"); // копіюємо код
+				wait.ms(100);
+				PathWeaver(clipboard.copy(), rememberPath);
 			}
 			
 			if (dialogButtonResTwo == 99) {
