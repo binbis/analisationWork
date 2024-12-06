@@ -68,7 +68,7 @@ namespace CSLight {
 			
 			int dialogButtonResOne = b1.ResultButton; // значення нажатої кнопки
 			int dialogButtonResTwo = b2.ResultButton; // значення нажатої кнопки
-			string rememberPath = @"C:\Users\User-PM\Documents\LibreAutomate\Main\files\analisationWork\customTemp\pathes.txt"; // шлях до файлу зі збереженим шляхом
+			string rememberPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),@"LibreAutomate\Main\files\analisationWork-main\customTemp\pathes.txt"); // шлях до файлу зі збереженим шляхом
 			
 			// основа
 			if (dialogButtonResOne != 5 && dialogButtonResOne != 99) {

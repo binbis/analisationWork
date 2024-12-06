@@ -68,7 +68,7 @@ namespace CSLight {
 			
 			int dialogButtonResOne = b1.ResultButton; // значення нажатої кнопки
 			int dialogButtonResTwo = b2.ResultButton; // значення нажатої кнопки
-			string rememberPath = @"C:\Users\User-PM\Documents\LibreAutomate\Main\files\analisationWork\customTemp\pathes.txt"; // шлях до файлу зі збереженим шляхом
+			string rememberPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),@"LibreAutomate\Main\files\analisationWork\customTemp\pathes.txt"); // шлях до файлу зі збереженим шляхом
 			
 			// основа
 			if (dialogButtonResOne != 5 && dialogButtonResOne != 99) {
@@ -178,16 +178,16 @@ namespace CSLight {
 			string partFolderByCrew = $"{crewName}"; // заготовка екіпажа
 			string partFolderByFlyNumberAndId = $"({flyNumber}) {aidId}"; // заготовка ід
 			
-			string pathToFolderByCrew = pathname.combine(pathWithRemebers,partFolderByCrew); // збирає шляхи папки екіпаж
+			string pathToFolderByCrew = pathname.combine(pathWithRemebers, partFolderByCrew); // збирає шляхи папки екіпаж
 			bool f = filesystem.createDirectory(pathToFolderByCrew); // пробую створити папку
 			//перевірка
 			if (!f) {
 				Console.WriteLine($"папка {crewName} вже існує");
 			}
 			wait.ms(400);
-			string pathToFolderById = pathname.combine(pathToFolderByCrew,partFolderByFlyNumberAndId); // збирає шляхи папки ід
+			string pathToFolderById = pathname.combine(pathToFolderByCrew, partFolderByFlyNumberAndId); // збирає шляхи папки ід
 			f = filesystem.createDirectory(pathToFolderById); // пробую створити папку
-				//перевірка
+			//перевірка
 			if (!f) {
 				Console.WriteLine($"папка {partFolderByFlyNumberAndId} в {partFolderByCrew} папці вже існує");
 			}
