@@ -1,6 +1,6 @@
 /*/ c \analisationWork\globalClass\Bisbin.cs; /*/
 
-/* 06.12.2024 2.1
+/* 10.12.2024 2.2
 
 * id обрізаються, щоб поміститись в рядок 
 * функція додавання до дати дні(x) підходить для мін
@@ -300,6 +300,7 @@ namespace CSLight {
 					не боездатна - 10011540002003000000
 				
 			*/
+			Bisbin instance = new Bisbin();
 			
 			string[] parts = clipboardData.Split('\n'); // Розділяємо рядок на частини
 			var features = new List<Object>(); //
@@ -329,19 +330,18 @@ namespace CSLight {
 					string name = Bisbin.createMineName(nameOfBch, targetClassJbd, dateJbd, establishedJbd, commentJbd, twoHundredth, threeHundredth);
 					string sidc = string.Empty;
 					string states = "Розміновано Підтв. ураж. Тільки розрив Авар. скид";
-					string bchTropsMines = "К2 ППМ";
 					if (states.Contains(establishedJbd)) {
-						if (bchTropsMines.Contains(nameOfBch)) {
+						if (instance.VariableHolder.bchTropsMines.Contains(nameOfBch)) {
 							sidc = "10011540002003000000";
 						} else { sidc = "10031540002103000000"; }
 					} else if (establishedJbd.Contains("Встановлено")) {
-						if (bchTropsMines.Contains(nameOfBch)) {
+						if (instance.VariableHolder.bchTropsMines.Contains(nameOfBch)) {
 							sidc = "10011520002003000000";
 						} else { sidc = "10031520002103000000"; }
 					} else if (establishedJbd.Contains("Спростовано")) {
 						return;
 					} else {
-						if (bchTropsMines.Contains(nameOfBch)) {
+						if (instance.VariableHolder.bchTropsMines.Contains(nameOfBch)) {
 							sidc = "10011530002003000000";
 						} else { sidc = "10031530002103000000"; }
 					}
@@ -469,18 +469,14 @@ namespace CSLight {
 		}
 		// відповідна назва
 		static string deltaMarkName(string nameOfBch, string targetClassJbd, string dateJbd, string establishedJbd, string commentJbd, string twoHundredth, string threeHundredth) {
-			// основна вкладка
-			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1");
+			Bisbin instance = new Bisbin();
 			string nameIs = string.Empty;
 			// поле назва
-			var nameOfMarkWindow = w.Elm["STATICTEXT", "Назва", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA, navig: "next1"].Find(-1);
+			var nameOfMarkWindow = instance.ElementNavigator.deltaWindow.Elm["STATICTEXT", "Назва", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA, navig: "next1"].Find(-1);
 			if (nameOfMarkWindow != null) {
 				string markName = string.Empty;
 				string nameOfMark = nameOfMarkWindow.Value;
 				int indexLoss = nameOfMark.IndexOf(' ');
-				string states = "Розміновано Підтв. ураж. Тільки розрив";
-				string minesNameLarge = "ПТМ-3 ТМ-62"; // 90 днів
-				string bchTropsMines = "ППМ К2";
 				
 				switch (targetClassJbd) {
 				//. Міна
@@ -490,12 +486,12 @@ namespace CSLight {
 					}
 					if (establishedJbd.Contains("Авар. скид")) {
 						markName = $"{nameOfBch} ({dateJbd})";
-					} else if (states.Contains(establishedJbd)) {
+					} else if (instance.VariableHolder.states.Contains(establishedJbd)) {
 						markName = $"{nameOfMark.Substring(0, indexLoss)} ({dateJbd})";
 					} else {
-						if (minesNameLarge.Contains(nameOfBch)) {
+						if (instance.VariableHolder.bchHeavyMines.Contains(nameOfBch)) {
 							markName = $"{nameOfBch} до ({Bisbin.datePlasDays(dateJbd, 90)})";
-						} else if (bchTropsMines.Contains(nameOfBch)) {
+						} else if (instance.VariableHolder.bchTropsMines.Contains(nameOfBch)) {
 							markName = $"{nameOfBch} до ({Bisbin.datePlasDays(dateJbd, 8)})";
 						} else {
 							markName = $"{nameOfBch} до ()";
@@ -604,6 +600,7 @@ namespace CSLight {
 		}
 		// поле боєздатність
 		static void deltaCombatCapabilityWindow(string targetClassJbd, string establishedJbd, string commentJbd) {
+			Bisbin instance = new Bisbin();
 			// основна вкладка
 			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1");
 			// поле боєздатність
@@ -611,11 +608,10 @@ namespace CSLight {
 			//. перевірка
 			if (combatCapabilityWindow != null) {
 				string fullaim = string.Empty;
-				string states = "Розміновано Підтв. ураж. Тільки розрив Авар. скид";
 				switch (targetClassJbd) {
 				//. Якщо ти міна
 				case "Міна":
-					if (states.Contains(establishedJbd)) {
+					if (instance.VariableHolder.states.Contains(establishedJbd)) {
 						fullaim = "небо";
 					} else if (establishedJbd.Contains("Встановлено")) {
 						fullaim = "повніс";
@@ -665,16 +661,16 @@ namespace CSLight {
 		}
 		// ідентифікація 
 		static void deltaIdentificationWindow(string targetClassJbd, string establishedJbd, string commentJbd, string nameOfBch) {
+			Bisbin instance = new Bisbin();
 			// основна вкладка
 			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1");
-			string bchTropsMines = "К2 ППМ";
 			// ідетнифікація поле
 			var identificationWindow = w.Elm["STATICTEXT", "Ідентифікація", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA, navig: "next2"].Find(-1);
 			if (identificationWindow != null) {
 				string friendly = string.Empty;
 				switch (targetClassJbd) {
 				case "Міна":
-					if (bchTropsMines.Contains(nameOfBch)) {
+					if (instance.VariableHolder.bchTropsMines.Contains(nameOfBch)) {
 						friendly = "відом";
 					} else {
 						friendly = "дружній";

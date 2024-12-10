@@ -1,9 +1,17 @@
-/*/ nuget -\CoordinateSharp; /*/
+/*/ nuget -\CoordinateSharp; c .\VariableHolder.cs; c .\ElementNavigator.cs; /*/
 using CoordinateSharp;
-
+/// <summary>
+/// 
+/// </summary>
 public class Bisbin {
-	
-	//public string states = "Розміновано Підтв. ураж. Тільки розрив";
+	/// <summary>
+	/// різноманітні змінні
+	/// </summary>
+	public VariableHolder VariableHolder = new VariableHolder();
+	/// <summary>
+	/// вікна й елементи з цих вікон
+	/// </summary>
+	public ElementNavigator ElementNavigator = new ElementNavigator();
 	
 	// додає вказану кількість днів до дати
 	public static string datePlasDays(string date, int count) {
@@ -48,32 +56,31 @@ public class Bisbin {
 	}
 	// перша вкладка (Основні поля) мітки
 	public static void goToMainField() {
-		// основне вікно
-		var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1").Activate();
+		Bisbin instance = new Bisbin();
 		wait.ms(875);
-		var mainFilds = w.Elm["web:GROUPING", prop: "desc=Основні поля"].Find(1);
+		var mainFilds = instance.ElementNavigator.deltaWindow.Elm["web:GROUPING", prop: "desc=Основні поля"].Find(-1);
 		mainFilds.PostClick();
 	}
 	// друга вкладка (Додаткові поля) мітки
 	public static void goToAdditionalField() {
-		var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1");
+		Bisbin instance = new Bisbin();
 		wait.ms(875);
-		var additionalButton = w.Elm["web:GROUPING", prop: "desc=Додаткові поля"].Find(1);
+		var additionalButton = instance.ElementNavigator.deltaWindow.Elm["web:GROUPING", prop: "desc=Додаткові поля"].Find(-1);
 		additionalButton.PostClick();
 	}
 	// третя вкладка (Географічне розташування) мітки
 	public static void goToGeograficalPlace() {
-		var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1");
+		Bisbin instance = new Bisbin();
 		wait.ms(875);
-		var geografical = w.Elm["web:GROUPING", prop: "desc=Географічне розташування"].Find(1);
+		var geografical = instance.ElementNavigator.deltaWindow.Elm["web:GROUPING", prop: "desc=Географічне розташування"].Find(-1);
 		geografical.PostClick();
 		
 	}
 	// четверта вкладка (прикріплення) мітки
 	public static void goToAttachmentFiles() {
-		var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1");
+		Bisbin instance = new Bisbin();
 		wait.ms(875);
-		var attachment = w.Elm["web:GROUPING", prop: "desc=Прикріплення"].Find(1);
+		var attachment = instance.ElementNavigator.deltaWindow.Elm["web:GROUPING", prop: "desc=Прикріплення"].Find(-1);
 		attachment.PostClick();
 	}
 	//  тип джерела
@@ -127,7 +134,7 @@ public class Bisbin {
 				commentContents += $"міна на місці, сліди розриву відсутні, спостерігали з {crewTeamJbd}";
 			} else if (establishedJbd.Contains("Тільки розрив")) {
 				commentContents += $"тільки розрив, спостерігали з {crewTeamJbd}";
-			}else if (establishedJbd.Contains("Підтв. ураж.")) {
+			} else if (establishedJbd.Contains("Підтв. ураж.")) {
 				commentContents += $"{commentJbd}, спостерігали з {crewTeamJbd}";
 			} else {
 				commentContents += $"встановлено за допомогою ударного коптера {crewTeamJbd}";
@@ -177,16 +184,15 @@ public class Bisbin {
 	}
 	// формування імені
 	public static string createMineName(string nameOfBch, string targetClassJbd, string dateJbd, string establishedJbd, string commentJbd, string twoHundredth, string threeHundredth) {
+		Bisbin instance = new Bisbin();
 		// поле назва
 		string markName = string.Empty;
-		string bchMines = "ПТМ-3 ТМ-62";
-		string bchTropsMines = "К2 ППМ";
 		if (establishedJbd.Contains("Авар. скид")) {
 			markName = $"{nameOfBch} ({dateJbd})";
 		} else {
-			if (bchMines.Contains(nameOfBch)) {
+			if (instance.VariableHolder.bchHeavyMines.Contains(nameOfBch)) {
 				markName = $"{nameOfBch} до ({Bisbin.datePlasDays(dateJbd, 90)})";
-			}else if (bchTropsMines.Contains(nameOfBch)) {
+			} else if (instance.VariableHolder.bchTropsMines.Contains(nameOfBch)) {
 				markName = $"{nameOfBch} до ({Bisbin.datePlasDays(dateJbd, 8)})";
 			} else {
 				markName = $"{nameOfBch} до ()";
