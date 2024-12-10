@@ -1,7 +1,7 @@
 /*/ nuget -\CoordinateSharp; c .\VariableHolder.cs; c .\ElementNavigator.cs; /*/
 using CoordinateSharp;
 /// <summary>
-/// 
+/// основний клас який має доступ до усього
 /// </summary>
 public class Bisbin {
 	/// <summary>
@@ -134,7 +134,10 @@ public class Bisbin {
 				commentContents += $"міна на місці, сліди розриву відсутні, спостерігали з {crewTeamJbd}";
 			} else if (establishedJbd.Contains("Тільки розрив")) {
 				commentContents += $"тільки розрив, спостерігали з {crewTeamJbd}";
-			} else if (establishedJbd.Contains("Підтв. ураж.")) {
+			} else if (establishedJbd.Contains("Нерозрив")) {
+				commentContents += $"рух без підриву, спостерігали з {crewTeamJbd}";
+			}
+			else if (establishedJbd.Contains("Підтв. ураж.")) {
 				commentContents += $"{commentJbd}, спостерігали з {crewTeamJbd}";
 			} else {
 				commentContents += $"встановлено за допомогою ударного коптера {crewTeamJbd}";

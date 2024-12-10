@@ -120,6 +120,7 @@ namespace CSLight {
 		}
 		// тіло для створення мітки з подавленням від РЕБ та РЕР
 		static void createREBandRER(string clipboardData) {
+			Bisbin Bisbin = new Bisbin();
 			string[] parts = clipboardData.Split('\t'); // Розділяємо рядок на частини
 			string dateJbd = parts[4]; // 27.07.2024
 			string dateDeltaFormat = dateJbd.Replace('.', '/'); // перетворення дати до формату дельти
@@ -134,29 +135,27 @@ namespace CSLight {
 			string comment = $"{dateJbd} {timeJbd} - подавлено та знищено засобами роти РЕБ 414 ОПБС";
 			string bplaName = "вертикального зльоту";
 			
-			// основна вкладка
-			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1").Activate();
 			//. ставимо мітку
-			var createButton = w.Elm["LISTITEM", "Створити об'єкт", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA].Find(1);
+			var createButton = Bisbin.ElementNavigator.deltaWindow.Elm["LISTITEM", "Створити об'єкт", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA].Find(1);
 			createButton.PostClick(scroll: 250);
 			wait.ms(2000);
 			// обираємо мітку
-			var categorySearch = w.Elm["TEXT", "Пошук об'єктів", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA].Find(1);
+			var categorySearch = Bisbin.ElementNavigator.deltaWindow.Elm["TEXT", "Пошук об'єктів", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA].Find(1);
 			categorySearch.PostClick();
 			keys.sendL("Ctrl+A", "!" + bplaName);
 			wait.ms(3000);
-			var bplaMark = w.Elm["TEXT", "Пошук об'єктів", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA, navig: "next2 child"].Find(1);
+			var bplaMark = Bisbin.ElementNavigator.deltaWindow.Elm["TEXT", "Пошук об'єктів", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA, navig: "next2 child"].Find(1);
 			bplaMark.PostClick();
 			wait.ms(2000);
 			//..
 			//. шар
-			var layerWindow = w.Elm["STATICTEXT", "Шар", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA, navig: "next3"].Find(-1);
+			var layerWindow = Bisbin.ElementNavigator.deltaWindow.Elm["STATICTEXT", "Шар", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA, navig: "next3"].Find(-1);
 			layerWindow.PostClick(scroll: 300);
 			keys.sendL("Ctrl+A", "!" + layerName, "Enter");
 			//..
 			wait.ms(400);
 			//. назва
-			var nameOfMarkWindow = w.Elm["STATICTEXT", "Назва", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA, navig: "next1"].Find(-1);
+			var nameOfMarkWindow = Bisbin.ElementNavigator.deltaWindow.Elm["STATICTEXT", "Назва", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA, navig: "next1"].Find(-1);
 			nameOfMarkWindow.PostClick();
 			keys.sendL("Ctrl+A", "!" + name, "Enter");
 			//..
@@ -166,19 +165,19 @@ namespace CSLight {
 			//..
 			wait.ms(400);
 			//. боєздатність
-			var combatCapabilityWindow = w.Elm["STATICTEXT", "Боєздатність", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA, navig: "next3"].Find(-1);
+			var combatCapabilityWindow = Bisbin.ElementNavigator.deltaWindow.Elm["STATICTEXT", "Боєздатність", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA, navig: "next3"].Find(-1);
 			combatCapabilityWindow.PostClick(scroll: 250);
 			keys.sendL("Ctrl+A", "!" + capability, "Enter*2");
 			//..
 			wait.ms(400);
 			//. ідентифікація
-			var identificationWindow = w.Elm["STATICTEXT", "Ідентифікація", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA, navig: "next2"].Find(-1);
+			var identificationWindow = Bisbin.ElementNavigator.deltaWindow.Elm["STATICTEXT", "Ідентифікація", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA, navig: "next2"].Find(-1);
 			identificationWindow.PostClick(scroll: 250);
 			keys.sendL("Ctrl+A", "!" + identyfication, "Enter");
 			//..
 			wait.ms(400);
 			//. коментар
-			var commentWindow = w.Elm["STATICTEXT", "Новий коментар", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA, navig: "next2"].Find(-1);
+			var commentWindow = Bisbin.ElementNavigator.deltaWindow.Elm["STATICTEXT", "Новий коментар", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA, navig: "next2"].Find(-1);
 			commentWindow.PostClick(scroll: 250);
 			keys.sendL("Ctrl+A", "!" + comment);
 			wait.ms(400);
@@ -417,15 +416,14 @@ namespace CSLight {
 		}
 		// обрати відповідний шар
 		static void deltaLayerWindow(string targetClassJbd, string commentJbd) {
-			// основна вкладка
-			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1");
+			Bisbin Bisbin = new Bisbin();
 			// (01) постійні схов. і укриття
 			string permanentStorage = "Укриття Склад майна Склад БК Склад ПММ Польовий склад майна Польовий склад БК Польовий склад ПММ";
 			// (02) антени, камери...
 			string antennaCamera = "Мережеве обладнання Камера Антена РЕБ (окопні)";
 			
 			// поле шар
-			var layerWindow = w.Elm["STATICTEXT", "Шар", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA, navig: "next3"].Find(-1);
+			var layerWindow = Bisbin.ElementNavigator.deltaWindow.Elm["STATICTEXT", "Шар", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA, navig: "next3"].Find(-1);
 			layerWindow.PostClick(scroll: 250);
 			//. перевірка, запис
 			if (permanentStorage.Contains(targetClassJbd)) {
@@ -573,9 +571,8 @@ namespace CSLight {
 		}
 		// поле дата / час
 		static void deltaDateLTimeWindow(string dateDeltaFormat, string timeJbd) {
-			// основна вкладка
-			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1");// дата
-			var dateDeltaWindow = w.Elm["TEXT", "дд/мм/рррр", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA].Find(1);
+			Bisbin Bisbin = new Bisbin();
+			var dateDeltaWindow = Bisbin.ElementNavigator.deltaWindow.Elm["TEXT", "дд/мм/рррр", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA].Find(1);
 			if (dateDeltaWindow != null) {
 				dateDeltaWindow.PostClick();
 				keys.sendL("Ctrl+A", "!" + dateDeltaFormat, "Enter");
@@ -585,10 +582,9 @@ namespace CSLight {
 		}
 		// поле кількість
 		static void deltaNumberOfnumberWindow(string twoHundredth, string threeHundredth) {
-			// основна вкладка
-			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1");
+			Bisbin Bisbin = new Bisbin();
 			// поле кількість
-			var numberOfnumberWindow = w.Elm["STATICTEXT", "Кількість", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA, navig: "next2"].Find(-1);
+			var numberOfnumberWindow = Bisbin.ElementNavigator.deltaWindow.Elm["STATICTEXT", "Кількість", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA, navig: "next2"].Find(-1);
 			if (numberOfnumberWindow != null) {
 				int counts = 1;
 				if (twoHundredth.Length > 0 || threeHundredth.Length > 0) {
@@ -600,18 +596,16 @@ namespace CSLight {
 		}
 		// поле боєздатність
 		static void deltaCombatCapabilityWindow(string targetClassJbd, string establishedJbd, string commentJbd) {
-			Bisbin instance = new Bisbin();
-			// основна вкладка
-			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1");
+			Bisbin Bisbin = new Bisbin();
 			// поле боєздатність
-			var combatCapabilityWindow = w.Elm["STATICTEXT", "Боєздатність", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA, navig: "next3"].Find(-1);
+			var combatCapabilityWindow = Bisbin.ElementNavigator.deltaWindow.Elm["STATICTEXT", "Боєздатність", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA, navig: "next3"].Find(-1);
 			//. перевірка
 			if (combatCapabilityWindow != null) {
 				string fullaim = string.Empty;
 				switch (targetClassJbd) {
 				//. Якщо ти міна
 				case "Міна":
-					if (instance.VariableHolder.states.Contains(establishedJbd)) {
+					if (Bisbin.VariableHolder.states.Contains(establishedJbd)) {
 						fullaim = "небо";
 					} else if (establishedJbd.Contains("Встановлено")) {
 						fullaim = "повніс";
@@ -661,16 +655,14 @@ namespace CSLight {
 		}
 		// ідентифікація 
 		static void deltaIdentificationWindow(string targetClassJbd, string establishedJbd, string commentJbd, string nameOfBch) {
-			Bisbin instance = new Bisbin();
-			// основна вкладка
-			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1");
+			Bisbin Bisbin = new Bisbin();
 			// ідетнифікація поле
-			var identificationWindow = w.Elm["STATICTEXT", "Ідентифікація", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA, navig: "next2"].Find(-1);
+			var identificationWindow = Bisbin.ElementNavigator.deltaWindow.Elm["STATICTEXT", "Ідентифікація", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA, navig: "next2"].Find(-1);
 			if (identificationWindow != null) {
 				string friendly = string.Empty;
 				switch (targetClassJbd) {
 				case "Міна":
-					if (instance.VariableHolder.bchTropsMines.Contains(nameOfBch)) {
+					if (Bisbin.VariableHolder.bchTropsMines.Contains(nameOfBch) && nameOfBch.Length >= 1) {
 						friendly = "відом";
 					} else {
 						friendly = "дружній";
@@ -694,10 +686,9 @@ namespace CSLight {
 		}
 		// зауваження штабу - ід
 		static void deltaIdPurchaseText(string idTargetJbd) {
-			// основна вкладка
-			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1");
+			Bisbin Bisbin = new Bisbin();
 			// зауваження штабу поле
-			var idPurchaseWindow = w.Elm["STATICTEXT", "Зауваження штабу", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA, navig: "next"].Find(-1);
+			var idPurchaseWindow = Bisbin.ElementNavigator.deltaWindow.Elm["STATICTEXT", "Зауваження штабу", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA, navig: "next"].Find(-1);
 			if (idPurchaseWindow != null) {
 				idPurchaseWindow.PostClick(scroll: 250);
 				keys.sendL("Ctrl+A", "!" + idTargetJbd);
@@ -705,6 +696,7 @@ namespace CSLight {
 		}
 		// мобільність
 		static void deltaMobilityLine(string targetClassJbd) {
+			Bisbin Bisbin = new Bisbin();
 			// Обмеженої прохідності
 			string limitedAccess = "Мотоцикл Вантажівка Паливозаправник";
 			string obmezheno = "обмежено";
@@ -720,12 +712,11 @@ namespace CSLight {
 			// Гусинечний
 			string gusankaList = "Танк БМП МТ-ЛБ БМД";
 			string gusanka = "Гусеничн";
-			// основна вкладка
-			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1");
+			
 			// поле мобільності
-			var mobileLine = w.Elm["STATICTEXT", "Мобільність", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA, navig: "next3"].Find(-1);
+			var mobileLine = Bisbin.ElementNavigator.deltaWindow.Elm["STATICTEXT", "Мобільність", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA, navig: "next3"].Find(-1);
 			if (mobileLine != null) {
-				var checking = w.Elm["STATICTEXT", "Мобільність", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA].Find(-1);
+				var checking = Bisbin.ElementNavigator.deltaWindow.Elm["STATICTEXT", "Мобільність", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA].Find(-1);
 				if (checking.Name != "Мобільність") {
 					return;
 				}
@@ -763,10 +754,9 @@ namespace CSLight {
 		}
 		// коментар
 		static void deltaCommentContents(string targetClassJbd, string dateJbd, string timeJbd, string crewTeamJbd, string establishedJbd, string commentJbd, string mgrsCoords) {
-			// основна вкладка
-			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1");
+			Bisbin Bisbin = new Bisbin();
 			// коментар
-			var commentWindow = w.Elm["STATICTEXT", "Новий коментар", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA, navig: "next2"].Find(-1);
+			var commentWindow = Bisbin.ElementNavigator.deltaWindow.Elm["STATICTEXT", "Новий коментар", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA, navig: "next2"].Find(-1);
 			if (commentWindow != null) {
 				string commentContents = Bisbin.createComment(targetClassJbd, dateJbd, timeJbd, crewTeamJbd, establishedJbd, commentJbd, mgrsCoords);
 				commentWindow.PostClick(scroll: 250);
@@ -775,12 +765,11 @@ namespace CSLight {
 		}
 		// додаткові поля
 		static void deltaAdditionalFields(string idTargetJbd, string targetClassJbd) {
-			// основна вкладка
-			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1");
+			Bisbin Bisbin = new Bisbin();
 			// додаткові поля
 			Bisbin.goToAdditionalField();
 			// зауваження штабу поле
-			var idPurchaseWindow = w.Elm["STATICTEXT", "Зауваження штабу", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA, navig: "next"].Find(-1);
+			var idPurchaseWindow = Bisbin.ElementNavigator.deltaWindow.Elm["STATICTEXT", "Зауваження штабу", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA, navig: "next"].Find(-1);
 			if (idPurchaseWindow != null) {
 				idPurchaseWindow.PostClick(scroll: 250);
 				keys.sendL("Ctrl+A", "!" + idTargetJbd);
@@ -788,58 +777,55 @@ namespace CSLight {
 		}
 		// Георафічне розташування
 		static void deltaGeografPlace(string targetClassJbd, string establishedJbd, string commentJbd) {
-			// основна вкладка
-			var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1");
+			Bisbin Bisbin = new Bisbin();
+			void transpatentColorRange() {
+				// відсоток прозрачності
+				var transpatentColorRange = Bisbin.ElementNavigator.deltaWindow.Elm["web:SLIDER"].Find(-1);
+				transpatentColorRange.PostClick(scroll: 500);
+				transpatentColorRange.SendKeys("Left*5");
+			}
 			// Георафічне розташування
 			Bisbin.goToGeograficalPlace();
 			string states = "Виявлено Підтверджено Спростовано Не зрозуміло";
 			// Колір заливки
-			var deltaColorFills = w.Elm["STATICTEXT", "Колір заливки", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA].Find(-1);
+			var deltaColorFills = Bisbin.ElementNavigator.deltaWindow.Elm["STATICTEXT", "Колір заливки", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA].Find(-1);
 			if (deltaColorFills != null) {
 				switch (targetClassJbd) {
 				//. укриття
 				case "Укриття":
 					if (establishedJbd.ToLower().Contains("знищ") || establishedJbd.ToLower().Contains("ураж")) {
 						// колір жовтий
-						var placeColorYellowButton = w.Elm["BUTTON", "#ffeb3b", "class=Chrome_RenderWidgetHostHWND", EFFlags.HiddenToo | EFFlags.UIA].Find(1);
+						var placeColorYellowButton = Bisbin.ElementNavigator.deltaWindow.Elm["BUTTON", "#ffeb3b", "class=Chrome_RenderWidgetHostHWND", EFFlags.HiddenToo | EFFlags.UIA].Find(1);
 						placeColorYellowButton.PostClick(scroll: 500);
 						wait.ms(500);
 						// відсоток прозрачності
-						var transpatentColorRange = w.Elm["web:SLIDER"].Find(-1);
-						transpatentColorRange.PostClick(scroll: 500);
-						transpatentColorRange.SendKeys("Left*5");
+						transpatentColorRange();
 						wait.ms(500);
 					} else if (states.Contains(establishedJbd)) {
 						if (commentJbd.ToLower().Contains("знищ") || commentJbd.ToLower().Contains("ураж")) {
 							// колір жовтий
-							var placeColorYellowButton = w.Elm["BUTTON", "#ffeb3b", "class=Chrome_RenderWidgetHostHWND", EFFlags.HiddenToo | EFFlags.UIA].Find(1);
+							var placeColorYellowButton = Bisbin.ElementNavigator.deltaWindow.Elm["BUTTON", "#ffeb3b", "class=Chrome_RenderWidgetHostHWND", EFFlags.HiddenToo | EFFlags.UIA].Find(1);
 							placeColorYellowButton.PostClick(scroll: 500);
 							wait.ms(500);
 							// відсоток прозрачності
-							var transpatentColorRange = w.Elm["web:SLIDER"].Find(-1);
-							transpatentColorRange.PostClick(scroll: 500);
-							transpatentColorRange.SendKeys("Left*5");
+							transpatentColorRange();
 							wait.ms(500);
 						} else {
 							//колір червоний - ворож
-							var placeColorRedButton = w.Elm["BUTTON", "#f44336", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA].Find(-1);
+							var placeColorRedButton = Bisbin.ElementNavigator.deltaWindow.Elm["BUTTON", "#f44336", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA].Find(-1);
 							placeColorRedButton.PostClick(scroll: 500);
 							wait.ms(500);
 							// відсоток прозрачності
-							var transpatentColorRange = w.Elm["web:SLIDER"].Find(-1);
-							transpatentColorRange.PostClick(scroll: 500);
-							transpatentColorRange.SendKeys("Left*5");
+							transpatentColorRange();
 							wait.ms(500);
 						}
 					} else {
 						//колір червоний - ворож
-						var placeColorRedButton = w.Elm["BUTTON", "#f44336", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA].Find(-1);
+						var placeColorRedButton = Bisbin.ElementNavigator.deltaWindow.Elm["BUTTON", "#f44336", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA].Find(-1);
 						placeColorRedButton.PostClick(scroll: 500);
 						wait.ms(500);
 						// відсоток прозрачності
-						var transpatentColorRange = w.Elm["web:SLIDER"].Find(-1);
-						transpatentColorRange.PostClick(scroll: 500);
-						transpatentColorRange.SendKeys("Left*5");
+						transpatentColorRange();
 						wait.ms(500);
 					}
 					break;
