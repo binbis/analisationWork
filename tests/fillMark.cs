@@ -781,53 +781,35 @@ namespace CSLight {
 		}
 		// Георафічне розташування
 		static void deltaGeografPlace(string targetClassJbd, string establishedJbd, string commentJbd, Bisbin Bisbin) {
-			void transpatentColorRange() {
-				// відсоток прозрачності
-				var transpatentColorRange = Bisbin.PourMark.GeoPositionContainer.DeltaFieldTransparentPercentage();
-				transpatentColorRange.PostClick(scroll: 500);
-				transpatentColorRange.SendKeys("Left*5");
-			}
 			// Георафічне розташування
 			Bisbin.ElementNavigator.DeltaGeograficPlace().PostClick();
+			Bisbin.PourMark.MainFieldsTab.DeltaFieldLayer().ScrollTo(); // це для того щоб піднятися на самий верх
 			string states = "Виявлено Підтверджено Спростовано Не зрозуміло";
 			// Колір заливки
-			var deltaColorFills = Bisbin.ElementNavigator.deltaWindow.Elm["STATICTEXT", "Колір заливки", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA].Find(-1);
-			if (deltaColorFills != null) {
+			if (Bisbin.PourMark.GeoPositionContainer.DeltaDropDownFillColor() != null) {
 				switch (targetClassJbd) {
 				//. укриття
 				case "Укриття":
 					if (establishedJbd.ToLower().Contains("знищ") || establishedJbd.ToLower().Contains("ураж")) {
-						// колір жовтий
-						var placeColorYellowButton = Bisbin.ElementNavigator.deltaWindow.Elm["BUTTON", "#ffeb3b", "class=Chrome_RenderWidgetHostHWND", EFFlags.HiddenToo | EFFlags.UIA].Find(1);
-						placeColorYellowButton.PostClick(scroll: 500);
+						Bisbin.PourMark.GeoPositionContainer.DeltaButtonYellow().PostClick(scroll: 500);
 						wait.ms(500);
-						// відсоток прозрачності
 						transpatentColorRange();
 						wait.ms(500);
 					} else if (states.Contains(establishedJbd)) {
 						if (commentJbd.ToLower().Contains("знищ") || commentJbd.ToLower().Contains("ураж")) {
-							// колір жовтий
-							var placeColorYellowButton = Bisbin.ElementNavigator.deltaWindow.Elm["BUTTON", "#ffeb3b", "class=Chrome_RenderWidgetHostHWND", EFFlags.HiddenToo | EFFlags.UIA].Find(1);
-							placeColorYellowButton.PostClick(scroll: 500);
+							Bisbin.PourMark.GeoPositionContainer.DeltaButtonYellow().PostClick(scroll: 500);
 							wait.ms(500);
-							// відсоток прозрачності
 							transpatentColorRange();
 							wait.ms(500);
 						} else {
-							//колір червоний - ворож
-							var placeColorRedButton = Bisbin.ElementNavigator.deltaWindow.Elm["BUTTON", "#f44336", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA].Find(-1);
-							placeColorRedButton.PostClick(scroll: 500);
+							Bisbin.PourMark.GeoPositionContainer.DeltaButtonRed().PostClick(scroll: 500);
 							wait.ms(500);
-							// відсоток прозрачності
 							transpatentColorRange();
 							wait.ms(500);
 						}
 					} else {
-						//колір червоний - ворож
-						var placeColorRedButton = Bisbin.ElementNavigator.deltaWindow.Elm["BUTTON", "#f44336", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA].Find(-1);
-						placeColorRedButton.PostClick(scroll: 500);
+						Bisbin.PourMark.GeoPositionContainer.DeltaButtonRed().PostClick(scroll: 500);
 						wait.ms(500);
-						// відсоток прозрачності
 						transpatentColorRange();
 						wait.ms(500);
 					}
@@ -836,6 +818,12 @@ namespace CSLight {
 				default:
 					break;
 				}
+			}
+			void transpatentColorRange() {
+				// відсоток прозрачності
+				var transpatentColorRange = Bisbin.PourMark.GeoPositionContainer.DeltaFieldTransparentPercentage();
+				transpatentColorRange.PostClick(scroll: 500);
+				transpatentColorRange.SendKeys("Left*5");
 			}
 		}
 	}

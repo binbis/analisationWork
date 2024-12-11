@@ -1,4 +1,12 @@
-/*/ nuget -\CoordinateSharp; c .\VariableHolder.cs; c .\ElementNavigator.cs; c .\StringReducer.cs; c .\pourMark\PourMark.cs; /*/
+/*/ 
+nuget -\CoordinateSharp;
+
+ c .\VariableHolder.cs;
+ c .\ElementNavigator.cs;
+ c .\StringReducer.cs;
+ c .\pourMark\PourMark.cs;
+
+ /*/
 using CoordinateSharp;
 /// <summary>
 /// основний клас який має доступ до усього

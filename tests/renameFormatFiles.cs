@@ -23,7 +23,7 @@ using System.Windows.Media;
 
 namespace CSLight {
 	class Program {
-		static void Main() {
+		static int Main() {
 			opt.key.KeySpeed = 20;
 			opt.key.TextSpeed = 20;
 			
@@ -60,28 +60,32 @@ namespace CSLight {
 			b.R.Add(out TextBox rememberedTextPath).Font(size: 14, bold: false).Size(400, 40).AddButton("Запам'ятати", 99).Brush(Brushes.LightCoral).Width(125);
 			b.End();
 			b = bMain.End();
-			if (!b.ShowDialog()) return;
+			if (!b.ShowDialog()) return 1;
 			
 			int dialogButtonResOne = b1.ResultButton; // значення нажатої кнопки
 			int dialogButtonResTwo = b2.ResultButton; // значення нажатої кнопки
 			string rememberPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), @"LibreAutomate\Main\files\analisationWork\customTemp\pathes.txt"); // шлях до файлу зі збереженим шляхом
 			
+			if (dialogButtonResTwo == 99) {
+				recordPathToMemory(rememberedTextPath.Text, rememberPath);
+				return 0;
+			}
+			
 			// основа
-			if (dialogButtonResOne != 5 && dialogButtonResOne != 99) {
+			if (dialogButtonResOne <= 4) {
 				keys.send("Ctrl+C"); // копіюємо код
 				wait.ms(100);
 				renameAll(clipboard.copy(), dialogButtonResOne);
+				return 0;
 			}
 			
 			if (dialogButtonResOne == 5) {
 				keys.send("Ctrl+C"); // копіюємо код
 				wait.ms(100);
 				PathWeaver(clipboard.copy(), rememberPath);
+				return 0;
 			}
-			
-			if (dialogButtonResTwo == 99) {
-				recordPathToMemory(rememberedTextPath.Text, rememberPath);
-			}
+			return 0;
 		}
 		// функ перейменування 
 		static void renameAll(string clipboardData, int dialogButtonRes) {
