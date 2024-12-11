@@ -1,4 +1,4 @@
-/** 24,11,2024
+/** 11,12,2024
 	створення для створення папок з Планування excel
 1. вибираєш ячейку під колонкою А
 2. жмеш скрипт
@@ -166,9 +166,6 @@ class Program {
 	}
 	// обробка відео 1
 	static void WhoWorkInTime(string[] shifts) {
-		//string datePattern = @"(\d{2}\.\d{2}\.\d{4})";
-		//string date = Regex.Match(shifts[0], datePattern).Groups[1].Value.Trim();
-		
 		string minimalEcspashClipbload = string.Empty;
 		foreach (string elemets in shifts) {
 			// Використання регулярних виразів для отримання потрібних частин рядка
@@ -184,11 +181,6 @@ class Program {
 					crew = crew.Substring(0, index + 1);
 				}
 			}
-			/*
-			if (crew.Contains("Мавік")) {
-				crew = crew.Replace("Мавік", " ").Trim();
-			}
-			*/
 			minimalEcspashClipbload += $"{crew} ";
 		}
 		Clipboard.SetText(minimalEcspashClipbload);
@@ -211,22 +203,17 @@ class Program {
 					partArray = partArray.Substring(0, index1).Trim().TrimEnd();
 				}
 			}
-			
 			// Оновлюємо значення елемента в масиві
 			ecipashPositionParts[i] = partArray + " ";
-			//finalWorkOrNot += " = " + partArray + " = ";
-			//Console.WriteLine($"{partArray} ");
 		}
 		
 		for (int i = 1; i < ecipashPositionParts.Length; i++) {
 			if (ecipashNameWithTable.Contains(ecipashPositionParts[i]) && ecipashPositionParts[i] != " ") {
 				finalWorkOrNot += $"Відео немає\t";
-				//Console.WriteLine(true);
 			} else {
 				finalWorkOrNot += $"Не працював\t";
-				//Console.WriteLine(false);
 			}
-			//finalWorkOrNot += $"{ecipashName}\t";
+			
 		}
 		
 		Clipboard.SetText(finalWorkOrNot);

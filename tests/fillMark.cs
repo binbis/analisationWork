@@ -1,6 +1,6 @@
 /*/ c \analisationWork\globalClass\Bisbin.cs; /*/
 
-/* 10.12.2024 2.2
+/* 11.12.2024 2.2
 
 * id обрізаються, щоб поміститись в рядок 
 * функція додавання до дати дні(x) підходить для мін
@@ -19,12 +19,15 @@ namespace CSLight {
 	
 	class Program {
 		static void Main() {
+			
 			opt.key.KeySpeed = 20;
 			opt.key.TextSpeed = 20;
 			
 			keys.send("Ctrl+C"); //копіюємо код
 			wait.ms(100);
 			string clipboardData = clipboard.copy(); // зчитуємо буфер обміну
+			
+			Bisbin Bisbin = new Bisbin();
 			// вікно діалогу
 			var b = new wpfBuilder("Window").WinSize(450);
 			//Brush
@@ -43,19 +46,19 @@ namespace CSLight {
 			if (!b.ShowDialog()) return;
 			
 			if (b.ResultButton == 1) {
-				fillMarkWithJBD(clipboardData);
+				fillMarkWithJBD(clipboardData, Bisbin);
 				return;
 			}
 			if (b.ResultButton == 2) {
-				createREBandRER(clipboardData);
+				createREBandRER(clipboardData, Bisbin);
 				return;
 			}
 			if (b.ResultButton == 3) {
-				createWhoWork(clipboardData);
+				createWhoWork(clipboardData, Bisbin);
 				return;
 			}
 			if (b.ResultButton == 4) {
-				createImportFileToMine(clipboardData);
+				createImportFileToMine(clipboardData, Bisbin);
 				return;
 			}
 			if (b.ResultButton == 5) {
@@ -64,18 +67,17 @@ namespace CSLight {
 			}
 		}
 		// тіло для заповнення мітки
-		static void fillMarkWithJBD(string clipboardData) {
-			
+		static void fillMarkWithJBD(string clipboardData, Bisbin Bisbin) {
 			string[] parts = clipboardData.Split('\t'); // Розділяємо рядок на частини
 			// Присвоюємо змінним відповідні значення
 			string dateJbd = parts[0]; // 27.07.2024
 			string timeJbd = parts[1]; //00:40
 			string commentJbd = parts[2].Replace("\n", " "); //коментар (для ідентифікації скоріш за все)
 			string numberOFlying = parts[3]; // 5
-			string crewTeamJbd = Bisbin.TrimAfterDot(parts[4].Replace("\n\t", "")); // R-18-1 (Мавка)
+			string crewTeamJbd = Bisbin.StringReducer.TrimAfterFirstDot(parts[4].Replace("\n\t", "")); // R-18-1 (Мавка)
 			string whatDidJbd = parts[5]; // Дорозвідка / Мінування ..
 			string targetClassJbd = parts[7]; // Міна/Вантажівка/...
-			string idTargetJbd = Bisbin.TrimNTwonyString(parts[9], 19); // Міна 270724043
+			string idTargetJbd = Bisbin.StringReducer.TrimAllAfterN(parts[9], 19); // Міна 270724043
 			string mgrsCoords = parts[18]; // 37U CP 76420 45222
 			string nameOfBch = parts[22]; // ПТМ-3 ТМ-62
 			string establishedJbd = parts[24]; // Встановлено/Уражено/Промах/...
@@ -85,42 +87,41 @@ namespace CSLight {
 			string dateDeltaFormat = dateJbd.Replace('.', '/');
 			// додавно для подашої верифікації
 			if (crewTeamJbd.Contains("FPV")) {
-				crewTeamJbd = Bisbin.addTypeForBoard(crewTeamJbd);
+				crewTeamJbd = Bisbin.StringReducer.addTypeForBoard(crewTeamJbd);
 			}
 			clipboard.clear();
-			Bisbin.goToMainField();
+			goToMainField(Bisbin);
 			wait.ms(500);
-			deltaLayerWindow(targetClassJbd, commentJbd);
+			deltaLayerWindow(targetClassJbd, commentJbd, Bisbin);
 			wait.ms(500);
-			deltaMarkName(nameOfBch, targetClassJbd, dateJbd, establishedJbd, commentJbd, twoHundredth, threeHundredth);
+			deltaMarkName(nameOfBch, targetClassJbd, dateJbd, establishedJbd, commentJbd, twoHundredth, threeHundredth, Bisbin);
 			wait.ms(500);
-			deltaDateLTimeWindow(dateDeltaFormat, timeJbd);
+			deltaDateLTimeWindow(dateDeltaFormat, timeJbd, Bisbin);
 			wait.ms(500);
-			deltaNumberOfnumberWindow(twoHundredth, threeHundredth);
+			deltaNumberOfnumberWindow(twoHundredth, threeHundredth, Bisbin);
 			wait.ms(500);
-			deltaCombatCapabilityWindow(targetClassJbd, establishedJbd, commentJbd);
+			deltaCombatCapabilityWindow(targetClassJbd, establishedJbd, commentJbd, Bisbin);
 			wait.ms(500);
-			deltaIdentificationWindow(targetClassJbd, establishedJbd, commentJbd, nameOfBch);
+			deltaIdentificationWindow(targetClassJbd, establishedJbd, commentJbd, nameOfBch, Bisbin);
 			wait.ms(500);
 			Bisbin.reliabilityWindow();
 			wait.ms(500);
 			Bisbin.flyEye();
 			wait.ms(500);
-			deltaIdPurchaseText(idTargetJbd);
+			deltaIdPurchaseText(idTargetJbd, Bisbin);
 			wait.ms(500);
-			deltaMobilityLine(targetClassJbd);
+			deltaMobilityLine(targetClassJbd, Bisbin);
 			wait.ms(500);
-			deltaCommentContents(targetClassJbd, dateJbd, timeJbd, crewTeamJbd, establishedJbd, commentJbd, mgrsCoords);
+			deltaCommentContents(targetClassJbd, dateJbd, timeJbd, crewTeamJbd, establishedJbd, commentJbd, mgrsCoords, Bisbin);
 			wait.ms(500);
-			deltaAdditionalFields(idTargetJbd, targetClassJbd);
+			deltaAdditionalFields(idTargetJbd, targetClassJbd, Bisbin);
 			wait.ms(500);
-			deltaGeografPlace(targetClassJbd, establishedJbd, commentJbd);
+			deltaGeografPlace(targetClassJbd, establishedJbd, commentJbd, Bisbin);
 			wait.ms(500);
-			Bisbin.goToAttachmentFiles();
+			goToAttachmentFiles(Bisbin);
 		}
 		// тіло для створення мітки з подавленням від РЕБ та РЕР
-		static void createREBandRER(string clipboardData) {
-			Bisbin Bisbin = new Bisbin();
+		static void createREBandRER(string clipboardData, Bisbin Bisbin) {
 			string[] parts = clipboardData.Split('\t'); // Розділяємо рядок на частини
 			string dateJbd = parts[4]; // 27.07.2024
 			string dateDeltaFormat = dateJbd.Replace('.', '/'); // перетворення дати до формату дельти
@@ -161,7 +162,7 @@ namespace CSLight {
 			//..
 			wait.ms(400);
 			//. час виявлення
-			deltaDateLTimeWindow(dateDeltaFormat, timeJbd);
+			deltaDateLTimeWindow(dateDeltaFormat, timeJbd, Bisbin);
 			//..
 			wait.ms(400);
 			//. боєздатність
@@ -185,7 +186,7 @@ namespace CSLight {
 			
 		}
 		// створення файлу для імпорта з Чергування - 777
-		static void createWhoWork(string clipboardData) {
+		static void createWhoWork(string clipboardData, Bisbin Bisbin) {
 			
 			string[] parts = clipboardData.Split('\n'); // Розділяємо рядок на частини
 			string dateTimeNow = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss"); // поточний час
@@ -285,7 +286,7 @@ namespace CSLight {
 			
 		}
 		// файл з мінами
-		static void createImportFileToMine(string clipboardData) {
+		static void createImportFileToMine(string clipboardData, Bisbin Bisbin) {
 			
 			/*
 				для птм, тм Протитанкова міна (ПТМ) - 10011500002103000000
@@ -299,7 +300,7 @@ namespace CSLight {
 					не боездатна - 10011540002003000000
 				
 			*/
-			Bisbin instance = new Bisbin();
+			
 			
 			string[] parts = clipboardData.Split('\n'); // Розділяємо рядок на частини
 			var features = new List<Object>(); //
@@ -313,10 +314,10 @@ namespace CSLight {
 				string timeJbd = elements[1]; //00:40
 				string commentJbd = elements[2].Replace("\n", " "); //коментар (для ідентифікації скоріш за все)
 				string numberOFlying = elements[3]; // 5
-				string crewTeamJbd = Bisbin.TrimAfterDot(elements[4].Replace("\n\t", "")); // R-18-1 (Мавка)
+				string crewTeamJbd = Bisbin.StringReducer.TrimAfterFirstDot(elements[4].Replace("\n\t", "")); // R-18-1 (Мавка)
 				string whatDidJbd = elements[5]; // Дорозвідка / Мінування ..
 				string targetClassJbd = elements[7]; // Міна/Вантажівка/...
-				string idTargetJbd = Bisbin.TrimNTwonyString(elements[9], 19); // Міна 270724043
+				string idTargetJbd = Bisbin.StringReducer.TrimAllAfterN(elements[9], 19); // Міна 270724043
 				string mgrsCoords = elements[18]; // 37U CP 76420 45222
 				string nameOfBch = elements[22]; // ПТМ-3 ТМ-62
 				string establishedJbd = elements[24]; // Встановлено/Уражено/Промах/...
@@ -330,17 +331,17 @@ namespace CSLight {
 					string sidc = string.Empty;
 					string states = "Розміновано Підтв. ураж. Тільки розрив Авар. скид";
 					if (states.Contains(establishedJbd)) {
-						if (instance.VariableHolder.bchTropsMines.Contains(nameOfBch)) {
+						if (Bisbin.VariableHolder.bchTropsMines.Contains(nameOfBch)) {
 							sidc = "10011540002003000000";
 						} else { sidc = "10031540002103000000"; }
 					} else if (establishedJbd.Contains("Встановлено")) {
-						if (instance.VariableHolder.bchTropsMines.Contains(nameOfBch)) {
+						if (Bisbin.VariableHolder.bchTropsMines.Contains(nameOfBch)) {
 							sidc = "10011520002003000000";
 						} else { sidc = "10031520002103000000"; }
 					} else if (establishedJbd.Contains("Спростовано")) {
 						return;
 					} else {
-						if (instance.VariableHolder.bchTropsMines.Contains(nameOfBch)) {
+						if (Bisbin.VariableHolder.bchTropsMines.Contains(nameOfBch)) {
 							sidc = "10011530002003000000";
 						} else { sidc = "10031530002103000000"; }
 					}
@@ -414,16 +415,35 @@ namespace CSLight {
 			// show dialog. Exit if closed not with the OK button.
 			if (!b.ShowDialog()) return;
 		}
+		// перша вкладка (Основні поля) мітки
+		static void goToMainField(Bisbin Bisbin) {
+			wait.ms(875);
+			Bisbin.ElementNavigator.DeltaMainFilds().PostClick(scroll: 300);
+		}
+		// друга вкладка (Додаткові поля) мітки
+		static void goToAdditionalField(Bisbin Bisbin) {
+			wait.ms(875);
+			Bisbin.ElementNavigator.DeltaAdditionalFields().PostClick(scroll: 300);
+		}
+		// третя вкладка (Географічне розташування) мітки
+		static void goToGeograficalPlace(Bisbin Bisbin) {
+			wait.ms(875);
+			Bisbin.ElementNavigator.DeltaGeograficPlace().PostClick(scroll: 300);
+		}
+		// четверта вкладка (прикріплення) мітки
+		static void goToAttachmentFiles(Bisbin Bisbin) {
+			wait.ms(875);
+			Bisbin.ElementNavigator.DeltaAttachmentFields().PostClick(scroll: 300);
+		}
 		// обрати відповідний шар
-		static void deltaLayerWindow(string targetClassJbd, string commentJbd) {
-			Bisbin Bisbin = new Bisbin();
+		static void deltaLayerWindow(string targetClassJbd, string commentJbd, Bisbin Bisbin) {
 			// (01) постійні схов. і укриття
 			string permanentStorage = "Укриття Склад майна Склад БК Склад ПММ Польовий склад майна Польовий склад БК Польовий склад ПММ";
 			// (02) антени, камери...
 			string antennaCamera = "Мережеве обладнання Камера Антена РЕБ (окопні)";
 			
 			// поле шар
-			var layerWindow = Bisbin.ElementNavigator.deltaWindow.Elm["STATICTEXT", "Шар", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA, navig: "next3"].Find(-1);
+			var layerWindow = Bisbin.PourMark.MainFieldsTab.DeltaFieldLayer();
 			layerWindow.PostClick(scroll: 250);
 			//. перевірка, запис
 			if (permanentStorage.Contains(targetClassJbd)) {
@@ -466,11 +486,11 @@ namespace CSLight {
 			//..
 		}
 		// відповідна назва
-		static string deltaMarkName(string nameOfBch, string targetClassJbd, string dateJbd, string establishedJbd, string commentJbd, string twoHundredth, string threeHundredth) {
-			Bisbin instance = new Bisbin();
+		static string deltaMarkName(string nameOfBch, string targetClassJbd, string dateJbd, string establishedJbd, string commentJbd, string twoHundredth, string threeHundredth, Bisbin Bisbin) {
 			string nameIs = string.Empty;
-			// поле назва
-			var nameOfMarkWindow = instance.ElementNavigator.deltaWindow.Elm["STATICTEXT", "Назва", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA, navig: "next1"].Find(-1);
+			string statusOne = "Виявлено Підтверджено Не зрозуміло";
+			
+			var nameOfMarkWindow = Bisbin.PourMark.MainFieldsTab.DeltaFieldName();
 			if (nameOfMarkWindow != null) {
 				string markName = string.Empty;
 				string nameOfMark = nameOfMarkWindow.Value;
@@ -484,12 +504,12 @@ namespace CSLight {
 					}
 					if (establishedJbd.Contains("Авар. скид")) {
 						markName = $"{nameOfBch} ({dateJbd})";
-					} else if (instance.VariableHolder.states.Contains(establishedJbd)) {
+					} else if (Bisbin.VariableHolder.states.Contains(establishedJbd)) {
 						markName = $"{nameOfMark.Substring(0, indexLoss)} ({dateJbd})";
 					} else {
-						if (instance.VariableHolder.bchHeavyMines.Contains(nameOfBch)) {
+						if (Bisbin.VariableHolder.bchHeavyMines.Contains(nameOfBch)) {
 							markName = $"{nameOfBch} до ({Bisbin.datePlasDays(dateJbd, 90)})";
-						} else if (instance.VariableHolder.bchTropsMines.Contains(nameOfBch)) {
+						} else if (Bisbin.VariableHolder.bchTropsMines.Contains(nameOfBch)) {
 							markName = $"{nameOfBch} до ({Bisbin.datePlasDays(dateJbd, 8)})";
 						} else {
 							markName = $"{nameOfBch} до ()";
@@ -504,7 +524,7 @@ namespace CSLight {
 						markName = targetClassJbd + " ОС (знищ.)";
 					} else if (establishedJbd.ToLower().Contains("ураж")) {
 						markName = targetClassJbd + " ОС (ураж.)";
-					} else if (establishedJbd.Contains("Виявлено") || establishedJbd.Contains("Підтверджено") || establishedJbd.Contains("Не зрозуміло")) {
+					} else if (statusOne.Contains(establishedJbd)) {
 						if (commentJbd.ToLower().Contains("знищ")) {
 							markName = targetClassJbd + " ОС (знищ.)";
 						} else if (commentJbd.ToLower().Contains("ураж")) {
@@ -540,7 +560,7 @@ namespace CSLight {
 						markName = targetClassJbd + " (знищ.)";
 					} else if (establishedJbd.ToLower().Contains("ураж")) {
 						markName = targetClassJbd + " (ураж.)";
-					} else if (establishedJbd.Contains("Виявлено") || establishedJbd.Contains("Підтверджено") || establishedJbd.Contains("Не зрозуміло")) {
+					} else if (statusOne.Contains(establishedJbd)) {
 						if (commentJbd.ToLower().Contains("знищ")) {
 							markName = targetClassJbd + " (знищ.)";
 						} else if (commentJbd.ToLower().Contains("ураж")) {
@@ -570,21 +590,18 @@ namespace CSLight {
 			
 		}
 		// поле дата / час
-		static void deltaDateLTimeWindow(string dateDeltaFormat, string timeJbd) {
-			Bisbin Bisbin = new Bisbin();
-			var dateDeltaWindow = Bisbin.ElementNavigator.deltaWindow.Elm["TEXT", "дд/мм/рррр", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA].Find(1);
+		static void deltaDateLTimeWindow(string dateDeltaFormat, string timeJbd, Bisbin Bisbin) {
+			var dateDeltaWindow = Bisbin.PourMark.MainFieldsTab.DeltaFieldDate();
 			if (dateDeltaWindow != null) {
 				dateDeltaWindow.PostClick();
 				keys.sendL("Ctrl+A", "!" + dateDeltaFormat, "Enter");
+				wait.ms(500);
+				keys.sendL("!" + timeJbd, "Enter");
 			}
-			wait.ms(500);
-			keys.sendL("!" + timeJbd, "Enter");
 		}
 		// поле кількість
-		static void deltaNumberOfnumberWindow(string twoHundredth, string threeHundredth) {
-			Bisbin Bisbin = new Bisbin();
-			// поле кількість
-			var numberOfnumberWindow = Bisbin.ElementNavigator.deltaWindow.Elm["STATICTEXT", "Кількість", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA, navig: "next2"].Find(-1);
+		static void deltaNumberOfnumberWindow(string twoHundredth, string threeHundredth, Bisbin Bisbin) {
+			var numberOfnumberWindow = Bisbin.PourMark.MainFieldsTab.DeltaFieldCounts();
 			if (numberOfnumberWindow != null) {
 				int counts = 1;
 				if (twoHundredth.Length > 0 || threeHundredth.Length > 0) {
@@ -595,10 +612,8 @@ namespace CSLight {
 			}
 		}
 		// поле боєздатність
-		static void deltaCombatCapabilityWindow(string targetClassJbd, string establishedJbd, string commentJbd) {
-			Bisbin Bisbin = new Bisbin();
-			// поле боєздатність
-			var combatCapabilityWindow = Bisbin.ElementNavigator.deltaWindow.Elm["STATICTEXT", "Боєздатність", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA, navig: "next3"].Find(-1);
+		static void deltaCombatCapabilityWindow(string targetClassJbd, string establishedJbd, string commentJbd, Bisbin Bisbin) {
+			var combatCapabilityWindow = Bisbin.PourMark.MainFieldsTab.DeltaFieldCapability();
 			//. перевірка
 			if (combatCapabilityWindow != null) {
 				string fullaim = string.Empty;
@@ -654,10 +669,8 @@ namespace CSLight {
 			}
 		}
 		// ідентифікація 
-		static void deltaIdentificationWindow(string targetClassJbd, string establishedJbd, string commentJbd, string nameOfBch) {
-			Bisbin Bisbin = new Bisbin();
-			// ідетнифікація поле
-			var identificationWindow = Bisbin.ElementNavigator.deltaWindow.Elm["STATICTEXT", "Ідентифікація", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA, navig: "next2"].Find(-1);
+		static void deltaIdentificationWindow(string targetClassJbd, string establishedJbd, string commentJbd, string nameOfBch, Bisbin Bisbin) {
+			var identificationWindow = Bisbin.PourMark.MainFieldsTab.DeltaFieldIdentification();
 			if (identificationWindow != null) {
 				string friendly = string.Empty;
 				switch (targetClassJbd) {
@@ -667,7 +680,6 @@ namespace CSLight {
 					} else {
 						friendly = "дружній";
 					}
-					
 					break;
 				case "Укриття":
 					if (establishedJbd.ToLower().Contains("знищ") || commentJbd.ToLower().Contains("знищ")) {
@@ -685,18 +697,15 @@ namespace CSLight {
 			}
 		}
 		// зауваження штабу - ід
-		static void deltaIdPurchaseText(string idTargetJbd) {
-			Bisbin Bisbin = new Bisbin();
-			// зауваження штабу поле
-			var idPurchaseWindow = Bisbin.ElementNavigator.deltaWindow.Elm["STATICTEXT", "Зауваження штабу", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA, navig: "next"].Find(-1);
+		static void deltaIdPurchaseText(string idTargetJbd, Bisbin Bisbin) {
+			var idPurchaseWindow = Bisbin.PourMark.MainFieldsTab.DeltaFieldPurchase();
 			if (idPurchaseWindow != null) {
 				idPurchaseWindow.PostClick(scroll: 250);
 				keys.sendL("Ctrl+A", "!" + idTargetJbd);
 			}
 		}
 		// мобільність
-		static void deltaMobilityLine(string targetClassJbd) {
-			Bisbin Bisbin = new Bisbin();
+		static void deltaMobilityLine(string targetClassJbd, Bisbin Bisbin) {
 			// Обмеженої прохідності
 			string limitedAccess = "Мотоцикл Вантажівка Паливозаправник";
 			string obmezheno = "обмежено";
@@ -714,7 +723,7 @@ namespace CSLight {
 			string gusanka = "Гусеничн";
 			
 			// поле мобільності
-			var mobileLine = Bisbin.ElementNavigator.deltaWindow.Elm["STATICTEXT", "Мобільність", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA, navig: "next3"].Find(-1);
+			var mobileLine = Bisbin.PourMark.MainFieldsTab.DeltaFieldMobility();
 			if (mobileLine != null) {
 				var checking = Bisbin.ElementNavigator.deltaWindow.Elm["STATICTEXT", "Мобільність", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA].Find(-1);
 				if (checking.Name != "Мобільність") {
@@ -753,10 +762,8 @@ namespace CSLight {
 			}
 		}
 		// коментар
-		static void deltaCommentContents(string targetClassJbd, string dateJbd, string timeJbd, string crewTeamJbd, string establishedJbd, string commentJbd, string mgrsCoords) {
-			Bisbin Bisbin = new Bisbin();
-			// коментар
-			var commentWindow = Bisbin.ElementNavigator.deltaWindow.Elm["STATICTEXT", "Новий коментар", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA, navig: "next2"].Find(-1);
+		static void deltaCommentContents(string targetClassJbd, string dateJbd, string timeJbd, string crewTeamJbd, string establishedJbd, string commentJbd, string mgrsCoords, Bisbin Bisbin) {
+			var commentWindow = Bisbin.PourMark.MainFieldsTab.DeltaFieldNewComment();
 			if (commentWindow != null) {
 				string commentContents = Bisbin.createComment(targetClassJbd, dateJbd, timeJbd, crewTeamJbd, establishedJbd, commentJbd, mgrsCoords);
 				commentWindow.PostClick(scroll: 250);
@@ -764,28 +771,24 @@ namespace CSLight {
 			}
 		}
 		// додаткові поля
-		static void deltaAdditionalFields(string idTargetJbd, string targetClassJbd) {
-			Bisbin Bisbin = new Bisbin();
-			// додаткові поля
-			Bisbin.goToAdditionalField();
-			// зауваження штабу поле
-			var idPurchaseWindow = Bisbin.ElementNavigator.deltaWindow.Elm["STATICTEXT", "Зауваження штабу", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA, navig: "next"].Find(-1);
+		static void deltaAdditionalFields(string idTargetJbd, string targetClassJbd, Bisbin Bisbin) {
+			Bisbin.ElementNavigator.DeltaAdditionalFields().PostClick();
+			var idPurchaseWindow = Bisbin.PourMark.ExtraFieldsContainer.DeltaFieldPurchase();
 			if (idPurchaseWindow != null) {
 				idPurchaseWindow.PostClick(scroll: 250);
 				keys.sendL("Ctrl+A", "!" + idTargetJbd);
 			}
 		}
 		// Георафічне розташування
-		static void deltaGeografPlace(string targetClassJbd, string establishedJbd, string commentJbd) {
-			Bisbin Bisbin = new Bisbin();
+		static void deltaGeografPlace(string targetClassJbd, string establishedJbd, string commentJbd, Bisbin Bisbin) {
 			void transpatentColorRange() {
 				// відсоток прозрачності
-				var transpatentColorRange = Bisbin.ElementNavigator.deltaWindow.Elm["web:SLIDER"].Find(-1);
+				var transpatentColorRange = Bisbin.PourMark.GeoPositionContainer.DeltaFieldTransparentPercentage();
 				transpatentColorRange.PostClick(scroll: 500);
 				transpatentColorRange.SendKeys("Left*5");
 			}
 			// Георафічне розташування
-			Bisbin.goToGeograficalPlace();
+			Bisbin.ElementNavigator.DeltaGeograficPlace().PostClick();
 			string states = "Виявлено Підтверджено Спростовано Не зрозуміло";
 			// Колір заливки
 			var deltaColorFills = Bisbin.ElementNavigator.deltaWindow.Elm["STATICTEXT", "Колір заливки", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA].Find(-1);

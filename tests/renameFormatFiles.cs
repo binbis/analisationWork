@@ -1,5 +1,5 @@
 /*/ c \analisationWork\globalClass\Bisbin.cs; /*/
-/* 07,12,2024
+/* 11,12,2024
 
 !!renameAll!!:
 проєкт - переіменування файлів в папці
@@ -85,13 +85,14 @@ namespace CSLight {
 		}
 		// функ перейменування 
 		static void renameAll(string clipboardData, int dialogButtonRes) {
+			Bisbin Bisbin = new Bisbin();
 			string[] parts = clipboardData.Split('\t'); // Розділяємо рядок на частини
 			// Присвоюємо змінним відповідні значення
 			string dateJbd = getDDnMM(parts[0]); // 27.07.2024 - 27.07
 			string timeJbd = parts[1].Replace(":", "."); // 00:40 - 00.40
 			string commentJbd = parts[2].Replace("\n", " "); // коментар
 			string numberOFlying = parts[3]; // 5
-			string crewTeamJbd = Bisbin.GetCutsEcipash(Bisbin.TrimAfterDot(parts[4].Replace("\n", ""))); // R-18 (Мавка)
+			string crewTeamJbd = Bisbin.StringReducer.TrimAfterFirstClosingParenthes(Bisbin.StringReducer.TrimAfterFirstDot(parts[4].Replace("\n", ""))); // R-18 (Мавка)
 			string whatToDo = parts[5];// Дорозвідка / Мінування ....
 			string targetClassJbd = parts[7]; // Міна/Вантажівка/...
 			string idTargetJbd = parts[9].Replace("/", ""); // Міна 270724043

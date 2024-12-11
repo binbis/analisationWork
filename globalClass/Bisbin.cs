@@ -1,4 +1,4 @@
-/*/ nuget -\CoordinateSharp; c .\VariableHolder.cs; c .\ElementNavigator.cs; /*/
+/*/ nuget -\CoordinateSharp; c .\VariableHolder.cs; c .\ElementNavigator.cs; c .\StringReducer.cs; c .\pourMark\PourMark.cs; /*/
 using CoordinateSharp;
 /// <summary>
 /// основний клас який має доступ до усього
@@ -12,8 +12,16 @@ public class Bisbin {
 	/// вікна й елементи з цих вікон
 	/// </summary>
 	public ElementNavigator ElementNavigator = new ElementNavigator();
+	/// <summary>
+	/// функції з різними варіантами обрізання рядків
+	/// </summary>
+	public StringReducer StringReducer = new StringReducer();
+	/// <summary>
+	/// Поля вікна редагування мітки
+	/// </summary>
+	public PourMark PourMark = new PourMark();
 	
-	// додає вказану кількість днів до дати
+	// додає вказану кількість днів та повертає дату
 	public static string datePlasDays(string date, int count) {
 		// Перетворюємо рядок дати у DateTime
 		DateTime originalDate = DateTime.ParseExact(date, "dd.MM.yyyy", CultureInfo.InvariantCulture);
@@ -23,66 +31,7 @@ public class Bisbin {
 		string newDateString = newDate.ToString("dd.MM.yyyy");
 		return newDateString;
 	}
-	// обрізати рядок до 19 символів починаючи з початку
-	public static string TrimNTwonyString(string str, int maxLength) {
-		if (str.Length > maxLength) {
-			return str.Substring(str.Length - maxLength);
-		}
-		return str;
-	}
-	// обрізати рядок, усе після крапки
-	public static string TrimAfterDot(string str) {
-		int dotIndex = str.IndexOf('.');
-		if (dotIndex != -1) {
-			return str.Substring(0, dotIndex);
-		}
-		return str;
-	}
-	// обрізати назви екіпажів
-	public static string GetCutsEcipash(string str) {
-		int index = str.LastIndexOf(')');
-		if (index != -1) {
-			return str.Substring(0, index + 1);
-		}
-		return str;
-	}
-	// додавання типу до бортів
-	public static string addTypeForBoard(string str) {
-		int index = str.LastIndexOf('(');
-		if (index != -1) {
-			return str.Substring(0, index + 1) + "FPV f7)";
-		}
-		return str;
-	}
-	// перша вкладка (Основні поля) мітки
-	public static void goToMainField() {
-		Bisbin instance = new Bisbin();
-		wait.ms(875);
-		var mainFilds = instance.ElementNavigator.deltaWindow.Elm["web:GROUPING", prop: "desc=Основні поля"].Find(-1);
-		mainFilds.PostClick();
-	}
-	// друга вкладка (Додаткові поля) мітки
-	public static void goToAdditionalField() {
-		Bisbin instance = new Bisbin();
-		wait.ms(875);
-		var additionalButton = instance.ElementNavigator.deltaWindow.Elm["web:GROUPING", prop: "desc=Додаткові поля"].Find(-1);
-		additionalButton.PostClick();
-	}
-	// третя вкладка (Географічне розташування) мітки
-	public static void goToGeograficalPlace() {
-		Bisbin instance = new Bisbin();
-		wait.ms(875);
-		var geografical = instance.ElementNavigator.deltaWindow.Elm["web:GROUPING", prop: "desc=Географічне розташування"].Find(-1);
-		geografical.PostClick();
-		
-	}
-	// четверта вкладка (прикріплення) мітки
-	public static void goToAttachmentFiles() {
-		Bisbin instance = new Bisbin();
-		wait.ms(875);
-		var attachment = instance.ElementNavigator.deltaWindow.Elm["web:GROUPING", prop: "desc=Прикріплення"].Find(-1);
-		attachment.PostClick();
-	}
+	
 	//  тип джерела
 	public static void flyEye() {
 		// основна вкладка
@@ -136,8 +85,7 @@ public class Bisbin {
 				commentContents += $"тільки розрив, спостерігали з {crewTeamJbd}";
 			} else if (establishedJbd.Contains("Нерозрив")) {
 				commentContents += $"рух без підриву, спостерігали з {crewTeamJbd}";
-			}
-			else if (establishedJbd.Contains("Підтв. ураж.")) {
+			} else if (establishedJbd.Contains("Підтв. ураж.")) {
 				commentContents += $"{commentJbd}, спостерігали з {crewTeamJbd}";
 			} else {
 				commentContents += $"встановлено за допомогою ударного коптера {crewTeamJbd}";
