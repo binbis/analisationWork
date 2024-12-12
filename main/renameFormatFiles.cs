@@ -1,5 +1,5 @@
-/*/ c \analisationWork-main\globalClass\Bisbin.cs; /*/
-/* 07,12,2024
+/*/ c \analisationWork\globalClass\Bisbin.cs; /*/
+/* 12,12,2024 v1.0.0
 
 !!renameAll!!:
 проєкт - переіменування файлів в папці
@@ -23,7 +23,7 @@ using System.Windows.Media;
 
 namespace CSLight {
 	class Program {
-		static void Main() {
+		static int Main() {
 			opt.key.KeySpeed = 20;
 			opt.key.TextSpeed = 20;
 			
@@ -60,38 +60,43 @@ namespace CSLight {
 			b.R.Add(out TextBox rememberedTextPath).Font(size: 14, bold: false).Size(400, 40).AddButton("Запам'ятати", 99).Brush(Brushes.LightCoral).Width(125);
 			b.End();
 			b = bMain.End();
-			if (!b.ShowDialog()) return;
+			if (!b.ShowDialog()) return 1;
 			
 			int dialogButtonResOne = b1.ResultButton; // значення нажатої кнопки
 			int dialogButtonResTwo = b2.ResultButton; // значення нажатої кнопки
-			string rememberPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), @"LibreAutomate\Main\files\analisationWork-main\customTemp\pathes.txt"); // шлях до файлу зі збереженим шляхом
+			string rememberPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), @"LibreAutomate\Main\files\analisationWork\customTemp\pathes.txt"); // шлях до файлу зі збереженим шляхом
+			
+			if (dialogButtonResTwo == 99) {
+				recordPathToMemory(rememberedTextPath.Text, rememberPath);
+				return 0;
+			}
 			
 			// основа
-			if (dialogButtonResOne != 5 && dialogButtonResOne != 99) {
+			if (dialogButtonResOne <= 4) {
 				keys.send("Ctrl+C"); // копіюємо код
 				wait.ms(100);
 				renameAll(clipboard.copy(), dialogButtonResOne);
+				return 0;
 			}
 			
 			if (dialogButtonResOne == 5) {
 				keys.send("Ctrl+C"); // копіюємо код
 				wait.ms(100);
 				PathWeaver(clipboard.copy(), rememberPath);
+				return 0;
 			}
-			
-			if (dialogButtonResTwo == 99) {
-				recordPathToMemory(rememberedTextPath.Text, rememberPath);
-			}
+			return 0;
 		}
 		// функ перейменування 
 		static void renameAll(string clipboardData, int dialogButtonRes) {
+			Bisbin Bisbin = new Bisbin();
 			string[] parts = clipboardData.Split('\t'); // Розділяємо рядок на частини
 			// Присвоюємо змінним відповідні значення
 			string dateJbd = getDDnMM(parts[0]); // 27.07.2024 - 27.07
 			string timeJbd = parts[1].Replace(":", "."); // 00:40 - 00.40
 			string commentJbd = parts[2].Replace("\n", " "); // коментар
 			string numberOFlying = parts[3]; // 5
-			string crewTeamJbd = Bisbin.GetCutsEcipash(Bisbin.TrimAfterDot(parts[4].Replace("\n", ""))); // R-18 (Мавка)
+			string crewTeamJbd = Bisbin.StringReducer.TrimAfterFirstClosingParenthes(Bisbin.StringReducer.TrimAfterFirstDot(parts[4].Replace("\n", ""))); // R-18 (Мавка)
 			string whatToDo = parts[5];// Дорозвідка / Мінування ....
 			string targetClassJbd = parts[7]; // Міна/Вантажівка/...
 			string idTargetJbd = parts[9].Replace("/", ""); // Міна 270724043

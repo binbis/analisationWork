@@ -1,5 +1,5 @@
 /*/ c \analisationWork\globalClass\Bisbin.cs; /*/
-/* 11,12,2024
+/* 12,12,2024 v1.0.0
 
 !!renameAll!!:
 проєкт - переіменування файлів в папці

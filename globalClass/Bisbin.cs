@@ -40,33 +40,6 @@ public class Bisbin {
 		return newDateString;
 	}
 	
-	//  тип джерела
-	public static void flyEye() {
-		// основна вкладка
-		var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1");
-		// тип джерела поле
-		string flyeye = "пові";
-		var typeOfSourceWindow = w.Elm["STATICTEXT", "Тип джерела", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA, navig: "next3"].Find(-1);
-		if (typeOfSourceWindow != null) {
-			typeOfSourceWindow.PostClick(scroll: 250);
-			keys.sendL("Ctrl+A", "!" + flyeye, "Enter");
-		}
-	}
-	// достовірність
-	public static void reliabilityWindow() {
-		// основна вкладка
-		var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1");
-		// достовірність поле
-		var reliabilityWindow = w.Elm["RADIOBUTTON", "A", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA].Find(-1);
-		if (reliabilityWindow != null) {
-			reliabilityWindow.PostClick(scroll: 250);
-		}
-		wait.ms(500);
-		var certaintyWindow = w.Elm["RADIOBUTTON", "2", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA].Find(-1);
-		if (certaintyWindow != null) {
-			certaintyWindow.PostClick(scroll: 250);
-		}
-	}
 	// координати в wgs84
 	public static (double Latitude, double Longitude) ConvertMGRSToWGS84(string mgrs) {
 		// Створення координати з MGRS

@@ -1,6 +1,6 @@
 /*/ c \analisationWork\globalClass\Bisbin.cs; /*/
 
-/* 11.12.2024 2.2
+/* 12.12.2024 2.2
 
 * id обрізаються, щоб поміститись в рядок 
 * функція додавання до дати дні(x) підходить для мін
@@ -104,9 +104,9 @@ namespace CSLight {
 			wait.ms(500);
 			deltaIdentificationWindow(targetClassJbd, establishedJbd, commentJbd, nameOfBch, Bisbin);
 			wait.ms(500);
-			Bisbin.reliabilityWindow();
+			reliabilityWindow(Bisbin);
 			wait.ms(500);
-			Bisbin.flyEye();
+			flyEye(Bisbin);
 			wait.ms(500);
 			deltaIdPurchaseText(idTargetJbd, Bisbin);
 			wait.ms(500);
@@ -150,14 +150,12 @@ namespace CSLight {
 			wait.ms(2000);
 			//..
 			//. шар
-			var layerWindow = Bisbin.ElementNavigator.deltaWindow.Elm["STATICTEXT", "Шар", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA, navig: "next3"].Find(-1);
-			layerWindow.PostClick(scroll: 300);
+			Bisbin.PourMark.MainFieldsTab.DeltaFieldLayer().PostClick(scroll: 300);
 			keys.sendL("Ctrl+A", "!" + layerName, "Enter");
 			//..
 			wait.ms(400);
 			//. назва
-			var nameOfMarkWindow = Bisbin.ElementNavigator.deltaWindow.Elm["STATICTEXT", "Назва", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA, navig: "next1"].Find(-1);
-			nameOfMarkWindow.PostClick();
+			Bisbin.PourMark.MainFieldsTab.DeltaFieldName().PostClick();
 			keys.sendL("Ctrl+A", "!" + name, "Enter");
 			//..
 			wait.ms(400);
@@ -166,20 +164,17 @@ namespace CSLight {
 			//..
 			wait.ms(400);
 			//. боєздатність
-			var combatCapabilityWindow = Bisbin.ElementNavigator.deltaWindow.Elm["STATICTEXT", "Боєздатність", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA, navig: "next3"].Find(-1);
-			combatCapabilityWindow.PostClick(scroll: 250);
+			Bisbin.PourMark.MainFieldsTab.DeltaFieldCapability().PostClick(scroll: 250);
 			keys.sendL("Ctrl+A", "!" + capability, "Enter*2");
 			//..
 			wait.ms(400);
 			//. ідентифікація
-			var identificationWindow = Bisbin.ElementNavigator.deltaWindow.Elm["STATICTEXT", "Ідентифікація", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA, navig: "next2"].Find(-1);
-			identificationWindow.PostClick(scroll: 250);
+			Bisbin.PourMark.MainFieldsTab.DeltaFieldIdentification().PostClick(scroll: 250);
 			keys.sendL("Ctrl+A", "!" + identyfication, "Enter");
 			//..
 			wait.ms(400);
 			//. коментар
-			var commentWindow = Bisbin.ElementNavigator.deltaWindow.Elm["STATICTEXT", "Новий коментар", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA, navig: "next2"].Find(-1);
-			commentWindow.PostClick(scroll: 250);
+			Bisbin.PourMark.MainFieldsTab.DeltaFieldNewComment().PostClick(scroll: 250);
 			keys.sendL("Ctrl+A", "!" + comment);
 			wait.ms(400);
 			//..
@@ -694,6 +689,25 @@ namespace CSLight {
 				}
 				identificationWindow.PostClick(scroll: 250);
 				keys.sendL("Ctrl+A", "!" + friendly, "Enter");
+			}
+		}
+		//  тип джерела
+		static void flyEye(Bisbin Bisbin) {
+			string flyeye = "пові";
+			var typeOfSourceWindow = Bisbin.PourMark.MainFieldsTab.DeltaFieldSourceType();
+			if (typeOfSourceWindow != null) {
+				typeOfSourceWindow.PostClick(scroll: 250);
+				keys.sendL("Ctrl+A", "!" + flyeye, "Enter");
+			}
+		}
+		// достовірність
+		static void reliabilityWindow(Bisbin Bisbin) {
+			if (Bisbin.PourMark.MainFieldsTab.DeltaButtonReliability_A() != null) {
+				Bisbin.PourMark.MainFieldsTab.DeltaButtonReliability_A().PostClick(scroll: 250);
+			}
+			wait.ms(500);
+			if (Bisbin.PourMark.MainFieldsTab.DeltaButtonCertainty_2() != null) {
+				Bisbin.PourMark.MainFieldsTab.DeltaButtonCertainty_2().PostClick(scroll: 250);
 			}
 		}
 		// зауваження штабу - ід

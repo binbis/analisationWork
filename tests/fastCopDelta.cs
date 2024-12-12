@@ -1,5 +1,6 @@
+/*/ c \analisationWork\globalClass\Bisbin.cs; /*/
 /**
-11,12,2024_v3.1.2
+12,12,2024_v3.2.2
 0. відкрий дельту в окремій вкладці та вікні, (!не міняй вкладку!), можеш звернути це вікно
 1. виділяєш текст де є координати mgrs, типу delta-google, google-maps без букв, уск-2000
 - спершу шукає mgrs, якщо не знаходить, прибирає усе окрім цифр, ком та крапок
@@ -18,6 +19,7 @@ namespace CSLight {
 			keys.send("Ctrl+C"); // копіюємо
 			string clipText = clipboard.copy(); // Зчитуємо вміст з буферу обміну
 			string clipTextTry = clipText; //
+			Bisbin Bisbin = new Bisbin;
 			
 			// взяти послідовності з 10 цифр 3 букви спереду та ще 2 цифр 
 			string patternMGRS = @"(\d{2}[a-zA-Zа-яА-Я]{3})(\d{10})";
@@ -29,24 +31,16 @@ namespace CSLight {
 				clipTextTry = Transliterate(InsertSpaces(matchMGRS.Groups[1].Value + matchMGRS.Groups[2].Value));
 				// вписуємо вміст
 				Clipboard.SetText(clipTextTry);
-				// Знаходить та активує вікно якщо воно звернуте 
-				var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1").Activate();
 				// Знаходить пошуковий рядок
-				var e = w.Elm["web:COMBOBOX", "Пошук"].Find(1);
-				// жмем пишем
-				e.PostClick(100);
+				Bisbin.ElementNavigator.deltaWindow.Elm["web:COMBOBOX", "Пошук"].Find(1).PostClick();
 				keys.sendL("Ctrl+A", "!" + clipTextTry, "Enter");
 			} else {
 				// прибрати усе окрім цифр крапки, коми та пробілів
 				clipText = Regex.Replace(clipText.Trim(), @"[^0-9,. ]", "");
 				// додати пробіл між половиною рядка
 				Clipboard.SetText(clipText);
-				// Знаходить та активує вікно якщо воно звернуте 
-				var w = wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1").Activate();
 				// Знаходить пошуковий рядок
-				var e = w.Elm["web:COMBOBOX", "Пошук"].Find(1);
-				// жмем пишем
-				e.PostClick(100);
+				Bisbin.ElementNavigator.deltaWindow.Elm["web:COMBOBOX", "Пошук"].Find(1).PostClick();
 				keys.sendL("Ctrl+A", "!" + clipText, "Enter");
 			}
 		}
