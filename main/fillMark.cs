@@ -137,16 +137,13 @@ namespace CSLight {
 			string bplaName = "вертикального зльоту";
 			
 			//. ставимо мітку
-			var createButton = Bisbin.ElementNavigator.deltaWindow.Elm["LISTITEM", "Створити об'єкт", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA].Find(1);
-			createButton.PostClick(scroll: 250);
+			Bisbin.ElementNavigator.DeltaWindow().Elm["LISTITEM", "Створити об'єкт", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA].Find(1).PostClick(scroll: 250);
 			wait.ms(2000);
 			// обираємо мітку
-			var categorySearch = Bisbin.ElementNavigator.deltaWindow.Elm["TEXT", "Пошук об'єктів", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA].Find(1);
-			categorySearch.PostClick();
+			Bisbin.ElementNavigator.DeltaWindow().Elm["TEXT", "Пошук об'єктів", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA].Find(1).PostClick();
 			keys.sendL("Ctrl+A", "!" + bplaName);
 			wait.ms(3000);
-			var bplaMark = Bisbin.ElementNavigator.deltaWindow.Elm["TEXT", "Пошук об'єктів", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA, navig: "next2 child"].Find(1);
-			bplaMark.PostClick();
+			Bisbin.ElementNavigator.DeltaWindow().Elm["TEXT", "Пошук об'єктів", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA, navig: "next2 child"].Find(1).PostClick();
 			wait.ms(2000);
 			//..
 			//. шар
@@ -739,7 +736,7 @@ namespace CSLight {
 			// поле мобільності
 			var mobileLine = Bisbin.PourMark.MainFieldsTab.DeltaFieldMobility();
 			if (mobileLine != null) {
-				var checking = Bisbin.ElementNavigator.deltaWindow.Elm["STATICTEXT", "Мобільність", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA].Find(-1);
+				var checking = Bisbin.ElementNavigator.DeltaWindow().Elm["STATICTEXT", "Мобільність", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA].Find(-1);
 				if (checking.Name != "Мобільність") {
 					return;
 				}

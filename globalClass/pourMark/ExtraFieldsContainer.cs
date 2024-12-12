@@ -7,7 +7,7 @@ public class ExtraFieldsContainer {
 	/// <summary>
 	/// поле зауваження штабу у вкладці "Додаткові поля"
 	/// </summary>
-	public Au.elm DeltaFieldPurchase() { return ElementNavigator.deltaWindow.Elm["STATICTEXT", "Зауваження штабу", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA, navig: "next"].Find(-1); }
+	public Au.elm DeltaFieldPurchase() { return ElementNavigator.DeltaWindow().Elm["STATICTEXT", "Зауваження штабу", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA, navig: "next"].Find(-1); }
 	
 	
 }

@@ -19,7 +19,7 @@ namespace CSLight {
 			keys.send("Ctrl+C"); // копіюємо
 			string clipText = clipboard.copy(); // Зчитуємо вміст з буферу обміну
 			string clipTextTry = clipText; //
-			Bisbin Bisbin = new Bisbin;
+			Bisbin Bisbin = new Bisbin();
 			
 			// взяти послідовності з 10 цифр 3 букви спереду та ще 2 цифр 
 			string patternMGRS = @"(\d{2}[a-zA-Zа-яА-Я]{3})(\d{10})";
@@ -32,7 +32,7 @@ namespace CSLight {
 				// вписуємо вміст
 				Clipboard.SetText(clipTextTry);
 				// Знаходить пошуковий рядок
-				Bisbin.ElementNavigator.deltaWindow.Elm["web:COMBOBOX", "Пошук"].Find(1).PostClick();
+				Bisbin.ElementNavigator.DeltaWindow().Elm["web:COMBOBOX", "Пошук"].Find(1).PostClick();
 				keys.sendL("Ctrl+A", "!" + clipTextTry, "Enter");
 			} else {
 				// прибрати усе окрім цифр крапки, коми та пробілів
@@ -40,7 +40,7 @@ namespace CSLight {
 				// додати пробіл між половиною рядка
 				Clipboard.SetText(clipText);
 				// Знаходить пошуковий рядок
-				Bisbin.ElementNavigator.deltaWindow.Elm["web:COMBOBOX", "Пошук"].Find(1).PostClick();
+				Bisbin.ElementNavigator.DeltaWindow().Elm["web:COMBOBOX", "Пошук"].Find(1).PostClick();
 				keys.sendL("Ctrl+A", "!" + clipText, "Enter");
 			}
 		}
