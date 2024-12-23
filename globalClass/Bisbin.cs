@@ -6,6 +6,7 @@ nuget -\CoordinateSharp;
  c .\StringReducer.cs;
  c .\pourMark\PourMark.cs;
 
+
  /*/
 using CoordinateSharp;
 /// <summary>
@@ -29,6 +30,20 @@ public class Bisbin {
 	/// </summary>
 	public PourMark PourMark = new PourMark();
 	
+	/// <summary>
+	/// отримати в консоль номера рядків з даниим
+	/// </summary>
+	public static void parsConsoleWriter() {
+		keys.send("Ctrl+C"); //копіюємо код
+		wait.ms(100);
+		string clipboardData = clipboard.copy(); // зчитуємо буфер обміну
+		
+		string[] array = clipboardData.Split('\t'); // Розділяємо рядок на частини
+		for (int i = 0; i < array.Length; i++) {
+			Console.WriteLine($"{i} = {array[i]}");
+		}
+	}
+	
 	// додає вказану кількість днів та повертає дату
 	public static string datePlasDays(string date, int count) {
 		// Перетворюємо рядок дати у DateTime
@@ -39,7 +54,6 @@ public class Bisbin {
 		string newDateString = newDate.ToString("dd.MM.yyyy");
 		return newDateString;
 	}
-	
 	// координати в wgs84
 	public static (double Latitude, double Longitude) ConvertMGRSToWGS84(string mgrs) {
 		// Створення координати з MGRS

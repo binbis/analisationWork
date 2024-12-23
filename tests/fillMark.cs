@@ -1,6 +1,9 @@
-/*/ c \analisationWork\globalClass\Bisbin.cs; /*/
+/*/ 
+c \analisationWork\globalClass\Bisbin.cs; 
+c \analisationWork\globalClass\RowByParts.cs; 
+/*/
 
-/* 12.12.2024 2.2
+/* 22.12.2024 2.3
 
 * id обрізаються, щоб поміститись в рядок 
 * функція додавання до дати дні(x) підходить для мін
@@ -35,9 +38,9 @@ namespace CSLight {
 			b.Brush(Brushes.DarkGray);
 			// insider
 			b.R.AddButton("1. Заповнення мітки", 1).Brush(Brushes.LightCoral);
-			b.R.AddButton("2. Створення РЕБ та РЕР мітки", 2).Brush(Brushes.LightCoral);
-			b.R.AddButton("3. Файлa імпорта для 777 міток", 3).Brush(Brushes.LightGoldenrodYellow);
-			b.R.AddButton("4. Файл імпорта з МІНАМИ", 4).Brush(Brushes.LightGoldenrodYellow);
+			b.R.AddButton("2. Файлa імпорта РЕБ та РЕР мітки", 2).Brush(Brushes.LightGoldenrodYellow);
+			b.R.AddButton("3. Файлa імпорта 777 мітки", 3).Brush(Brushes.LightGoldenrodYellow);
+			b.R.AddButton("4. Файл імпорта МІНАМИ", 4).Brush(Brushes.LightGoldenrodYellow);
 			b.R.AddButton("5. Файл імпорта - обізнаність ворога й всяке", 5).Brush(Brushes.LightGreen);
 			b.R.AddOkCancel().Font(size: 14, bold: false);
 			b.Window.Topmost = true;
@@ -122,71 +125,97 @@ namespace CSLight {
 		}
 		// тіло для створення мітки з подавленням від РЕБ та РЕР
 		static void createREBandRER(string clipboardData, Bisbin Bisbin) {
-			string[] parts = clipboardData.Split('\t'); // Розділяємо рядок на частини
-			string dateJbd = parts[4]; // 27.07.2024
-			string dateDeltaFormat = dateJbd.Replace('.', '/'); // перетворення дати до формату дельти
-			string timeJbd = parts[5]; // 00:40
-			string mgrsX = parts[8];
-			string mgrsY = parts[9];
-			string mgsrCoord = $"{mgrsX}{mgrsY}";
-			string layerName = "Крила, FPV, повітр";
-			string name = "FPV (Подавлено)";
-			string capability = "небо";
-			string identyfication = "ворож";
-			string comment = $"{dateJbd} {timeJbd} - подавлено та знищено засобами роти РЕБ 414 ОПБС";
-			string bplaName = "вертикального зльоту";
+			string[] parts = clipboardData.Split('\r'); // Розділяємо рядок на частини
+			var features = new List<Object>(); //
+			string plassEror = string.Empty; // для подальшої перевірки
+			foreach (string item in parts) {
+				string[] elenemts = item.Replace("\n", "").Split("\t"); // отримую рядок поділений на елементи
+				RowByParts RowByParts = new RowByParts();
+				RowByParts.RowByParts_ReR(elenemts);
+				
+				// номер мітки з деякими параметрами
+				string sidc = "10060140001104000000";
+				// Визначаємо формат вхідного рядка
+				string inputFormat = "dd.MM.yyyy";
+				// Визначаємо формат вихідного рядка
+				string outputFormat = "yyyy-MM-dd";
+				// Парсимо дату з вхідного рядка
+				DateTime dateTime = DateTime.ParseExact(RowByParts.Date, inputFormat, CultureInfo.InvariantCulture);
+				// Перетворюємо дату у формат ISO
+				string dateForImport = dateTime.ToString(outputFormat);
+				string name = "FPV (Подавлено)"; // назва
+				string target_id = "414 ОПБС"; // 
+				string comment = $"{RowByParts.Date.Replace('.', '/')} {RowByParts.Time} - подавлено та знищено засобами роти РЕБ 414 ОПБС"; // коментар
+				
+				// Формуємо JSON для однієї мітки (Feature) вручну
+				var feature = new StringBuilder();
+				feature.AppendLine("{");
+				feature.AppendLine("  \"type\": \"Feature\",");
+				feature.AppendLine("  \"properties\": {");
+				feature.AppendLine($"    \"sidc\": \"{sidc}\",");
+				feature.AppendLine($"    \"name\": \"{name}\",");
+				feature.AppendLine($"    \"observation_datetime\": \"{dateForImport}T{RowByParts.Time}:22\","); // yyyy-MM-ddTHH:mm:ss
+				feature.AppendLine($"	 \"staff_comments\": \"{target_id}\",");
+				feature.AppendLine($"	\"comments\": [");
+				feature.AppendLine($"	\"{comment}\"");
+				feature.AppendLine($"	]");
+				feature.AppendLine("  },");
+				feature.AppendLine("  \"geometry\": {");
+				feature.AppendLine("    \"type\": \"Point\",");
+				feature.AppendLine($"    \"coordinates\": [{Bisbin.ConvertMGRSToWGS84(RowByParts.Coordinates)}]").Replace("(", "").Replace(")", "");
+				feature.AppendLine("  }");
+				feature.AppendLine("}");
+				
+				features.Add(feature.ToString());
+			}
+			// Формуємо повний JSON для FeatureCollection
+			var geoJson = new StringBuilder();
+			geoJson.AppendLine("{");
+			geoJson.AppendLine("  \"type\": \"FeatureCollection\",");
+			geoJson.AppendLine("  \"features\": [");
+			geoJson.AppendLine(string.Join(",\n", features));
+			geoJson.AppendLine("  ]");
+			geoJson.AppendLine("}");
 			
-			//. ставимо мітку
-			Bisbin.ElementNavigator.DeltaWindow().Elm["LISTITEM", "Створити об'єкт", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA].Find(1).PostClick(scroll: 250);
-			wait.ms(2000);
-			// обираємо мітку
-			Bisbin.ElementNavigator.DeltaWindow().Elm["TEXT", "Пошук об'єктів", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA].Find(1).PostClick();
-			keys.sendL("Ctrl+A", "!" + bplaName);
-			wait.ms(3000);
-			Bisbin.ElementNavigator.DeltaWindow().Elm["TEXT", "Пошук об'єктів", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA, navig: "next2 child"].Find(1).PostClick();
-			wait.ms(2000);
-			//..
-			//. шар
-			Bisbin.PourMark.MainFieldsTab.DeltaFieldLayer().PostClick(scroll: 300);
-			keys.sendL("Ctrl+A", "!" + layerName, "Enter");
-			//..
-			wait.ms(400);
-			//. назва
-			Bisbin.PourMark.MainFieldsTab.DeltaFieldName().PostClick();
-			keys.sendL("Ctrl+A", "!" + name, "Enter");
-			//..
-			wait.ms(400);
-			//. час виявлення
-			deltaDateLTimeWindow(dateDeltaFormat, timeJbd, Bisbin);
-			//..
-			wait.ms(400);
-			//. боєздатність
-			Bisbin.PourMark.MainFieldsTab.DeltaFieldCapability().PostClick(scroll: 250);
-			keys.sendL("Ctrl+A", "!" + capability, "Enter*2");
-			//..
-			wait.ms(400);
-			//. ідентифікація
-			Bisbin.PourMark.MainFieldsTab.DeltaFieldIdentification().PostClick(scroll: 250);
-			keys.sendL("Ctrl+A", "!" + identyfication, "Enter");
-			//..
-			wait.ms(400);
-			//. коментар
-			Bisbin.PourMark.MainFieldsTab.DeltaFieldNewComment().PostClick(scroll: 250);
-			keys.sendL("Ctrl+A", "!" + comment);
-			wait.ms(400);
-			//..
+			// Шлях до робочого столу користувача
+			string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+			string fileName = $"{DateTime.Now.ToString("dd mmss")} - rep-rep.geojson"; // Формування назви файлу
+			string finalComment = string.Empty; // для подальшої перевірки
+			try {
+				// Повний шлях до файлу, який ми хочемо створити
+				string filePath = Path.Combine(desktopPath, fileName);
+				
+				// Записуємо рядок у файл
+				File.WriteAllText(filePath, geoJson.ToString());
+				
+				finalComment = $"Файл {fileName} успішно створено на робочому столі.";
+			}
+			catch (Exception ex) {
+				Console.WriteLine($"Виникла помилка при створенні файлу: {ex.Message}");
+				finalComment = $"Виникла помилка при створенні файлу: {ex.Message}";
+			}
+			
+			// вікно діалогу
+			var b = new wpfBuilder("Window").WinSize(650);
+			b.R.Add(out Label _, plassEror);
+			b.R.Add(out Label _, finalComment);
+			b.R.AddOkCancel();
+			b.Window.Topmost = true;
+			b.End();
+			// show dialog. Exit if closed not with the OK button.
+			if (!b.ShowDialog()) return;
 			
 		}
 		// створення файлу для імпорта з Чергування - 777
 		static void createWhoWork(string clipboardData, Bisbin Bisbin) {
 			
-			string[] parts = clipboardData.Split('\n'); // Розділяємо рядок на частини
+			string[] parts = clipboardData.Split('\r'); // Розділяємо рядок на частини
 			string dateTimeNow = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss"); // поточний час
 			var features = new List<Object>(); //
 			string plassEror = string.Empty; // для подальшої перевірки
 			
 			foreach (string item in parts) {
-				string[] elements = item.Split('\t'); // ділимо рядок на елементи
+				string[] elements = item.Replace("\n", "").Split("\t"); // ділимо рядок на елементи
 				if (elements.Length < 10) continue; // Пропускаємо, якщо елементів недостатньо
 				if (elements[3].Length > 5) {
 					// Парсимо елементи з буфера обміну
@@ -294,12 +323,12 @@ namespace CSLight {
 			*/
 			
 			
-			string[] parts = clipboardData.Split('\n'); // Розділяємо рядок на частини
+			string[] parts = clipboardData.Split('\r'); // Розділяємо рядок на частини
 			var features = new List<Object>(); //
 			string plassEror = string.Empty; // для подальшої перевірки
 			
 			foreach (string item in parts) {
-				string[] elements = item.Split('\t'); // ділимо рядок на елементи
+				string[] elements = item.Replace("\n", "").Split("\t"); // ділимо рядок на елементи
 				
 				// Присвоюємо змінним відповідні значення
 				string dateJbd = elements[0]; // 27.07.2024
