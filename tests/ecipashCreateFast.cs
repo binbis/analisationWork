@@ -1,4 +1,4 @@
-/** 11,12,2024
+/** 26,12,2024
 	створення для створення папок з Планування excel
 1. вибираєш ячейку під колонкою А
 2. жмеш скрипт
@@ -86,15 +86,15 @@ class Program {
 			string datePattern = @"(\d{2}\.\d{2}\.\d{4})";
 			string crewPattern = @"Екіпаж — (.*?)(?=Початок|Точка|Населений|Зона|Завдання|Завершення|Склад)";
 			string pointPattern = @"Точка вильоту — (.*?)(?=Населений|Зона|Завдання|Завершення|Склад)";
-			string areaPattern = @"Зона інтересів — (.*?)(?=Початок|Точка|Населений|Завдання|Завершення|Склад)";
-			string cityPattent = @"Населений пункт — (.*?)(?=Завдання|Завершення|Склад)";
+			//string areaPattern = @"Зона інтересів — (.*?)(?=Початок|Точка|Населений|Завдання|Завершення|Склад)";
+			string cityPattent = @"Населений пункт — (.*?)(?=Завдання|Завершення|Склад|Зона інтересів)";
 			string teamPattern = @"Склад: — (.+)";
 			
 			// Знаходження частин рядка за допомогою регулярних виразів
 			string date = Regex.Match(elemets, datePattern).Groups[1].Value.Trim();
 			string crew = Regex.Match(elemets, crewPattern).Groups[1].Value.Trim();
 			string point = Regex.Match(elemets, pointPattern).Groups[1].Value.Trim();
-			string area = Regex.Match(elemets, areaPattern).Groups[1].Value.Trim();
+			//string area = Regex.Match(elemets, areaPattern).Groups[1].Value.Trim();
 			string city = Regex.Match(elemets, cityPattent).Groups[1].Value.Trim();
 			
 			// Отримання всіх членів команди
@@ -104,11 +104,12 @@ class Program {
 			
 			// Змінна, що змінюється після кожної операції
 			string textName = string.Empty;
-			if (crew.Contains("Ев. ")) {
-				textName = $"{date}\t {crew}\t {point}\t\t\t\t\t\t\t {formattedTeam}\t {city}\n";
-			} else {
-				textName = $"{date}\t {crew}\t {point}\t\t\t\t\t\t\t {formattedTeam}\t {area}\n";
-			}
+			//if (crew.Contains("Ев. ")) {
+				textName = $"{date}\t {crew}\t {point}\t\t\t\t\t\t\t {city}\t {formattedTeam}\n";
+			//}
+			//else {
+			//	textName = $"{date}\t {crew}\t {point}\t\t\t\t\t\t\t {formattedTeam}\t {area}\n";
+			//}
 			
 			if (textName.Length > 16) {
 				minimalEcspashClipbload += textName;

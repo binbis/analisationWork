@@ -3,7 +3,7 @@ c \analisationWork\globalClass\Bisbin.cs;
 c \analisationWork\globalClass\RowByParts.cs; 
 /*/
 
-/* 22.12.2024 2.3
+/* 26.12.2024 2.3
 
 * id обрізаються, щоб поміститись в рядок 
 * функція додавання до дати дні(x) підходить для мін
