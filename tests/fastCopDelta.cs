@@ -1,6 +1,6 @@
 /*/ c \analisationWork\globalClass\Bisbin.cs; /*/
 /**
-12,12,2024_v3.2.2
+27,12,2024_v3.2.3
 0. відкрий дельту в окремій вкладці та вікні, (!не міняй вкладку!), можеш звернути це вікно
 1. виділяєш текст де є координати mgrs, типу delta-google, google-maps без букв, уск-2000
 - спершу шукає mgrs, якщо не знаходить, прибирає усе окрім цифр, ком та крапок
@@ -32,7 +32,7 @@ namespace CSLight {
 				// вписуємо вміст
 				Clipboard.SetText(clipTextTry);
 				// Знаходить пошуковий рядок
-				Bisbin.ElementNavigator.DeltaWindow().Elm["web:COMBOBOX", "Пошук"].Find(1).PostClick();
+				Bisbin.ElementNavigator.DeltaWindow().Elm["COMBOBOX", "Пошук", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA].Find(1).PostClick();
 				keys.sendL("Ctrl+A", "!" + clipTextTry, "Enter");
 			} else {
 				// прибрати усе окрім цифр крапки, коми та пробілів
@@ -40,7 +40,7 @@ namespace CSLight {
 				// додати пробіл між половиною рядка
 				Clipboard.SetText(clipText);
 				// Знаходить пошуковий рядок
-				Bisbin.ElementNavigator.DeltaWindow().Elm["web:COMBOBOX", "Пошук"].Find(1).PostClick();
+				Bisbin.ElementNavigator.DeltaWindow().Elm["COMBOBOX", "Пошук", "class=Chrome_RenderWidgetHostHWND", EFFlags.UIA].Find(1).PostClick();
 				keys.sendL("Ctrl+A", "!" + clipText, "Enter");
 			}
 		}

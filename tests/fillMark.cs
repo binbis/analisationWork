@@ -3,7 +3,7 @@ c \analisationWork\globalClass\Bisbin.cs;
 c \analisationWork\globalClass\RowByParts.cs; 
 /*/
 
-/* 27.12.2024 2.3
+/* 28.12.2024 2.3
 
 * id обрізаються, щоб поміститись в рядок 
 * функція додавання до дати дні(x) підходить для мін
@@ -228,7 +228,7 @@ namespace CSLight {
 					string name = $"{elements[1]} Т.в. ({elements[2]})";
 					
 					//координати обробка
-					var wgsCoord = Bisbin.ConvertMGRSToWGS84(elements[3]);
+					var wgsCoord = Bisbin.ConvertMGRSToWGS84(Bisbin.getCorrectCoord(elements[3]));
 					
 					// Формуємо JSON для однієї мітки (Feature) вручну
 					var feature = new StringBuilder();
