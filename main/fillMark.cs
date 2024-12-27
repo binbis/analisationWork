@@ -3,7 +3,7 @@ c \analisationWork\globalClass\Bisbin.cs;
 c \analisationWork\globalClass\RowByParts.cs; 
 /*/
 
-/* 26.12.2024 2.3
+/* 27.12.2024 2.3
 
 * id обрізаються, щоб поміститись в рядок 
 * функція додавання до дати дні(x) підходить для мін
@@ -26,11 +26,6 @@ namespace CSLight {
 			opt.key.KeySpeed = 20;
 			opt.key.TextSpeed = 20;
 			
-			keys.send("Ctrl+C"); //копіюємо код
-			wait.ms(100);
-			string clipboardData = clipboard.copy(); // зчитуємо буфер обміну
-			
-			Bisbin Bisbin = new Bisbin();
 			// вікно діалогу
 			var b = new wpfBuilder("Window").WinSize(450);
 			//Brush
@@ -47,6 +42,12 @@ namespace CSLight {
 			b.End();
 			// show dialog. Exit if closed not with the OK button.
 			if (!b.ShowDialog()) return;
+			
+			keys.send("Ctrl+C"); //копіюємо код
+			wait.ms(100);
+			string clipboardData = clipboard.copy(); // зчитуємо буфер обміну
+			
+			Bisbin Bisbin = new Bisbin();
 			
 			if (b.ResultButton == 1) {
 				fillMarkWithJBD(clipboardData, Bisbin);
@@ -72,55 +73,39 @@ namespace CSLight {
 		// тіло для заповнення мітки
 		static void fillMarkWithJBD(string clipboardData, Bisbin Bisbin) {
 			string[] parts = clipboardData.Split('\t'); // Розділяємо рядок на частини
-			// Присвоюємо змінним відповідні значення
-			string dateJbd = parts[0]; // 27.07.2024
-			string timeJbd = parts[1]; //00:40
-			string commentJbd = parts[2].Replace("\n", " "); //коментар (для ідентифікації скоріш за все)
-			string numberOFlying = parts[3]; // 5
-			string crewTeamJbd = Bisbin.StringReducer.TrimAfterFirstDot(parts[4].Replace("\n\t", "")); // R-18-1 (Мавка)
-			string whatDidJbd = parts[5]; // Дорозвідка / Мінування ..
-			string targetClassJbd = parts[7]; // Міна/Вантажівка/...
-			string idTargetJbd = Bisbin.StringReducer.TrimAllAfterN(parts[9], 19); // Міна 270724043
-			string mgrsCoords = parts[18]; // 37U CP 76420 45222
-			string nameOfBch = parts[22]; // ПТМ-3 ТМ-62
-			string establishedJbd = parts[24]; // Встановлено/Уражено/Промах/...
-			string twoHundredth = parts[25]; // 200
-			string threeHundredth = parts[26]; // 300
-			// перетворення дати до формату дельти
-			string dateDeltaFormat = dateJbd.Replace('.', '/');
-			// додавно для подашої верифікації
-			if (crewTeamJbd.Contains("FPV")) {
-				crewTeamJbd = Bisbin.StringReducer.addTypeForBoard(crewTeamJbd);
-			}
+			RowByParts RowByParts = new RowByParts();
+			RowByParts.RowByParts_Prepare(parts);
+			
 			clipboard.clear();
 			goToMainField(Bisbin);
 			wait.ms(500);
-			deltaLayerWindow(targetClassJbd, commentJbd, Bisbin);
+			deltaLayerWindow(RowByParts, Bisbin);
 			wait.ms(500);
-			deltaMarkName(nameOfBch, targetClassJbd, dateJbd, establishedJbd, commentJbd, twoHundredth, threeHundredth, Bisbin);
+			deltaMarkName(RowByParts, Bisbin);
 			wait.ms(500);
-			deltaDateLTimeWindow(dateDeltaFormat, timeJbd, Bisbin);
+			deltaDateLTimeWindow(RowByParts, Bisbin);
 			wait.ms(500);
-			deltaNumberOfnumberWindow(twoHundredth, threeHundredth, Bisbin);
+			deltaNumberOfnumberWindow(RowByParts, Bisbin);
 			wait.ms(500);
-			deltaCombatCapabilityWindow(targetClassJbd, establishedJbd, commentJbd, Bisbin);
+			deltaCombatCapabilityWindow(RowByParts, Bisbin);
 			wait.ms(500);
-			deltaIdentificationWindow(targetClassJbd, establishedJbd, commentJbd, nameOfBch, Bisbin);
+			deltaIdentificationWindow(RowByParts, Bisbin);
 			wait.ms(500);
 			reliabilityWindow(Bisbin);
 			wait.ms(500);
 			flyEye(Bisbin);
 			wait.ms(500);
-			deltaIdPurchaseText(idTargetJbd, Bisbin);
+			deltaIdPurchaseText(RowByParts, Bisbin);
 			wait.ms(500);
-			deltaMobilityLine(targetClassJbd, Bisbin);
+			deltaMobilityLine(RowByParts, Bisbin);
 			wait.ms(500);
-			deltaCommentContents(targetClassJbd, dateJbd, timeJbd, crewTeamJbd, establishedJbd, commentJbd, mgrsCoords, Bisbin);
+			deltaCommentContents(RowByParts, Bisbin);
 			wait.ms(500);
-			deltaAdditionalFields(idTargetJbd, targetClassJbd, Bisbin);
+			deltaAdditionalFields(RowByParts, Bisbin);
 			wait.ms(500);
-			deltaGeografPlace(targetClassJbd, establishedJbd, commentJbd, Bisbin);
+			deltaGeografPlace(RowByParts, Bisbin);
 			wait.ms(500);
+			
 			goToAttachmentFiles(Bisbin);
 		}
 		// тіло для створення мітки з подавленням від РЕБ та РЕР
@@ -162,7 +147,7 @@ namespace CSLight {
 				feature.AppendLine("  },");
 				feature.AppendLine("  \"geometry\": {");
 				feature.AppendLine("    \"type\": \"Point\",");
-				feature.AppendLine($"    \"coordinates\": [{Bisbin.ConvertMGRSToWGS84(RowByParts.Coordinates)}]").Replace("(", "").Replace(")", "");
+				feature.AppendLine($"    \"coordinates\": [{Bisbin.ConvertMGRSToWGS84(Bisbin.getCorrectCoord(RowByParts.Coordinates))}]").Replace("(", "").Replace(")", "");
 				feature.AppendLine("  }");
 				feature.AppendLine("}");
 				
@@ -333,33 +318,33 @@ namespace CSLight {
 				// Присвоюємо змінним відповідні значення
 				string dateJbd = elements[0]; // 27.07.2024
 				string timeJbd = elements[1]; //00:40
-				string commentJbd = elements[2].Replace("\n", " "); //коментар (для ідентифікації скоріш за все)
+				string comment = elements[2].Replace("\n", " "); //коментар (для ідентифікації скоріш за все)
 				string numberOFlying = elements[3]; // 5
 				string crewTeamJbd = Bisbin.StringReducer.TrimAfterFirstDot(elements[4].Replace("\n\t", "")); // R-18-1 (Мавка)
 				string whatDidJbd = elements[5]; // Дорозвідка / Мінування ..
-				string targetClassJbd = elements[7]; // Міна/Вантажівка/...
-				string idTargetJbd = Bisbin.StringReducer.TrimAllAfterN(elements[9], 19); // Міна 270724043
+				string target = elements[7]; // Міна/Вантажівка/...
+				string targetId = Bisbin.StringReducer.TrimAllAfterN(elements[9], 19); // Міна 270724043
 				string mgrsCoords = elements[18]; // 37U CP 76420 45222
 				string nameOfBch = elements[22]; // ПТМ-3 ТМ-62
-				string establishedJbd = elements[24]; // Встановлено/Уражено/Промах/...
-				string twoHundredth = elements[25]; // 200
-				string threeHundredth = elements[26]; // 300
+				string status = elements[24]; // Встановлено/Уражено/Промах/...
+				string DNumber = elements[25]; // 200
+				string WNumber = elements[26]; // 300
 				
 				// захист від дурачка
 				if (whatDidJbd.Contains("Мінування")) {
 					// підготовка значень для полів
-					string name = Bisbin.createMineName(nameOfBch, targetClassJbd, dateJbd, establishedJbd, commentJbd, twoHundredth, threeHundredth);
+					string name = Bisbin.createMineName(nameOfBch, target, dateJbd, status, comment, DNumber, WNumber);
 					string sidc = string.Empty;
 					string states = "Розміновано Підтв. ураж. Тільки розрив Авар. скид";
-					if (states.Contains(establishedJbd)) {
+					if (states.Contains(status)) {
 						if (Bisbin.VariableHolder.bchTropsMines.Contains(nameOfBch)) {
 							sidc = "10011540002003000000";
 						} else { sidc = "10031540002103000000"; }
-					} else if (establishedJbd.Contains("Встановлено")) {
+					} else if (status.Contains("Встановлено")) {
 						if (Bisbin.VariableHolder.bchTropsMines.Contains(nameOfBch)) {
 							sidc = "10011520002003000000";
 						} else { sidc = "10031520002103000000"; }
-					} else if (establishedJbd.Contains("Спростовано")) {
+					} else if (status.Contains("Спростовано")) {
 						return;
 					} else {
 						if (Bisbin.VariableHolder.bchTropsMines.Contains(nameOfBch)) {
@@ -368,7 +353,7 @@ namespace CSLight {
 					}
 					
 					
-					string commentar = Bisbin.createComment(targetClassJbd, dateJbd, timeJbd, crewTeamJbd, establishedJbd, commentJbd, mgrsCoords);
+					string commentar = Bisbin.createComment(target, dateJbd.Replace('.','/'), timeJbd, crewTeamJbd, status, comment, mgrsCoords);
 					string dateTimeNow = $"{dateJbd.Split(".")[2]}-{dateJbd.Split(".")[1]}-{dateJbd.Split(".")[0]}T{timeJbd}:22"; // поточний час yyyy-MM-ddTHH:mm:ss
 					//координати обробка
 					var wgsCoord = Bisbin.ConvertMGRSToWGS84(mgrsCoords);
@@ -382,7 +367,7 @@ namespace CSLight {
 					feature.AppendLine($"	\"name\": \"{name}\","); // назва
 					feature.AppendLine($"	\"reliability_credibility\": \"A2\","); // достовірність
 					feature.AppendLine($"	\"platform_type\": \"AIRREC\",");
-					feature.AppendLine($"	\"staff_comments\": \"{idTargetJbd}\","); // ід
+					feature.AppendLine($"	\"staff_comments\": \"{targetId}\","); // ід
 					feature.AppendLine($"	\"observation_datetime\": \"{dateTimeNow}\","); // дата-час
 					feature.AppendLine($"	\"quantity\": \"1\","); // кількість
 					feature.AppendLine($"	\"comments\": [");
@@ -457,7 +442,7 @@ namespace CSLight {
 			Bisbin.ElementNavigator.DeltaAttachmentFields().PostClick(scroll: 300);
 		}
 		// обрати відповідний шар
-		static void deltaLayerWindow(string targetClassJbd, string commentJbd, Bisbin Bisbin) {
+		static void deltaLayerWindow(RowByParts RowByParts, Bisbin Bisbin) {
 			// (01) постійні схов. і укриття
 			string permanentStorage = "Укриття Склад майна Склад БК Склад ПММ Польовий склад майна Польовий склад БК Польовий склад ПММ";
 			// (02) антени, камери...
@@ -467,15 +452,15 @@ namespace CSLight {
 			var layerWindow = Bisbin.PourMark.MainFieldsTab.DeltaFieldLayer();
 			layerWindow.PostClick(scroll: 250);
 			//. перевірка, запис
-			if (permanentStorage.Contains(targetClassJbd)) {
+			if (permanentStorage.Contains(RowByParts.Target)) {
 				keys.sendL("Ctrl+A", "!постійні схов.", "Enter");
 				return;
 			}
-			if (antennaCamera.Contains(targetClassJbd)) {
+			if (antennaCamera.Contains(RowByParts.Target)) {
 				keys.sendL("Ctrl+A", "!антени, камери", "Enter");
 				return;
 			}
-			switch (targetClassJbd) {
+			switch (RowByParts.Target) {
 			case "Міна":
 				keys.sendL("Ctrl+A", "!маршрути, міни, загородж", "Enter");
 				break;
@@ -495,9 +480,9 @@ namespace CSLight {
 				keys.sendL("Ctrl+A", "!окопна зброя (+ міномети)", "Enter");
 				break;
 			default:
-				if (commentJbd.ToLower().Contains("рус") || commentJbd.ToLower().Contains("рух")) {
+				if (RowByParts.DecrtiptionComment.ToLower().Contains("рус") || RowByParts.DecrtiptionComment.ToLower().Contains("рух")) {
 					keys.sendL("Ctrl+A", "!техніка в русі ", "Enter");
-				} else if (commentJbd.ToLower().Contains("виходи") || commentJbd.ToLower().Contains("вогнева позиція")) {
+				} else if (RowByParts.DecrtiptionComment.ToLower().Contains("виходи") || RowByParts.DecrtiptionComment.ToLower().Contains("вогнева позиція")) {
 					keys.sendL("Ctrl+A", "!вогневі позиції ", "Enter");
 				} else {
 					keys.sendL("Ctrl+A", "!схована техніка ", "Enter");
@@ -507,7 +492,7 @@ namespace CSLight {
 			//..
 		}
 		// відповідна назва
-		static string deltaMarkName(string nameOfBch, string targetClassJbd, string dateJbd, string establishedJbd, string commentJbd, string twoHundredth, string threeHundredth, Bisbin Bisbin) {
+		static string deltaMarkName(RowByParts RowByParts, Bisbin Bisbin) {
 			string nameIs = string.Empty;
 			string statusOne = "Виявлено Підтверджено Не зрозуміло";
 			
@@ -517,23 +502,23 @@ namespace CSLight {
 				string nameOfMark = nameOfMarkWindow.Value;
 				int indexLoss = nameOfMark.IndexOf(' ');
 				
-				switch (targetClassJbd) {
+				switch (RowByParts.Target) {
 				//. Міна
 				case "Міна":
-					if (establishedJbd.Contains("Спростовано")) {
+					if (RowByParts.Status.Contains("Спростовано")) {
 						return "";
 					}
-					if (establishedJbd.Contains("Авар. скид")) {
-						markName = $"{nameOfBch} ({dateJbd})";
-					} else if (Bisbin.VariableHolder.states.Contains(establishedJbd)) {
-						markName = $"{nameOfMark.Substring(0, indexLoss)} ({dateJbd})";
+					if (RowByParts.Status.Contains("Авар. скид")) {
+						markName = $"{RowByParts.Ammunition} ({RowByParts.Date})";
+					} else if (Bisbin.VariableHolder.states.Contains(RowByParts.Status)) {
+						markName = $"{nameOfMark.Substring(0, indexLoss)} ({RowByParts.Date})";
 					} else {
-						if (Bisbin.VariableHolder.bchHeavyMines.Contains(nameOfBch)) {
-							markName = $"{nameOfBch} до ({Bisbin.datePlasDays(dateJbd, 90)})";
-						} else if (Bisbin.VariableHolder.bchTropsMines.Contains(nameOfBch)) {
-							markName = $"{nameOfBch} до ({Bisbin.datePlasDays(dateJbd, 8)})";
+						if (Bisbin.VariableHolder.bchHeavyMines.Contains(RowByParts.Ammunition)) {
+							markName = $"{RowByParts.Ammunition} до ({Bisbin.datePlasDays(RowByParts.Date, 90)})";
+						} else if (Bisbin.VariableHolder.bchTropsMines.Contains(RowByParts.Ammunition)) {
+							markName = $"{RowByParts.Ammunition} до ({Bisbin.datePlasDays(RowByParts.Date, 8)})";
 						} else {
-							markName = $"{nameOfBch} до ()";
+							markName = $"{RowByParts.Ammunition} до ()";
 						}
 					}
 					
@@ -541,64 +526,64 @@ namespace CSLight {
 				//..
 				//. "Укриття
 				case "Укриття":
-					if (establishedJbd.ToLower().Contains("знищ")) {
-						markName = targetClassJbd + " ОС (знищ.)";
-					} else if (establishedJbd.ToLower().Contains("ураж")) {
-						markName = targetClassJbd + " ОС (ураж.)";
-					} else if (statusOne.Contains(establishedJbd)) {
-						if (commentJbd.ToLower().Contains("знищ")) {
-							markName = targetClassJbd + " ОС (знищ.)";
-						} else if (commentJbd.ToLower().Contains("ураж")) {
-							markName = targetClassJbd + " ОС (ураж.)";
+					if (RowByParts.Status.ToLower().Contains("знищ")) {
+						markName = RowByParts.Target + " ОС (знищ.)";
+					} else if (RowByParts.Status.ToLower().Contains("ураж")) {
+						markName = RowByParts.Target + " ОС (ураж.)";
+					} else if (statusOne.Contains(RowByParts.Status)) {
+						if (RowByParts.DecrtiptionComment.ToLower().Contains("знищ")) {
+							markName = RowByParts.Target + " ОС (знищ.)";
+						} else if (RowByParts.DecrtiptionComment.ToLower().Contains("ураж")) {
+							markName = RowByParts.Target + " ОС (ураж.)";
 						} else {
-							markName = targetClassJbd + " ОС";
+							markName = RowByParts.Target + " ОС";
 						}
 					} else {
-						markName = targetClassJbd + " ОС";
+						markName = RowByParts.Target + " ОС";
 					}
 					break;
 				//..
 				//. Скупчення ОС
 				case "ОС РОВ":
-					if (twoHundredth.Length == 0 || threeHundredth.Length == 0) {
-						markName = targetClassJbd;
+					if (RowByParts.DNumber.Length == 0 || RowByParts.WNumber.Length == 0) {
+						markName = RowByParts.Target;
 					}
-					if (twoHundredth.Length > 0) {
-						markName = twoHundredth + " - 200";
+					if (RowByParts.DNumber.Length > 0) {
+						markName = RowByParts.DNumber + " - 200";
 					}
-					if (threeHundredth.Length > 0) {
-						markName = threeHundredth + " - 300";
+					if (RowByParts.WNumber.Length > 0) {
+						markName = RowByParts.WNumber + " - 300";
 					}
-					if (twoHundredth.Length > 0 && threeHundredth.Length > 0) {
-						markName = twoHundredth + " - 200, " + threeHundredth + " - 300";
+					if (RowByParts.DNumber.Length > 0 && RowByParts.WNumber.Length > 0) {
+						markName = RowByParts.DNumber + " - 200, " + RowByParts.WNumber + " - 300";
 					}
 					
 					break;
 				//..
 				default:
 					//.
-					if (establishedJbd.ToLower().Contains("знищ")) {
-						markName = targetClassJbd + " (знищ.)";
-					} else if (establishedJbd.ToLower().Contains("ураж")) {
-						markName = targetClassJbd + " (ураж.)";
-					} else if (statusOne.Contains(establishedJbd)) {
-						if (commentJbd.ToLower().Contains("знищ")) {
-							markName = targetClassJbd + " (знищ.)";
-						} else if (commentJbd.ToLower().Contains("ураж")) {
-							markName = targetClassJbd + " (ураж.)";
-						} else if (commentJbd.ToLower().Contains("в рус") || commentJbd.ToLower().Contains("рух")) {
-							markName = targetClassJbd + " (в русі)";
-						} else if (commentJbd.ToLower().Contains("схов")) {
-							markName = targetClassJbd + " (схов.)";
-						} else if (commentJbd.ToLower().Contains("стої")) {
-							markName = targetClassJbd + " (стоїть)";
-						} else if (commentJbd.ToLower().Contains("виходи") || commentJbd.ToLower().Contains("вогнева позиція")) {
-							markName = targetClassJbd + " (вогнева позиція)";
+					if (RowByParts.Status.ToLower().Contains("знищ")) {
+						markName = RowByParts.Target + " (знищ.)";
+					} else if (RowByParts.Status.ToLower().Contains("ураж")) {
+						markName = RowByParts.Target + " (ураж.)";
+					} else if (statusOne.Contains(RowByParts.Status)) {
+						if (RowByParts.DecrtiptionComment.ToLower().Contains("знищ")) {
+							markName = RowByParts.Target + " (знищ.)";
+						} else if (RowByParts.DecrtiptionComment.ToLower().Contains("ураж")) {
+							markName = RowByParts.Target + " (ураж.)";
+						} else if (RowByParts.DecrtiptionComment.ToLower().Contains("в рус") || RowByParts.DecrtiptionComment.ToLower().Contains("рух")) {
+							markName = RowByParts.Target + " (в русі)";
+						} else if (RowByParts.DecrtiptionComment.ToLower().Contains("схов")) {
+							markName = RowByParts.Target + " (схов.)";
+						} else if (RowByParts.DecrtiptionComment.ToLower().Contains("стої")) {
+							markName = RowByParts.Target + " (стоїть)";
+						} else if (RowByParts.DecrtiptionComment.ToLower().Contains("виходи") || RowByParts.DecrtiptionComment.ToLower().Contains("вогнева позиція")) {
+							markName = RowByParts.Target + " (вогнева позиція)";
 						} else {
-							markName = targetClassJbd;
+							markName = RowByParts.Target;
 						}
 					} else {
-						markName = targetClassJbd;
+						markName = RowByParts.Target;
 					}
 					break;
 				}
@@ -611,41 +596,41 @@ namespace CSLight {
 			
 		}
 		// поле дата / час
-		static void deltaDateLTimeWindow(string dateDeltaFormat, string timeJbd, Bisbin Bisbin) {
+		static void deltaDateLTimeWindow(RowByParts RowByParts, Bisbin Bisbin) {
 			var dateDeltaWindow = Bisbin.PourMark.MainFieldsTab.DeltaFieldDate();
 			if (dateDeltaWindow != null) {
 				dateDeltaWindow.PostClick();
-				keys.sendL("Ctrl+A", "!" + dateDeltaFormat, "Enter");
+				keys.sendL("Ctrl+A", "!" + RowByParts.Date.Replace('.','/'), "Enter");
 				wait.ms(500);
-				keys.sendL("!" + timeJbd, "Enter");
+				keys.sendL("!" + RowByParts.Time, "Enter");
 			}
 		}
 		// поле кількість
-		static void deltaNumberOfnumberWindow(string twoHundredth, string threeHundredth, Bisbin Bisbin) {
+		static void deltaNumberOfnumberWindow(RowByParts RowByParts, Bisbin Bisbin) {
 			var numberOfnumberWindow = Bisbin.PourMark.MainFieldsTab.DeltaFieldCounts();
 			if (numberOfnumberWindow != null) {
 				int counts = 1;
-				if (twoHundredth.Length > 0 || threeHundredth.Length > 0) {
-					counts = (twoHundredth.ToInt() + threeHundredth.ToInt());
+				if (RowByParts.DNumber.Length > 0 || RowByParts.WNumber.Length > 0) {
+					counts = (RowByParts.DNumber.ToInt() + RowByParts.WNumber.ToInt());
 				}
 				numberOfnumberWindow.PostClick(scroll: 250);
 				keys.sendL("Ctrl+A", "!" + counts);
 			}
 		}
 		// поле боєздатність
-		static void deltaCombatCapabilityWindow(string targetClassJbd, string establishedJbd, string commentJbd, Bisbin Bisbin) {
+		static void deltaCombatCapabilityWindow(RowByParts RowByParts, Bisbin Bisbin) {
 			var combatCapabilityWindow = Bisbin.PourMark.MainFieldsTab.DeltaFieldCapability();
 			//. перевірка
 			if (combatCapabilityWindow != null) {
 				string fullaim = string.Empty;
-				switch (targetClassJbd) {
+				switch (RowByParts.Target) {
 				//. Якщо ти міна
 				case "Міна":
-					if (Bisbin.VariableHolder.states.Contains(establishedJbd)) {
+					if (Bisbin.VariableHolder.states.Contains(RowByParts.Status)) {
 						fullaim = "небо";
-					} else if (establishedJbd.Contains("Встановлено")) {
+					} else if (RowByParts.Status.Contains("Встановлено")) {
 						fullaim = "повніс";
-					} else if (establishedJbd.Contains("Спростовано")) {
+					} else if (RowByParts.Status.Contains("Спростовано")) {
 						return;
 					} else {
 						fullaim = "част";
@@ -654,28 +639,28 @@ namespace CSLight {
 				//..
 				default:
 					//.
-					if (establishedJbd.ToLower().Contains("знищ")) {
+					if (RowByParts.Status.ToLower().Contains("знищ")) {
 						fullaim = "небо";
-					} else if (establishedJbd.ToLower().Contains("ураж")) {
+					} else if (RowByParts.Status.ToLower().Contains("ураж")) {
 						fullaim = "част";
-					} else if (establishedJbd.Contains("Виявлено")) {
-						if (commentJbd.ToLower().Contains("знищ")) {
+					} else if (RowByParts.Status.Contains("Виявлено")) {
+						if (RowByParts.DecrtiptionComment.ToLower().Contains("знищ")) {
 							fullaim = "небо";
-						} else if (commentJbd.ToLower().Contains("ураж")) {
+						} else if (RowByParts.DecrtiptionComment.ToLower().Contains("ураж")) {
 							fullaim = "част";
 						} else {
 							fullaim = "повніс";
 						}
 						// для ос не зроз ....
-					} else if (!establishedJbd.ToLower().Contains("знищ") || !establishedJbd.ToLower().Contains("ураж")) {
+					} else if (!RowByParts.Status.ToLower().Contains("знищ") || !RowByParts.Status.ToLower().Contains("ураж")) {
 						fullaim = "не о";
 						combatCapabilityWindow.PostClick(scroll: 250);
 						keys.sendL("Ctrl+A", "!" + fullaim, "Enter");
 						return;
 					} else {
-						if (commentJbd.ToLower().Contains("знищ")) {
+						if (RowByParts.DecrtiptionComment.ToLower().Contains("знищ")) {
 							fullaim = "небо";
-						} else if (commentJbd.ToLower().Contains("ураж")) {
+						} else if (RowByParts.DecrtiptionComment.ToLower().Contains("ураж")) {
 							fullaim = "част";
 						} else {
 							fullaim = "повніс";
@@ -690,20 +675,20 @@ namespace CSLight {
 			}
 		}
 		// ідентифікація 
-		static void deltaIdentificationWindow(string targetClassJbd, string establishedJbd, string commentJbd, string nameOfBch, Bisbin Bisbin) {
+		static void deltaIdentificationWindow(RowByParts RowByParts, Bisbin Bisbin) {
 			var identificationWindow = Bisbin.PourMark.MainFieldsTab.DeltaFieldIdentification();
 			if (identificationWindow != null) {
 				string friendly = string.Empty;
-				switch (targetClassJbd) {
+				switch (RowByParts.Target) {
 				case "Міна":
-					if (Bisbin.VariableHolder.bchTropsMines.Contains(nameOfBch) && nameOfBch.Length >= 1) {
+					if (Bisbin.VariableHolder.bchTropsMines.Contains(RowByParts.Ammunition) && RowByParts.Ammunition.Length >= 1) {
 						friendly = "відом";
 					} else {
 						friendly = "дружній";
 					}
 					break;
 				case "Укриття":
-					if (establishedJbd.ToLower().Contains("знищ") || commentJbd.ToLower().Contains("знищ")) {
+					if (RowByParts.Status.ToLower().Contains("знищ") || RowByParts.DecrtiptionComment.ToLower().Contains("знищ")) {
 						friendly = "відом";
 					} else {
 						friendly = "воро";
@@ -717,7 +702,7 @@ namespace CSLight {
 				keys.sendL("Ctrl+A", "!" + friendly, "Enter");
 			}
 		}
-		//  тип джерела
+		// тип джерела
 		static void flyEye(Bisbin Bisbin) {
 			string flyeye = "пові";
 			var typeOfSourceWindow = Bisbin.PourMark.MainFieldsTab.DeltaFieldSourceType();
@@ -737,15 +722,15 @@ namespace CSLight {
 			}
 		}
 		// зауваження штабу - ід
-		static void deltaIdPurchaseText(string idTargetJbd, Bisbin Bisbin) {
+		static void deltaIdPurchaseText(RowByParts RowByParts, Bisbin Bisbin) {
 			var idPurchaseWindow = Bisbin.PourMark.MainFieldsTab.DeltaFieldPurchase();
 			if (idPurchaseWindow != null) {
 				idPurchaseWindow.PostClick(scroll: 250);
-				keys.sendL("Ctrl+A", "!" + idTargetJbd);
+				keys.sendL("Ctrl+A", "!" + RowByParts.TargetId);
 			}
 		}
 		// мобільність
-		static void deltaMobilityLine(string targetClassJbd, Bisbin Bisbin) {
+		static void deltaMobilityLine(RowByParts RowByParts, Bisbin Bisbin) {
 			// Обмеженої прохідності
 			string limitedAccess = "Мотоцикл Вантажівка Паливозаправник";
 			string obmezheno = "обмежено";
@@ -770,31 +755,31 @@ namespace CSLight {
 					return;
 				}
 				// Обмеженої прохідності
-				if (limitedAccess.Contains(targetClassJbd)) {
+				if (limitedAccess.Contains(RowByParts.Target)) {
 					mobileLine.PostClick(scroll: 250);
 					keys.sendL("Ctrl+A", "!" + obmezheno, "Enter");
 					return;
 				}
 				// Позашляховик
-				if (pozashlyakhovyk.Contains(targetClassJbd)) {
+				if (pozashlyakhovyk.Contains(RowByParts.Target)) {
 					mobileLine.PostClick(scroll: 250);
 					keys.sendL("Ctrl+A", "!" + suv, "Enter");
 					return;
 				}
 				// Гусеничний - колісний
-				if (caterpillar.Contains(targetClassJbd)) {
+				if (caterpillar.Contains(RowByParts.Target)) {
 					mobileLine.PostClick(scroll: 250);
 					keys.sendL("Ctrl+A", "!" + husenychnyy, "Enter");
 					return;
 				}
 				// На буксирі
-				if (towTruck.Contains(targetClassJbd)) {
+				if (towTruck.Contains(RowByParts.Target)) {
 					mobileLine.PostClick(scroll: 250);
 					keys.sendL("Ctrl+A", "!" + buksyri, "Enter");
 					return;
 				}
 				// Гусинечний
-				if (gusankaList.Contains(targetClassJbd)) {
+				if (gusankaList.Contains(RowByParts.Target)) {
 					mobileLine.PostClick(scroll: 250);
 					keys.sendL("Ctrl+A", "!" + gusanka, "Enter");
 					return;
@@ -802,41 +787,41 @@ namespace CSLight {
 			}
 		}
 		// коментар
-		static void deltaCommentContents(string targetClassJbd, string dateJbd, string timeJbd, string crewTeamJbd, string establishedJbd, string commentJbd, string mgrsCoords, Bisbin Bisbin) {
+		static void deltaCommentContents(RowByParts RowByParts, Bisbin Bisbin) {
 			var commentWindow = Bisbin.PourMark.MainFieldsTab.DeltaFieldNewComment();
 			if (commentWindow != null) {
-				string commentContents = Bisbin.createComment(targetClassJbd, dateJbd, timeJbd, crewTeamJbd, establishedJbd, commentJbd, mgrsCoords);
+				string commentContents = Bisbin.createComment(RowByParts.Target, RowByParts.Date.Replace('.','/'), RowByParts.Time, RowByParts.CrewTeam, RowByParts.Status, RowByParts.DecrtiptionComment, RowByParts.Coordinates);
 				commentWindow.PostClick(scroll: 250);
 				keys.sendL("Ctrl+A", "!" + commentContents);
 			}
 		}
 		// додаткові поля
-		static void deltaAdditionalFields(string idTargetJbd, string targetClassJbd, Bisbin Bisbin) {
+		static void deltaAdditionalFields(RowByParts RowByParts, Bisbin Bisbin) {
 			Bisbin.ElementNavigator.DeltaAdditionalFields().PostClick();
 			var idPurchaseWindow = Bisbin.PourMark.ExtraFieldsContainer.DeltaFieldPurchase();
 			if (idPurchaseWindow != null) {
 				idPurchaseWindow.PostClick(scroll: 250);
-				keys.sendL("Ctrl+A", "!" + idTargetJbd);
+				keys.sendL("Ctrl+A", "!" + RowByParts.TargetId);
 			}
 		}
 		// Георафічне розташування
-		static void deltaGeografPlace(string targetClassJbd, string establishedJbd, string commentJbd, Bisbin Bisbin) {
+		static void deltaGeografPlace(RowByParts RowByParts, Bisbin Bisbin) {
 			// Георафічне розташування
 			Bisbin.ElementNavigator.DeltaGeograficPlace().PostClick();
 			Bisbin.PourMark.MainFieldsTab.DeltaFieldLayer().ScrollTo(); // це для того щоб піднятися на самий верх
 			string states = "Виявлено Підтверджено Спростовано Не зрозуміло";
 			// Колір заливки
 			if (Bisbin.PourMark.GeoPositionContainer.DeltaDropDownFillColor() != null) {
-				switch (targetClassJbd) {
+				switch (RowByParts.Target) {
 				//. укриття
 				case "Укриття":
-					if (establishedJbd.ToLower().Contains("знищ") || establishedJbd.ToLower().Contains("ураж")) {
+					if (RowByParts.Status.ToLower().Contains("знищ") || RowByParts.Status.ToLower().Contains("ураж")) {
 						Bisbin.PourMark.GeoPositionContainer.DeltaButtonYellow().PostClick(scroll: 500);
 						wait.ms(500);
 						transpatentColorRange();
 						wait.ms(500);
-					} else if (states.Contains(establishedJbd)) {
-						if (commentJbd.ToLower().Contains("знищ") || commentJbd.ToLower().Contains("ураж")) {
+					} else if (states.Contains(RowByParts.Status)) {
+						if (RowByParts.DecrtiptionComment.ToLower().Contains("знищ") || RowByParts.DecrtiptionComment.ToLower().Contains("ураж")) {
 							Bisbin.PourMark.GeoPositionContainer.DeltaButtonYellow().PostClick(scroll: 500);
 							wait.ms(500);
 							transpatentColorRange();

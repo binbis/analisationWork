@@ -16,7 +16,7 @@ public class RowByParts {
 		set { date = value; }
 		get { return date; }
 	}
-    /// <summary>
+	/// <summary>
 	/// 00:40
 	/// </summary>
 	private string time;
@@ -156,61 +156,62 @@ public class RowByParts {
 	/// дописує F7 до фпв
 	/// </summary>
 	/// <param name="crew"></param>
-	private void getWeaponByCrew(string crew) {
+	private string getWeaponByCrew(string crew) {
 		Regex regex = new Regex(@"\(([^)]+)\)");
 		MatchCollection matches = regex.Matches(crew);
 		foreach (Match match in matches) {
 			if (match.Groups[1].Value.ToUpper().Contains("FPV")) {
-				weapon = "FPV - F7";
+				return "FPV - F7";
 			} else {
-				weapon = match.Groups[1].Value;
+				return match.Groups[1].Value;
 			}
 		}
+		return "regex is not working";
 	}
 	/// <summary>
 	/// скоротити рядок до 19 елементів
 	/// </summary>
 	/// <param name="targetId"></param>
-	private void getReduceBy_idTarget(string targetId) {
-		targetId = Bisbin.StringReducer.TrimAllAfterN(targetId, 19);
+	private string getReduceBy_idTarget(string targetId) {
+		return Bisbin.StringReducer.TrimAllAfterN(targetId, 19);
 	}
 	/// <summary>
 	/// отримати підготовлений рядок для назви екіпажу
 	/// </summary>
-	private void getPreparationByTeam(string crewTeam) {
-		crewTeam = Bisbin.StringReducer.TrimAfterFirstDot(crewTeam.Replace("\n\t", ""));
+	private string getPreparationByTeam(string crewTeam) {
+		return Bisbin.StringReducer.TrimAfterFirstDot(crewTeam.Replace("\n\t", "").Trim());
 	}
 	/// <summary>
 	/// отримати підготовлений коментар
 	/// </summary>
-	private void getPreparationByComment(string decrtiptionComment) {
-		decrtiptionComment = decrtiptionComment.Replace("\n", " ").Trim();
+	private string getPreparationByComment(string decrtiptionComment) {
+		return decrtiptionComment.Replace("\n", " ").Trim();
 	}
 	
-	public RowByParts() {  }
+	public RowByParts() { }
 	
 	/// <summary>
 	/// користувацький конструктор розбиття рядка на змінні
 	/// </summary>
 	/// <param name="rowList"></param>
 	public RowByParts(string[] rowList) {
-		date = rowList[0]; 
-		time = rowList[1]; 
-		decrtiptionComment = rowList[2]; 
-		flightNumber = rowList[3]; 
+		date = rowList[0];
+		time = rowList[1];
+		decrtiptionComment = rowList[2];
+		flightNumber = rowList[3];
 		crewTeam = rowList[4];
-		goal = rowList[5]; 
-		target = rowList[7]; 
+		goal = rowList[5];
+		target = rowList[7];
 		targetId = rowList[9];
-		coordinates = rowList[18]; 
-		locality = rowList[19]; 
-		ammunition = rowList[22]; 
-		numberAmmunition = rowList[23]; 
-		status = rowList[24]; 
-		dNumber = rowList[25]; 
-		wNumber = rowList[26]; 
-		initiationFee = rowList[27]; 
-		messageId = rowList[34]; 
+		coordinates = rowList[18];
+		locality = rowList[19];
+		ammunition = rowList[22];
+		numberAmmunition = rowList[23];
+		status = rowList[24];
+		dNumber = rowList[25];
+		wNumber = rowList[26];
+		initiationFee = rowList[27];
+		messageId = rowList[34];
 		getWeaponByCrew(crewTeam);
 	}
 	/// <summary>
@@ -218,9 +219,32 @@ public class RowByParts {
 	/// </summary>
 	/// <param name="rowList"></param>
 	public void RowByParts_ReR(string[] rowList) {
-		date = rowList[4];
-		time = rowList[5];
-		coordinates = rowList[8];
+		this.date = rowList[4];
+		this.time = rowList[5];
+		this.coordinates = rowList[8];
+	}
+	/// <summary>
+	/// функція як кор. конструктор але з підготовленими данними
+	/// </summary>
+	/// <param name="rowList"></param>
+	public void RowByParts_Prepare(string[] rowList) {
+		this.date = rowList[0];
+		this.time = rowList[1];
+		this.decrtiptionComment = getPreparationByComment(rowList[2]);
+		this.flightNumber = rowList[3];
+		this.crewTeam = getWeaponByCrew(getPreparationByTeam(rowList[4]));
+		this.goal = rowList[5];
+		this.target = rowList[7];
+		this.targetId = getReduceBy_idTarget(rowList[9]);
+		this.coordinates = rowList[18];
+		this.locality = rowList[19];
+		this.ammunition = rowList[22];
+		this.numberAmmunition = rowList[23];
+		this.status = rowList[24];
+		this.dNumber = rowList[25];
+		this.wNumber = rowList[26];
+		this.initiationFee = rowList[27];
+		this.messageId = rowList[34];
 	}
 }
 

@@ -51,8 +51,7 @@ public class Bisbin {
 		// Додаємо Х днів
 		DateTime newDate = originalDate.AddDays(count);
 		// Перетворюємо нову дату назад у рядок
-		string newDateString = newDate.ToString("dd.MM.yyyy");
-		return newDateString;
+		return newDate.ToString("dd/MM/yyyy");
 	}
 	// координати в wgs84
 	public static (double Latitude, double Longitude) ConvertMGRSToWGS84(string mgrs) {
@@ -145,6 +144,49 @@ public class Bisbin {
 			}
 		}
 		return markName;
+	}
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="coordinates"></param>
+	/// <returns></returns>
+	public string getCorrectCoord(string coordinates) {
+		// взяти послідовності з 10 цифр 3 букви спереду та ще 2 цифр 
+		string patternMGRS = @"(\d{2}[a-zA-Zа-яА-Я]{3})(\d{10})";
+		string coordIsMatch = Regex.Replace($"888 {coordinates.ToUpper()} 888", "[^a-zA-Zа-яА-Я0-9]", "");
+		Match matchMGRS = Regex.Match(coordIsMatch, patternMGRS);
+		return Transliterate(InsertSpaces(matchMGRS.Groups[1].Value + matchMGRS.Groups[2].Value));
 		
+		// додаємо пробіли
+		static string InsertSpaces(string input) {
+			input = input.Insert(input.Length - 5, " ");
+			input = input.Insert(input.Length - 11, " ");
+			input = input.Insert(input.Length - 14, " ");
+			
+			return input;
+		}
+		// заміняє букви кирилиці на латиницю
+		static string Transliterate(string text) {
+			// кирил на лат
+			Dictionary<char, string> translitMap = new Dictionary<char, string>
+			{
+				{'Р', "P"}, {'С', "C"}, {'Т', "T"},
+				{'Е', "E"}, {'М', "M"}, {'В', "B"},
+				{'А', "A"}, {'О', "O"}, {'Н', "H"},
+				{'К', "K"}, {'Х', "X"}
+			};
+			
+			StringBuilder result = new StringBuilder();
+			
+			foreach (char c in text) {
+				if (translitMap.ContainsKey(c)) {
+					result.Append(translitMap[c]);
+				} else {
+					result.Append(c);
+				}
+			}
+			
+			return result.ToString();
+		}
 	}
 }
