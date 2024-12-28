@@ -3,7 +3,7 @@ c \analisationWork\globalClass\Bisbin.cs;
 c \analisationWork\globalClass\RowByParts.cs; 
 /*/
 
-/* 28.12.2024 2.3
+/* 29.12.2024 2.3
 
 * id обрізаються, щоб поміститись в рядок 
 * функція додавання до дати дні(x) підходить для мін
@@ -356,7 +356,7 @@ namespace CSLight {
 					string commentar = Bisbin.createComment(target, dateJbd.Replace('.', '/'), timeJbd, crewTeamJbd, status, comment, mgrsCoords);
 					string dateTimeNow = $"{dateJbd.Split(".")[2]}-{dateJbd.Split(".")[1]}-{dateJbd.Split(".")[0]}T{timeJbd}:22"; // поточний час yyyy-MM-ddTHH:mm:ss
 					//координати обробка
-					var wgsCoord = Bisbin.ConvertMGRSToWGS84(mgrsCoords);
+					var wgsCoord = Bisbin.ConvertMGRSToWGS84(Bisbin.getCorrectCoord(mgrsCoords));
 					
 					// Формуємо JSON для однієї мітки (Feature) вручну
 					var feature = new StringBuilder();

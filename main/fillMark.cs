@@ -3,7 +3,7 @@ c \analisationWork\globalClass\Bisbin.cs;
 c \analisationWork\globalClass\RowByParts.cs; 
 /*/
 
-/* 28.12.2024 2.3
+/* 29.12.2024 2.3
 
 * id обрізаються, щоб поміститись в рядок 
 * функція додавання до дати дні(x) підходить для мін
@@ -353,10 +353,10 @@ namespace CSLight {
 					}
 					
 					
-					string commentar = Bisbin.createComment(target, dateJbd.Replace('.','/'), timeJbd, crewTeamJbd, status, comment, mgrsCoords);
+					string commentar = Bisbin.createComment(target, dateJbd.Replace('.', '/'), timeJbd, crewTeamJbd, status, comment, mgrsCoords);
 					string dateTimeNow = $"{dateJbd.Split(".")[2]}-{dateJbd.Split(".")[1]}-{dateJbd.Split(".")[0]}T{timeJbd}:22"; // поточний час yyyy-MM-ddTHH:mm:ss
 					//координати обробка
-					var wgsCoord = Bisbin.ConvertMGRSToWGS84(mgrsCoords);
+					var wgsCoord = Bisbin.ConvertMGRSToWGS84(Bisbin.getCorrectCoord(mgrsCoords));
 					
 					// Формуємо JSON для однієї мітки (Feature) вручну
 					var feature = new StringBuilder();
@@ -600,7 +600,7 @@ namespace CSLight {
 			var dateDeltaWindow = Bisbin.PourMark.MainFieldsTab.DeltaFieldDate();
 			if (dateDeltaWindow != null) {
 				dateDeltaWindow.PostClick();
-				keys.sendL("Ctrl+A", "!" + RowByParts.Date.Replace('.','/'), "Enter");
+				keys.sendL("Ctrl+A", "!" + RowByParts.Date.Replace('.', '/'), "Enter");
 				wait.ms(500);
 				keys.sendL("!" + RowByParts.Time, "Enter");
 			}
@@ -790,7 +790,7 @@ namespace CSLight {
 		static void deltaCommentContents(RowByParts RowByParts, Bisbin Bisbin) {
 			var commentWindow = Bisbin.PourMark.MainFieldsTab.DeltaFieldNewComment();
 			if (commentWindow != null) {
-				string commentContents = Bisbin.createComment(RowByParts.Target, RowByParts.Date.Replace('.','/'), RowByParts.Time, RowByParts.CrewTeam, RowByParts.Status, RowByParts.DecrtiptionComment, RowByParts.Coordinates);
+				string commentContents = Bisbin.createComment(RowByParts.Target, RowByParts.Date.Replace('.', '/'), RowByParts.Time, RowByParts.CrewTeam, RowByParts.Status, RowByParts.DecrtiptionComment, RowByParts.Coordinates);
 				commentWindow.PostClick(scroll: 250);
 				keys.sendL("Ctrl+A", "!" + commentContents);
 			}
@@ -823,11 +823,6 @@ namespace CSLight {
 					} else if (states.Contains(RowByParts.Status)) {
 						if (RowByParts.DecrtiptionComment.ToLower().Contains("знищ") || RowByParts.DecrtiptionComment.ToLower().Contains("ураж")) {
 							Bisbin.PourMark.GeoPositionContainer.DeltaButtonYellow().PostClick(scroll: 500);
-							wait.ms(500);
-							transpatentColorRange();
-							wait.ms(500);
-						} else {
-							Bisbin.PourMark.GeoPositionContainer.DeltaButtonRed().PostClick(scroll: 500);
 							wait.ms(500);
 							transpatentColorRange();
 							wait.ms(500);
