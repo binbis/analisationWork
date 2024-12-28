@@ -163,7 +163,7 @@ public class RowByParts {
 			if (match.Groups[1].Value.ToUpper().Contains("FPV")) {
 				return "FPV - F7";
 			} else {
-				return match.Groups[1].Value;
+				return crew;
 			}
 		}
 		return "regex is not working";
@@ -179,7 +179,7 @@ public class RowByParts {
 	/// отримати підготовлений рядок для назви екіпажу
 	/// </summary>
 	private string getPreparationByTeam(string crewTeam) {
-		return Bisbin.StringReducer.TrimAfterFirstDot(crewTeam.Replace("\n\t", "").Trim());
+		return Bisbin.StringReducer.TrimAfterFirstDot(crewTeam.Replace("\n", "").Trim());
 	}
 	/// <summary>
 	/// отримати підготовлений коментар
