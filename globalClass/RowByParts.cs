@@ -166,7 +166,7 @@ public class RowByParts {
 				return crew;
 			}
 		}
-		return "regex is not working";
+		return crew;
 	}
 	/// <summary>
 	/// скоротити рядок до 19 елементів

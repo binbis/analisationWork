@@ -6,7 +6,7 @@ public class ElementNavigator {
 	/// вікно дельти
 	/// </summary>
 	public wnd DeltaWindow() {
-		return wnd.find(0, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1").Activate();
+		return wnd.find(1, "Delta Monitor - Google Chrome", "Chrome_WidgetWin_1").Activate();
 	}
 	
 	/// <summary>
