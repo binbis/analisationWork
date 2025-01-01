@@ -48,7 +48,7 @@ namespace CSLight {
 			b.R.AddButton("2. Створти папку екіпаж -> ід", 5).Brush(Brushes.LightCyan);
 			b.R.AddButton("3. Перейменування в папці Бамбас", 1).Brush(Brushes.LightSalmon);
 			b.R.AddButton("4. Перейменування в папці Уголь", 3).Brush(Brushes.LightGoldenrodYellow);
-			b.R.AddButton("5. Перейменування в папці Уголь-Суджа", 4).Brush(Brushes.LightGoldenrodYellow);
+			b.R.AddButton("5. Перейменування в папці Суджа", 4).Brush(Brushes.LightGoldenrodYellow);
 			b.End();
 			
 			var b2 = b = _Page("Технічне налаштування");

@@ -43,8 +43,12 @@ public class Bisbin {
 			Console.WriteLine($"{i} = {array[i]}");
 		}
 	}
-	
-	// додає вказану кількість днів та повертає дату
+	/// <summary>
+	/// додає вказану кількість днів та повертає дату
+	/// </summary>
+	/// <param name="date"></param>
+	/// <param name="count"></param>
+	/// <returns></returns>
 	public static string datePlasDays(string date, int count) {
 		// Перетворюємо рядок дати у DateTime
 		DateTime originalDate = DateTime.ParseExact(date, "dd.MM.yyyy", CultureInfo.InvariantCulture);
@@ -53,7 +57,11 @@ public class Bisbin {
 		// Перетворюємо нову дату назад у рядок
 		return newDate.ToString("dd/MM/yyyy");
 	}
-	// координати в wgs84
+	/// <summary>
+	/// перетворює MGRS в WGS84 та повертає (double Latitude, double Longitude)
+	/// </summary>
+	/// <param name="mgrs"></param>
+	/// <returns></returns>
 	public static (double Latitude, double Longitude) ConvertMGRSToWGS84(string mgrs) {
 		// Створення координати з MGRS
 		Coordinate coordinate = Coordinate.Parse(mgrs);
@@ -61,6 +69,7 @@ public class Bisbin {
 		// Отримання широти та довготи з об'єкта координати
 		return (coordinate.Longitude.ToDouble(), coordinate.Latitude.ToDouble());
 	}
+	
 	// формування коментару на основі данних
 	public static string createComment(string targetClassJbd, string dateJbd, string timeJbd, string crewTeamJbd, string establishedJbd, string commentJbd, string mgrsCoords) {
 		// основна вкладка
@@ -70,7 +79,7 @@ public class Bisbin {
 		//. Міна
 		case "Міна":
 			if (establishedJbd.Contains("Авар. скид") || establishedJbd.Contains("Подавлено")) {
-				commentContents += $"аварійно сикнуто з ударного коптера {crewTeamJbd}";
+				commentContents += $"аварійно скинуто з ударного коптера {crewTeamJbd}";
 			} else if (establishedJbd.Contains("Розміновано")) {
 				commentContents += $"розміновано, спостерігали з {crewTeamJbd}";
 			} else if (establishedJbd.Contains("Спростовано")) {
@@ -146,7 +155,7 @@ public class Bisbin {
 		return markName;
 	}
 	/// <summary>
-	/// 
+	/// повертає string з виправлениими координтами
 	/// </summary>
 	/// <param name="coordinates"></param>
 	/// <returns></returns>
@@ -189,4 +198,5 @@ public class Bisbin {
 			return result.ToString();
 		}
 	}
+	
 }

@@ -38,7 +38,7 @@ public class StringReducer {
 	public string addTypeForBoard(string str) {
 		int index = str.LastIndexOf('(');
 		if (index != -1) {
-			return str.Substring(0, index + 1) + "FPV f7)";
+			return str.Substring(0, index + 1) + "FPV F7)";
 		}
 		return str;
 	}
