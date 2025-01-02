@@ -77,22 +77,73 @@ public class RowByParts {
 	/// </summary>
 	private string messageId;
 	
+	/// <summary>
+	/// 27.07.2024
+	/// </summary>
 	public string Date { get { return date; } set { date = value; } }
+	/// <summary>
+	/// 00:40
+	/// </summary>
 	public string Time { get { return time; } set { time = value; } }
+	/// <summary>
+	/// опис подій
+	/// </summary>
 	public string DescrtiptionComment { get { return descrtiptionComment; } set { descrtiptionComment = value; } }
+	/// <summary>
+	/// 5
+	/// </summary>
 	public string FlightNumber { get { return flightNumber; } set { flightNumber = value; } }
+	/// <summary>
+	/// R-18-1 (Мавка)
+	/// </summary>
 	public string CrewTeam { get { return crewTeam; } set { crewTeam = value; } }
+	/// <summary>
+	/// Дорозвідка / Мінування / Ураження ..
+	/// </summary>
 	public string Goal { get { return goal; } set { goal = value; } }
+	/// <summary>
+	/// Міна, Авто, Антена.. 
+	/// </summary>
 	public string Target { get { return target; } set { target = value; } }
+	/// <summary>
+	/// Міна 270724043
+	/// </summary>
 	public string TargetId { get { return targetId; } set { targetId = value; } }
+	/// <summary>
+	/// 37U CP 76420 45222
+	/// </summary>
 	public string Coordinates { get { return coordinates; } set { coordinates = value; } }
+	/// <summary>
+	/// Шевченко, Новооленівка
+	/// </summary>
 	public string Locality { get { return locality; } set { locality = value; } }
+	/// <summary>
+	/// Куля 1100, Фаберже
+	/// </summary>
 	public string Ammunition { get { return ammunition; } set { ammunition = value; } }
+	/// <summary>
+	/// 3, 4
+	/// </summary>
 	public string NumberAmmunition { get { return numberAmmunition; } set { numberAmmunition = value; } }
+	/// <summary>
+	/// Виявлено, Підтв. ураж. ..
+	/// </summary>
 	public string Status { get { return status; } set { status = value; } }
+	/// <summary>
+	/// 200
+	/// </summary>
 	public string DNumber { get { return dNumber; } set { dNumber = value; } }
+	/// <summary>
+	/// 300
+	/// </summary>
 	public string WNumber { get { return wNumber; } set { wNumber = value; } }
+	/// <summary>
+	/// Злий Доктор ....
+	/// </summary>
 	public string InitiationFee { get { return initiationFee; } set { initiationFee = value; } }
+	/// <summary>
+	/// 1734874827482 ...
+	/// </summary>
 	public string MessageId { get { return messageId; } set { messageId = value; } }
 	
 	/// <summary>
