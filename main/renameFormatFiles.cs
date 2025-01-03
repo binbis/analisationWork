@@ -1,5 +1,8 @@
-/*/ c \analisationWork\globalClass\Bisbin.cs; /*/
-/* 12,12,2024 v1.0.0
+/*/ 
+c \analisationWork\globalClass\Bisbin.cs; 
+c \analisationWork\globalClass\RowByParts.cs; 
+/*/
+/* 02,01,2025 v1.0.0
 
 !!renameAll!!:
 проєкт - переіменування файлів в папці
@@ -48,7 +51,7 @@ namespace CSLight {
 			b.R.AddButton("2. Створти папку екіпаж -> ід", 5).Brush(Brushes.LightCyan);
 			b.R.AddButton("3. Перейменування в папці Бамбас", 1).Brush(Brushes.LightSalmon);
 			b.R.AddButton("4. Перейменування в папці Уголь", 3).Brush(Brushes.LightGoldenrodYellow);
-			b.R.AddButton("5. Перейменування в папці Уголь-Суджа", 4).Brush(Brushes.LightGoldenrodYellow);
+			b.R.AddButton("5. Перейменування в папці Суджа", 4).Brush(Brushes.LightGoldenrodYellow);
 			b.End();
 			
 			var b2 = b = _Page("Технічне налаштування");
@@ -89,48 +92,45 @@ namespace CSLight {
 		}
 		// функ перейменування 
 		static void renameAll(string clipboardData, int dialogButtonRes) {
-			Bisbin Bisbin = new Bisbin();
 			string[] parts = clipboardData.Split('\t'); // Розділяємо рядок на частини
-			// Присвоюємо змінним відповідні значення
-			string dateJbd = getDDnMM(parts[0]); // 27.07.2024 - 27.07
-			string timeJbd = parts[1].Replace(":", "."); // 00:40 - 00.40
-			string commentJbd = parts[2].Replace("\n", " "); // коментар
-			string numberOFlying = parts[3]; // 5
-			string crewTeamJbd = Bisbin.StringReducer.TrimAfterFirstClosingParenthes(Bisbin.StringReducer.TrimAfterFirstDot(parts[4].Replace("\n", ""))); // R-18 (Мавка)
-			string whatToDo = parts[5];// Дорозвідка / Мінування ....
-			string targetClassJbd = parts[7]; // Міна/Вантажівка/...
-			string idTargetJbd = parts[9].Replace("/", ""); // Міна 270724043
-			string establishedJbd = parts[24]; // Встановлено/Уражено/Промах/...
+			Bisbin Bisbin = new Bisbin();
+			RowByParts instance = new RowByParts(parts);
 			
-			string messageId = parts[34]; // 1725666514064
+			// Присвоюємо змінним відповідні значення
+			string dateJbd = getDDnMM(instance.Date); // 27.07.2024 - 27.07
+			string timeJbd = instance.Time.Replace(":", "."); // 00:40 - 00.40
+			string commentJbd = instance.DescrtiptionComment.Replace("\n", " "); // коментар
+			string crewTeamJbd = Bisbin.StringReducer.TrimAfterFirstClosingParenthes(Bisbin.StringReducer.TrimAfterFirstDot(instance.CrewTeam.Replace("\n", ""))); // R-18 (Мавка)
+			string idTargetJbd = instance.TargetId.Replace("/", ""); // Міна 270724043
+			
 			string pathDonbasFolder = @"\\SNG-8-sh\CombatLog\Donbas_Combat_Log"; // 
 			string pathCoalFolderDon = @"\\Sng-2\аеророзвідка\combatlog\Vugl_Combat_Log"; //
 			string pathCoalFolderSsy = @"\\Sng-2\аеророзвідка\combatlog\Sumy_Combat_Log"; // 
 			
 			if (dialogButtonRes == 2) {
 				if (crewTeamJbd.Contains("FPV")) {
-					Clipboard.SetText($"{dateJbd} {timeJbd} {crewTeamJbd} В{numberOFlying} - {establishedJbd.ToLower()}");
+					Clipboard.SetText($"{dateJbd} {timeJbd} {crewTeamJbd} В{instance.FlightNumber} - {instance.Status.ToLower()}");
 					return;
 				} else {
-					Clipboard.SetText($"{dateJbd} {timeJbd} {crewTeamJbd} {idTargetJbd} - {establishedJbd.ToLower()}");
+					Clipboard.SetText($"{dateJbd} {timeJbd} {crewTeamJbd} {idTargetJbd} - {instance.Status.ToLower()}");
 					return;
 				}
 			}
 			
-			if (messageId.Length > 3) {
+			if (instance.MessageId.Length > 3) {
 				string pathFilesOpen = string.Empty;
 				if (dialogButtonRes == 3) {
-					pathFilesOpen = Path.Combine(pathCoalFolderDon, messageId);
+					pathFilesOpen = Path.Combine(pathCoalFolderDon, instance.MessageId);
 				} else if (dialogButtonRes == 4) {
-					pathFilesOpen = Path.Combine(pathCoalFolderSsy, messageId);
+					pathFilesOpen = Path.Combine(pathCoalFolderSsy, instance.MessageId);
 				} else {
-					pathFilesOpen = Path.Combine(pathDonbasFolder, messageId);
+					pathFilesOpen = Path.Combine(pathDonbasFolder, instance.MessageId);
 				}
 				
 				if (!filesystem.exists(pathFilesOpen)) {
 					//osdText.showTransparentText("Transparent text");
-					dialog.show("Помилка", $"Незнайдено подібної папки {pathDonbasFolder}/{messageId}", secondsTimeout: 5);
-					Console.WriteLine($"Незнайдено подібної папки {pathDonbasFolder}/{messageId}, рекомендація: преевірити бота, можливо він вимкнений, також перевірити чи є досуп до серверу");
+					dialog.show("Помилка", $"Незнайдено подібної папки {pathDonbasFolder}/{instance.MessageId} \nрекомендація: преевірити бота, можливо він вимкнений, також перевірити чи є досуп до серверу", secondsTimeout: 5);
+					Console.WriteLine($"Незнайдено подібної папки {pathDonbasFolder}/{instance.MessageId}, рекомендація: преевірити бота, можливо він вимкнений, також перевірити чи є досуп до серверу");
 					return;
 				}
 				
@@ -139,9 +139,9 @@ namespace CSLight {
 				
 				// підготовка для скорочення
 				// превірка статусу
-				establishedJbd = getTrueEstablished(establishedJbd, commentJbd, whatToDo);
-				if (whatToDo == "Дорозвідка") {
-					establishedJbd = whatToDo.ToLower() + " - " + establishedJbd;
+				string establishedJbd = getTrueEstablished(instance.Status, commentJbd);
+				if (instance.Goal == "Дорозвідка") {
+					establishedJbd = instance.Goal.ToLower() + " - " + establishedJbd;
 				}
 				
 				// перейменування кожного файлу в папці
@@ -156,7 +156,7 @@ namespace CSLight {
 						extension = "";
 					}
 					if (crewTeamJbd.Contains("FPV")) {
-						newPath = Path.Combine(dir, $"{dateJbd} {timeJbd} {crewTeamJbd} В{numberOFlying} - {establishedJbd.ToLower()} {i + 1}{extension}"); // новий шлях з директорії та файлу
+						newPath = Path.Combine(dir, $"{dateJbd} {timeJbd} {crewTeamJbd} В{instance.FlightNumber} - {establishedJbd.ToLower()} {i + 1}{extension}"); // новий шлях з директорії та файлу
 					} else {
 						newPath = Path.Combine(dir, $"{dateJbd} {timeJbd} {crewTeamJbd} {idTargetJbd} - {establishedJbd.ToLower()} {i + 1}{extension}"); // новий шлях з директорії та файлу
 					}
@@ -174,30 +174,51 @@ namespace CSLight {
 		// папки з папками
 		static void PathWeaver(string clipboardData, string rememberPath) {
 			string pathWithRemebers = File.ReadAllText(rememberPath);
-			
 			string[] parts = clipboardData.Split('\t'); // Розділяємо рядок на частини
-			string flyNumber = parts[3]; // номер вильоту
-			string crewName = parts[4]; // імя екіпажу
-			string aidId = parts[9]; // ід цілі
 			
-			string partFolderByCrew = $"{crewName}"; // заготовка екіпажа
-			string partFolderByFlyNumberAndId = $"({flyNumber}) {aidId}"; // заготовка ід
+			Bisbin Bisbin = new Bisbin();
+			RowByParts instance = new RowByParts(parts);
 			
-			string pathToFolderByCrew = pathname.combine(pathWithRemebers, partFolderByCrew); // збирає шляхи папки екіпаж
-			bool f = filesystem.createDirectory(pathToFolderByCrew); // пробую створити папку
-			//перевірка
-			if (!f) {
-				Console.WriteLine($"папка {crewName} вже існує");
+			// день
+			if (instance.CrewTeam.Contains("FPV")) {
+				string existDictName = string.Empty;
+				// отримати масив усіх імен папок
+				string[] arrAllDicNames = filesystem.enumDirectories(pathWithRemebers).Select(o => o.Name).ToArray();
+				
+				// перевірити чи існує вже така папка
+				foreach (string elem in arrAllDicNames) {
+					if (elem.Contains(instance.TargetId)) {
+						Process.Start("explorer.exe", pathname.combine(pathWithRemebers, elem)); // відкриваємо папку
+						script.end();
+					}
+				}
+				// схоже такої папки немає тому створимо нову
+				string tryCreateFolder = pathname.combine(pathWithRemebers, $"{arrAllDicNames.Length + 1}. {instance.TargetId}"); // збираю шлях
+				filesystem.createDirectory(tryCreateFolder);// пробую створити папку
+				Process.Start("explorer.exe", tryCreateFolder); // відкриваємо папку
+				//Console.WriteLine(existDictName);
+				
+			} else {
+				// нічна
+				string partFolderByCrew = $"{instance.CrewTeam}"; // заготовка екіпажа
+				string partFolderByFlyNumberAndId = $"({instance.FlightNumber}) {instance.TargetId}"; // заготовка ід
+				
+				string pathToFolderByCrew = pathname.combine(pathWithRemebers, partFolderByCrew); // збирає шляхи папки екіпаж
+				bool f = filesystem.createDirectory(pathToFolderByCrew); // пробую створити папку
+				//перевірка
+				if (!f) {
+					Console.WriteLine($"папка {instance.CrewTeam} вже існує");
+				}
+				wait.ms(400);
+				string pathToFolderById = pathname.combine(pathToFolderByCrew, partFolderByFlyNumberAndId); // збирає шляхи папки ід
+				f = filesystem.createDirectory(pathToFolderById); // пробую створити папку
+				//перевірка
+				if (!f) {
+					Console.WriteLine($"папка {partFolderByFlyNumberAndId} в {partFolderByCrew} папці вже існує");
+				}
+				//Console.WriteLine($"{}");
+				Process.Start("explorer.exe", pathToFolderById); // відкриваємо папку
 			}
-			wait.ms(400);
-			string pathToFolderById = pathname.combine(pathToFolderByCrew, partFolderByFlyNumberAndId); // збирає шляхи папки ід
-			f = filesystem.createDirectory(pathToFolderById); // пробую створити папку
-			//перевірка
-			if (!f) {
-				Console.WriteLine($"папка {partFolderByFlyNumberAndId} в {partFolderByCrew} папці вже існує");
-			}
-			//Console.WriteLine($"{}");
-			Process.Start("explorer.exe", pathToFolderById); // відкриваємо папку
 		}
 		// запам'ятовувалка
 		static void recordPathToMemory(string rememberedTextPath, string rememberPath) {
@@ -210,10 +231,9 @@ namespace CSLight {
 			return $"{partOfDates[0]}.{partOfDates[1]}";
 		}
 		// перевірка для статусу з жбд
-		static string getTrueEstablished(string establishedJbd, string commentJbd, string whatToDo) {
+		static string getTrueEstablished(string establishedJbd, string commentJbd) {
 			if (establishedJbd == "Підтв. ураж.") {
 				return "зйом.ураж";
-				//return whatToDo;
 			} else if (establishedJbd.ToLower().Contains("знищ")) {
 				return "знищ";
 			}

@@ -2,7 +2,7 @@
 c \analisationWork\globalClass\Bisbin.cs; 
 c \analisationWork\globalClass\RowByParts.cs; 
 /*/
-/* 12,12,2024 v1.0.0
+/* 02,01,2025 v1.0.0
 
 !!renameAll!!:
 проєкт - переіменування файлів в папці
