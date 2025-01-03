@@ -2,7 +2,7 @@
 c \analisationWork\globalClass\Bisbin.cs; 
 c \analisationWork\globalClass\RowByParts.cs; 
 /*/
-/* 02,01,2025 v1.0.0
+/* 03,01,2025 v1.0.1
 
 !!renameAll!!:
 проєкт - переіменування файлів в папці
@@ -100,7 +100,7 @@ namespace CSLight {
 			string dateJbd = getDDnMM(instance.Date); // 27.07.2024 - 27.07
 			string timeJbd = instance.Time.Replace(":", "."); // 00:40 - 00.40
 			string commentJbd = instance.DescrtiptionComment.Replace("\n", " "); // коментар
-			string crewTeamJbd = Bisbin.StringReducer.TrimAfterFirstClosingParenthes(Bisbin.StringReducer.TrimAfterFirstDot(instance.CrewTeam.Replace("\n", ""))); // R-18 (Мавка)
+			string crewTeamJbd = Bisbin.StringReducer.TrimAfterFirstClosingParenthes(Bisbin.StringReducer.TrimAfterFirstDot(instance.CrewTeam.Replace("\n", ""))).Replace("/","-"); // R-18 (Мавка)
 			string idTargetJbd = instance.TargetId.Replace("/", ""); // Міна 270724043
 			
 			string pathDonbasFolder = @"\\SNG-8-sh\CombatLog\Donbas_Combat_Log"; // 
@@ -180,7 +180,7 @@ namespace CSLight {
 			RowByParts instance = new RowByParts(parts);
 			
 			// день
-			if (instance.CrewTeam.Contains("FPV")) {
+			if (instance.CrewTeam.Contains("FPV") || instance.Goal.Contains("Зйомка")) {
 				string existDictName = string.Empty;
 				// отримати масив усіх імен папок
 				string[] arrAllDicNames = filesystem.enumDirectories(pathWithRemebers).Select(o => o.Name).ToArray();
@@ -193,7 +193,7 @@ namespace CSLight {
 					}
 				}
 				// схоже такої папки немає тому створимо нову
-				string tryCreateFolder = pathname.combine(pathWithRemebers, $"{arrAllDicNames.Length + 1}. {instance.TargetId}"); // збираю шлях
+				string tryCreateFolder = pathname.combine(pathWithRemebers, $"{arrAllDicNames.Length}. {instance.TargetId}"); // збираю шлях
 				filesystem.createDirectory(tryCreateFolder);// пробую створити папку
 				Process.Start("explorer.exe", tryCreateFolder); // відкриваємо папку
 				//Console.WriteLine(existDictName);

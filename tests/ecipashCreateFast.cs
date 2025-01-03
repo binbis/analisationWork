@@ -104,12 +104,7 @@ class Program {
 			
 			// Змінна, що змінюється після кожної операції
 			string textName = string.Empty;
-			//if (crew.Contains("Ев. ")) {
-				textName = $"{date}\t {crew}\t {point}\t\t\t\t\t\t\t {city}\t {formattedTeam}\n";
-			//}
-			//else {
-			//	textName = $"{date}\t {crew}\t {point}\t\t\t\t\t\t\t {formattedTeam}\t {area}\n";
-			//}
+			textName = $"{date}\t {crew}\t {point}\t\t\t\t\t\t\t {city}\t {formattedTeam}\n";
 			
 			if (textName.Length > 16) {
 				minimalEcspashClipbload += textName;
